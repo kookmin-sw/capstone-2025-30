@@ -1,0 +1,20 @@
+/server/.idea/workspace.xml
+
+# 디폴트 무시된 파일
+/shelf/
+/workspace.xml
+# 에디터 기반 HTTP 클라이언트 요청
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+/capstone-2025-30.iml
+/modules.xml
+/vcs.xml
+
+/server/.idea/
+/.idea/vcs.xml
+/.idea/workspace.xml
+/.idea/modules.xml
+/.idea/capstone-2025-30.iml
