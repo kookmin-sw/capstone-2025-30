@@ -1,11 +1,15 @@
 package main
 
 import (
+	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	"os"
 	"server/internal/database/mongodb"
 )
 
 func main() {
+	setEnv()
+
 	initialize()
 }
 
@@ -17,4 +21,26 @@ func initialize() {
 	}()
 
 	mongodb.Initialize()
+}
+
+func setEnv() {
+	env := os.Getenv("APP_ENV")
+	if env != "dev" {
+		env = "prod"
+	}
+
+	var envFile string
+	switch env {
+	case "dev":
+		envFile = ".dev.env"
+
+	default:
+		envFile = ".prod.env"
+	}
+
+	err := godotenv.Load(envFile)
+
+	if err != nil {
+		logrus.Fatalf("Error loading .env file")
+	}
 }

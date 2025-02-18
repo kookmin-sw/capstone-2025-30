@@ -6,6 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"os"
 	"sync"
 )
 
@@ -21,8 +22,8 @@ var (
 func Initialize() {
 	once.Do(func() {
 
-		url = "노션 url 확인"
-		name = "dev"
+		url = os.Getenv("MONGO_DB_URL")
+		name = os.Getenv("MONGO_DB_NAME")
 
 		serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 		opts := options.Client().ApplyURI(url).SetServerAPIOptions(serverAPI)
