@@ -4,7 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"os"
-	"server/internal/database/mongodb"
+	"server/internal/pkg/database/mongodb"
 )
 
 func main() {
