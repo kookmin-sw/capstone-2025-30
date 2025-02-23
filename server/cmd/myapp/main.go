@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"os"
 	"server/internal/pkg/database/mongodb"
+	grpcHandler "server/internal/pkg/grpc"
 )
 
 func main() {
@@ -21,6 +22,7 @@ func initialize() {
 	}()
 
 	mongodb.Initialize()
+	grpcHandler.Initialize()
 }
 
 func setEnv() {
