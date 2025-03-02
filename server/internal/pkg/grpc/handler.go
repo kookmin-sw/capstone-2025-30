@@ -27,7 +27,7 @@ func Initialize() error {
 
 	// 인증 인터셉터 : 현재 생략
 	s := grpc.NewServer(
-	//grpc.UnaryInterceptor(AuthInterceptor),
+		grpc.UnaryInterceptor(KeyAuthInterceptor),
 	)
 
 	pb.RegisterAPIServiceServer(s, &Server{})
