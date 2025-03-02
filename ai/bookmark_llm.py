@@ -31,6 +31,7 @@ prompt = ChatPromptTemplate.from_messages(
         - "비 오는 날의 감성적인 밤" → "🌧️🌙🎶☕" (rain, night, music, coffee)
         - "3호선으로 갈아타려면 어디로 가야해요?" → "3️⃣🚇🔄❓" (subway line 3, transfer, question)
         - "강남역에서 홍대까지 가려면 어떻게 해야 해요?" → "📍🚇➡️❓" (location, subway, direction, question)
+        - "이 쿠폰을 사용해주세요" → "🧾💳🙏" (receipt, payment, request)
         """),
         ("user", "#Format: {format_instructions}\n\n#Question: {question}"),
     ]
