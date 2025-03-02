@@ -1,0 +1,7 @@
+venv/
+venv
+holistic_dataset
+holistic_dataset/
+hands_dataset
+hands_dataset/
+.env

@@ -20,8 +20,8 @@ DATA_PATH = os.path.join('holistic_dataset')
 # gesture = {i: title for i, title in enumerate(raw_data["Title"])}
 
 # 훈련을 위한 데이터 셋의 라벨링 작업
-urls = raw_data['SubDescription'][:10]
-actions = raw_data["Title"][:10].tolist()
+urls = raw_data['SubDescription'][:100]
+actions = raw_data["Title"][:100].tolist()
 actions = np.array(actions)
 
 # 라벨 매핑
@@ -127,17 +127,45 @@ shape : (258,) - 1차원 형태
 2. 데이터 로드 및 모델 학습
 - 3차 고도화 -> 데이터 증강 적용
 """
-sequences, labels = [], []
-for action in actions:
-    for sequence in range(no_sequences):
-        window = []
-        for frame_num in range(sequence_length):  # seqeunce_length = 30
-            res = np.load(os.path.join(DATA_PATH, action, str(sequence), "{}.npy".format(frame_num)))
-            window.append(res)
-        sequences.append(window)
-        labels.append(label_map[action])
+# ------------------- 데이터 로드 및 전처리 -------------------
 
-# print(np.array(sequences).shape)
+# 유효한 action만 저장할 리스트
+valid_actions = []
+sequences, labels = [], []
+
+for action in actions:
+    action_path = os.path.join(DATA_PATH, action)
+    
+    if not os.path.exists(action_path):
+        print(f"Skipping missing action directory: {action}")
+        continue
+
+    valid_actions.append(action)
+
+    for sequence in range(no_sequences):
+        sequence_path = os.path.join(action_path, str(sequence))
+        
+        if not os.path.exists(sequence_path):
+            print(f"Skipping missing sequence directory: {sequence_path}")
+            continue
+
+        window = []
+        for frame_num in range(sequence_length):  # sequence_length = 30
+            file_path = os.path.join(sequence_path, f"{frame_num}.npy")
+
+            if not os.path.exists(file_path):
+                print(f"Skipping missing file: {file_path}")
+                continue
+
+            res = np.load(file_path)
+            window.append(res)
+
+        if window:
+            sequences.append(window)
+            labels.append(label_map[action])
+
+# 존재하는 action 리스트 업데이트
+actions = np.array(valid_actions)
 
 # 랜덤 시드 설정
 np.random.seed(42)
@@ -163,10 +191,15 @@ def augment_data(X):
     
     return np.array(X_aug)
 
+# ------------------- 데이터셋 배치 로딩 -------------------
+
+# 데이터를 numpy 배열로 변환
 X = np.array(sequences)
 y = to_categorical(labels).astype(int)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+# 데이터셋을 훈련용 / 테스트용으로 나누기
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
 # 데이터 증강 적용
 X_train_aug = augment_data(X_train)
 
@@ -174,20 +207,33 @@ X_train_aug = augment_data(X_train)
 X_train_aug = X_train_aug / np.max(X_train_aug)
 X_test = X_test / np.max(X_test)
 
+BATCH_SIZE = 32
+BUFFER_SIZE = 1000  # 데이터를 섞을 버퍼 크기
+
+train_dataset = (
+    tf.data.Dataset.from_tensor_slices((X_train_aug, y_train))
+    .shuffle(BUFFER_SIZE)  # 데이터를 섞음
+    .batch(BATCH_SIZE)  # 배치 단위로 로드
+    .prefetch(tf.data.AUTOTUNE)  # 성능 최적화
+)
+
+test_dataset = (
+    tf.data.Dataset.from_tensor_slices((X_test, y_test))
+    .batch(BATCH_SIZE)
+    .prefetch(tf.data.AUTOTUNE)
+)
+
 # EarlyStopping & ReduceLROnPlateau 설정
 early_stopping = EarlyStopping(monitor='loss', patience=20, min_delta=0.0005, verbose=1, restore_best_weights=True)
 reduce_lr = ReduceLROnPlateau(monitor='loss', factor=0.5, patience=5, min_lr=1e-4, verbose=1)
 
-# 모델 생성
+# 모델 생성 (필터 수 줄이고 Dense 레이어 경량화)
 model = Sequential([
     Conv1D(64, 3, activation='relu', input_shape=(30, 258)),
-    MaxPooling1D(2),
-    Conv1D(128, 3, activation='relu'),
     MaxPooling1D(2),
     Conv1D(64, 3, activation='relu'),
     MaxPooling1D(2),
     Flatten(),
-    Dense(64, activation='relu'),
     Dense(32, activation='relu'),
     Dense(y.shape[1], activation='softmax')  # 'actions.shape[0]' 대신 'y.shape[1]' 사용
 ])
@@ -200,7 +246,7 @@ model.compile(
 )
 
 # 모델 학습
-model.fit(X_train_aug, y_train, batch_size=32, epochs=2000, callbacks=[early_stopping, reduce_lr])
+model.fit(train_dataset, epochs=2000, callbacks=[early_stopping, reduce_lr])
 
 # 모델 저장
-model.save('handTalker_v1_augmented.keras')
+model.save('all_mediapipe_dl.keras')
