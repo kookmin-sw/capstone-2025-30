@@ -5,7 +5,6 @@ from langchain_core.messages import HumanMessage
 from langchain_community.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-import faiss
 from langchain_community.vectorstores import FAISS
 from langchain.retrievers import BM25Retriever, EnsembleRetriever
 from langchain_core.prompts import ChatPromptTemplate
