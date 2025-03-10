@@ -56,7 +56,7 @@ def extract_keypoints(results):
 3. 예측 실행
 """
 # 모델 불러오기
-best_1DCNN_model = tf.keras.models.load_model('all_mediapipe_dl.keras')
+best_1DCNN_model = tf.keras.models.load_model('100_mediapipe_dl.keras')
 
 # 이미지 처리 함수
 def process_frame(image_data):
@@ -171,11 +171,13 @@ def extract_from_wc():
                                 draw.text((10, 150), f'Return 동작: {result}', font=font, fill=(0, 255, 255))
                                 to_rag_sentence_list.append(result) 
                                 previous_result = result
-                
-                # 실시간으로 예측되는 수어를 확인하는 코드
-                if last_return_time and (time.time() - last_return_time < 2):
+
                     draw.text((10, 100), f'확률: {confidence:.2f}', font=font, fill=(255, 255, 0))
                     draw.text((10, 150), f'Return 동작: {result}', font=font, fill=(0, 255, 255))
+                # # 실시간으로 예측되는 수어를 확인하는 코드
+                # if last_return_time and (time.time() - last_return_time < 2):
+                #     draw.text((10, 100), f'확률: {confidence:.2f}', font=font, fill=(255, 255, 0))
+                #     draw.text((10, 150), f'Return 동작: {result}', font=font, fill=(0, 255, 255))
                 
                 previous_keypoints = keypoints
                 
