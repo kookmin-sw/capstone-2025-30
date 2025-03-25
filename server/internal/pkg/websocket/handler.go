@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	"sync"
 )
 
 var upgrader = websocket.Upgrader{
@@ -15,14 +16,24 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
+var (
+	WebSocketClients      = make(map[string]*websocket.Conn)
+	WebSocketClientsMutex sync.RWMutex
+)
+
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
-	// 0. api key ckeck
+	// 0. api key ckeck & Authorization
+	// 0.1 api key check
 	apiKey := r.Header.Get("api_key")
 	if apiKey != os.Getenv("WEBSOCKET_API_KEY") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		logrus.Errorln("Unauthorized, invalid websocket api key")
 		return
 	}
+
+	// 0.2 Authorization
+	client_id := r.URL.Query().Get("client_id")
+	// userId is valid func 만들어서 check -> userId db 에서 확인 후 없으면 invaild
 
 	// 1. Http -> WebSocket Upgrade
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -32,22 +43,29 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	logrus.Infof("Client connected: %s", conn.RemoteAddr())
+	// 3. connection save
+	WebSocketClientsMutex.Lock()
+	WebSocketClients[client_id] = conn
+	WebSocketClientsMutex.Unlock()
+	defer func() {
+		WebSocketClientsMutex.Lock()
+		delete(WebSocketClients, client_id)
+		WebSocketClientsMutex.Unlock()
+	}()
 
-	// 2. Message loop
+	logrus.Infof("Client connected save: %s (%s)", conn.RemoteAddr(), client_id)
+
+	// 4. message read
 	for {
-		messageType, msg, err := conn.ReadMessage()
+		_, msg, err := conn.ReadMessage()
 		if err != nil {
 			logrus.Errorln("Message read error:", err)
 			break
 		}
 
-		logrus.Infof("Message received: %s", string(msg))
+		logrus.Infof("Received message: %s", msg)
 
-		// 3. Echo back
-		if err := conn.WriteMessage(messageType, msg); err != nil {
-			logrus.Errorln("Message write error:", err)
-			break
-		}
+		// 메세지 처리
+		// go func 으로 메세지 db에 저장하는 로직 넣기
 	}
 }
