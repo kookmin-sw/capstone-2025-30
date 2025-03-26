@@ -3,9 +3,11 @@ package main
 import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	"net/http"
 	"os"
 	"server/internal/pkg/database/mongodb"
 	grpcHandler "server/internal/pkg/grpc"
+	"server/internal/pkg/websocket"
 )
 
 func main() {
@@ -22,6 +24,14 @@ func initialize() {
 	}()
 
 	mongodb.Initialize()
+	go func() {
+		http.HandleFunc("/ws", websocketHandler.WebSocketHandler)
+
+		logrus.Infof("Websocket server is running on port %s", os.Getenv("WEBSOCKET_PORT"))
+
+		logrus.Fatal(http.ListenAndServe(":"+os.Getenv("WEBSOCKET_PORT"), nil))
+	}()
+
 	grpcHandler.Initialize()
 }
 
