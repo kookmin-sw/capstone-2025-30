@@ -7,6 +7,7 @@ import (
 	"os"
 	"server/internal/pkg/database/mongodb"
 	grpcHandler "server/internal/pkg/grpc"
+	"server/internal/pkg/rest"
 	"server/internal/pkg/websocket"
 )
 
@@ -32,7 +33,9 @@ func initialize() {
 		logrus.Fatal(http.ListenAndServe(":"+os.Getenv("WEBSOCKET_PORT"), nil))
 	}()
 
-	grpcHandler.Initialize()
+	go grpcHandler.Initialize()
+
+	rest.Initialize()
 }
 
 func setEnv() {
