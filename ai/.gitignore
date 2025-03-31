@@ -5,3 +5,4 @@ holistic_dataset/
 hands_dataset
 hands_dataset/
 .env
+*.json
