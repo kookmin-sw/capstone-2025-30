@@ -106,20 +106,28 @@ def update_sign_language_description():
     menu_collection = db["menu"]
 
     descriptions = {
-        "americano": "당, 우유, 없다, 커피, 진하다, 쓰다",
-        "cafe_latte": "우유, 넣다, 커피, 부드럽다",
-        "vanilla_latte": "달다, 향기, 우유, 커피, 부드럽다",
-        "cappuccino": "커피, 우유, 거품, 섞다, 커피, 부드럽다",
-        "cafe_mocha": "초콜릿, 넣다, 커피, 달다, 진하다",
+        # 당, 우유, 없다, 커피, 진하다, 쓰다
+        "americano": "당, 우유, 커피, 진하다, 쓰다, 없다",
+        # 우유, 넣다, 커피, 부드럽다
+        "cafe_latte": "우유, 커피, 부드럽다, 넣다",
+        # 달다, 향기, 우유, 커피, 부드럽다
+        "vanilla_latte": "우유, 커피, 향기, 부드럽다, 달다",
+        # 커피, 우유, 거품, 섞다, 커피, 부드럽다
+        "cappuccino": "커피, 우유, 거품, 커피, 섞다, 부드럽다",
+        # 초콜릿, 넣다, 커피, 달다, 진하다
+        "cafe_mocha": "초콜릿, 커피, 진하다, 달다, 넣다",
         "chocolate_latte": "초콜릿, 우유, 넣다, 부드럽다, 달다",
         "lemon_tea": "레몬, 차, 시다",
-        "peach_tea": "복숭아, 차, 달다, 향기",
+        # 복숭아, 차, 달다, 향기
+        "peach_tea": "복숭아, 차, 향기, 달다",
         "chamomile_tea": "꽃, 차, 부드럽다, 평화",
-        "honey_tea": "꿀, 차, 달다, 부드럽다",
+        # 꿀, 차, 달다, 부드럽다
+        "honey_tea": "꿀, 차, 부드럽다, 달다",
         "milk_tea": "우유, 차, 넣다, 부드럽다",
         "lemon_ade": "레몬, 탄산, 마시다",
         "green_grape_ade": "청포도, 탄산, 마시다",
-        "sandwich": "빵, 재료, 사이, 넣다"
+        # 빵, 재료, 사이, 넣다
+        "sandwich": "빵, 사이, 재료, 넣다"
     }
 
     for name, desc in descriptions.items():
