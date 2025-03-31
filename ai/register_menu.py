@@ -101,6 +101,34 @@ def register_menu():
     })
     print("menu 컬렉션이 생성되었습니다.")
 
+def update_sign_language_description():
+
+    menu_collection = db["menu"]
+
+    descriptions = {
+        "americano": "당, 우유, 없다, 커피, 진하다, 쓰다",
+        "cafe_latte": "우유, 넣다, 커피, 부드럽다",
+        "vanilla_latte": "달다, 향기, 우유, 커피, 부드럽다",
+        "cappuccino": "커피, 우유, 거품, 섞다, 커피, 부드럽다",
+        "cafe_mocha": "초콜릿, 넣다, 커피, 달다, 진하다",
+        "chocolate_latte": "초콜릿, 우유, 넣다, 부드럽다, 달다",
+        "lemon_tea": "레몬, 차, 시다",
+        "peach_tea": "복숭아, 차, 달다, 향기",
+        "chamomile_tea": "꽃, 차, 부드럽다, 평화",
+        "honey_tea": "꿀, 차, 달다, 부드럽다",
+        "milk_tea": "우유, 차, 넣다, 부드럽다",
+        "lemon_ade": "레몬, 탄산, 마시다",
+        "green_grape_ade": "청포도, 탄산, 마시다",
+        "sandwich": "빵, 재료, 사이, 넣다"
+    }
+
+    for name, desc in descriptions.items():
+        menu_collection.update_one({"name": name}, {"$set": {"sign_language_description": desc}})
+
+    print("모든 메뉴에 sign_language_description 필드가 추가되었습니다.")
+
+
+# update_sign_language_description()
 
 def register_sign_language_words():
     sign_language_collection = db["sign_language"]
@@ -113,9 +141,51 @@ def register_sign_language_words():
     spreadsheet_id = os.getenv("SPREADSHEET_ID")
     sheet = gc.open_by_key(spreadsheet_id).sheet1
 
-    data = sheet.get_all_records()
-    sign_language_collection.insert_many(data)
+    # 전체 행을 삽입하는 경우
+    # data = sheet.get_all_records()
+    # sign_language_collection.insert_many(data)
+
+    headers = sheet.row_values(1)
+
+    # 단일 행을 삽입하는 경우
+    # row_new = sheet.row_values(71)
+
+    # if row_new:
+    #     data_new = dict(zip(headers, row_new))
+
+    #     sign_language_collection.insert_one(data_new)
+
+    # 여러 행을 삽입하는 경우
+    rows_new = sheet.get(f"A72:Z74")  
+
+    if rows_new:
+        data_list = [dict(zip(headers, row)) for row in rows_new]  
+
+        sign_language_collection.insert_many(data_list) 
     print("sign_language 데이터가 MongoDB에 삽입되었습니다.")
 
 
 # register_sign_language_words()
+
+def get_sign_language_url_list(menu):
+    menu_collection = db["menu"]
+    sign_language_collection = db["sign_language"]
+
+    menu_data = menu_collection.find_one({"name": menu}, {"sign_language_description": 1})
+
+    if not menu_data or "sign_language_description" not in menu_data:
+        print(f"{menu} 메뉴에 대한 sign_language_description이 없습니다.")
+        return []
+    
+    words = menu_data["sign_language_description"].split(", ")
+
+    url_list = []
+    for word in words:
+        sign_data = sign_language_collection.find_one({"name": {"$regex": word}})
+
+        if sign_data and "url" in sign_data:
+            url_list.append(sign_data["url"])
+
+    return url_list
+
+# print(get_sign_language_url_list("americano"))
