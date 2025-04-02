@@ -24,18 +24,18 @@ func KeyAuthInterceptor(ctx context.Context, req any, info *grpc.UnaryServerInfo
 	}
 
 	var authKey string
-	if values := mk["auth_key"]; len(values) > 0 {
+	if values := mk["api-key"]; len(values) > 0 {
 		authKey = values[0]
 	} else {
-		logrus.Warn("auth_key not found in metadata")
-		return nil, status.Errorf(codes.Unauthenticated, "auth_key not found in metadata")
+		logrus.Warn("api-key not found in metadata")
+		return nil, status.Errorf(codes.Unauthenticated, "api-key not found in metadata")
 	}
 
 	allowedKey := os.Getenv("ALLOWED_AUTH_KEY")
 
 	if authKey != allowedKey {
-		logrus.Warn("invalid auth_key")
-		return nil, status.Errorf(codes.PermissionDenied, "invalid auth_key")
+		logrus.Warn("invalid api-key")
+		return nil, status.Errorf(codes.PermissionDenied, "invalid api-key")
 	}
 
 	logrus.Infof("Authorized request with key: %s", authKey)
