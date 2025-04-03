@@ -17,12 +17,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          path: server
           fetch-depth: 0
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
           go-version: '1.21'
           cache: true
+          working-directory: server
 
       - name: Install Protoc
         run: |
@@ -30,12 +33,15 @@ jobs:
           sudo apt-get install -y protobuf-compiler
           go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+        working-directory: server
 
       - name: Generate Proto files
         run: make proto
+        working-directory: server
 
       - name: Install dependencies
         run: go mod download
+        working-directory: server
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -57,11 +63,12 @@ jobs:
           echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> .env
           echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> .env
           echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> .env
+        working-directory: server
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: .
+          context: server
           file: server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
