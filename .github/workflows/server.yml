@@ -17,7 +17,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          path: server
           fetch-depth: 0
 
       - name: Set up Go
@@ -68,8 +67,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: server
-          file: Dockerfile
+          context: .
+          file: ./server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
           build-args: |
