@@ -68,5 +68,6 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		// 메세지 처리
 		// go func 으로 메세지 db에 저장하는 로직 넣기
+		// 테스트 커밋
 	}
 }
