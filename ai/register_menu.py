@@ -113,10 +113,10 @@ def update_sign_language_description():
         # 달다, 향기, 우유, 커피, 부드럽다
         "vanilla_latte": "우유, 커피, 향기, 부드럽다, 달다",
         # 커피, 우유, 거품, 섞다, 커피, 부드럽다
-        "cappuccino": "커피, 우유, 거품, 커피, 섞다, 부드럽다",
+        "cappuccino": "커피, 우유, 부풀다, 커피, 섞다, 부드럽다",
         # 초콜릿, 넣다, 커피, 달다, 진하다
-        "cafe_mocha": "초콜릿, 커피, 진하다, 달다, 넣다",
-        "chocolate_latte": "초콜릿, 우유, 넣다, 부드럽다, 달다",
+        "cafe_mocha": "ㅊ, 코, 커피, 진하다, 달다, 넣다",
+        "chocolate_latte": "ㅊ, 코, 우유, 넣다, 부드럽다, 달다",
         "lemon_tea": "레몬, 차, 시다",
         # 복숭아, 차, 달다, 향기
         "peach_tea": "복숭아, 차, 향기, 달다",
@@ -124,8 +124,8 @@ def update_sign_language_description():
         # 꿀, 차, 달다, 부드럽다
         "honey_tea": "꿀, 차, 부드럽다, 달다",
         "milk_tea": "우유, 차, 넣다, 부드럽다",
-        "lemon_ade": "레몬, 탄산, 마시다",
-        "green_grape_ade": "청포도, 탄산, 마시다",
+        "lemon_ade": "레몬, 사이다, 마시다",
+        "green_grape_ade": "포도, 녹색, 사이다, 마시다",
         # 빵, 재료, 사이, 넣다
         "sandwich": "빵, 사이, 재료, 넣다"
     }
@@ -150,10 +150,10 @@ def register_sign_language_words():
     sheet = gc.open_by_key(spreadsheet_id).sheet1
 
     # 전체 행을 삽입하는 경우
-    # data = sheet.get_all_records()
-    # sign_language_collection.insert_many(data)
+    data = sheet.get_all_records()
+    sign_language_collection.insert_many(data)
 
-    headers = sheet.row_values(1)
+    # headers = sheet.row_values(1)
 
     # 단일 행을 삽입하는 경우
     # row_new = sheet.row_values(71)
@@ -164,12 +164,12 @@ def register_sign_language_words():
     #     sign_language_collection.insert_one(data_new)
 
     # 여러 행을 삽입하는 경우
-    rows_new = sheet.get(f"A72:Z74")  
+    # rows_new = sheet.get(f"A72:Z74")  
 
-    if rows_new:
-        data_list = [dict(zip(headers, row)) for row in rows_new]  
+    # if rows_new:
+    #     data_list = [dict(zip(headers, row)) for row in rows_new]  
 
-        sign_language_collection.insert_many(data_list) 
+    #     sign_language_collection.insert_many(data_list) 
     print("sign_language 데이터가 MongoDB에 삽입되었습니다.")
 
 
@@ -197,3 +197,22 @@ def get_sign_language_url_list(menu):
     return url_list
 
 # print(get_sign_language_url_list("americano"))
+
+
+def add_sign_language_urls():
+    menu_collection = db["menu"]
+    
+    # 메뉴 컬렉션의 모든 문서를 가져옴
+    menus = menu_collection.find({}, {"name": 1})
+    
+    for menu in menus:
+        menu_name = menu["name"]
+        
+        url = get_sign_language_url_list(menu_name)
+        
+        menu_collection.update_one(
+            {"name": menu_name}, 
+            {"$set": {"sign_language_urls": url}}
+        )
+
+# add_sign_language_urls()
