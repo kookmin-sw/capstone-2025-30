@@ -17,123 +17,156 @@ def register_menu():
 
     menu_collection.insert_one({
         "name": "americano",
-        "description": "설탕이나 우유 없이 마시는, 진하고 쓴맛이 특징인 커피",
+        "description": "고소하고 은은한 단맛과 균형잡힌 밸런스가 특징",
         "category": "coffee",
-        "price": 4000
+        "price": 4000,
     })
     menu_collection.insert_one({
         "name": "cafe_latte",
-        "description": "우유가 들어가 커피 맛이 부드러워진 커피",
+        "description": "고소한 에스프레소와 부드러운 우유가 어우러진 커피음료",
         "category": "coffee",
-        "price": 5000
-    })
-    menu_collection.insert_one({
-        "name": "vanilla_latte",
-        "description": "바닐라가 들어가 커피 맛이 달고 부드러워진 커피",
-        "category": "coffee",
-        "price": 5500
-    })
-    menu_collection.insert_one({
-        "name": "cappuccino",
-        "description": "우유 거품이 풍부한 커피로, 에스프레소와 우유 거품이 섞인 커피",
-        "category": "coffee",
-        "price": 5500
-    })
-    menu_collection.insert_one({
-        "name": "cafe_mocha",
-        "description": "초콜릿 시럽이 들어가 커피 맛이 달고 진한 커피",
-        "category": "coffee",
-        "price": 6000
-    })
-    menu_collection.insert_one({
-        "name": "chocolate_latte",
-        "description": "초콜릿과 우유가 섞여 부드럽고 달콤한 맛을 내는 음료",
-        "category": "coffee",
-        "price": 6000
-    })
-    menu_collection.insert_one({
-        "name": "lemon_tea",
-        "description": "레몬이 들어가 상큼하고 시원한 맛을 느낄 수 있는 차",
-        "category": "tea",
         "price": 4500
     })
     menu_collection.insert_one({
-        "name": "peach_tea",
-        "description": "복숭아 향과 맛이 나는 달콤하고 향긋한 차",
-        "category": "tea",
+        "name": "wild_dry_cappuccino",
+        "description": "풍부한 우유 거품에 시나몬슈가의 향으로 마무리한 커피음료",
+        "category": "coffee",
         "price": 4500
     })
     menu_collection.insert_one({
-        "name": "chamomile_tea",
-        "description": "캐모마일 꽃에서 우려낸 차로, 진정 효과가 있는 부드럽고 달콤한 맛의 차",
-        "category": "tea",
+        "name": "roasted_almond_latte",
+        "description": "고소한 아몬드향과 달콤함이 어우러진 커피음료",
+        "category": "coffee",
         "price": 5000
     })
     menu_collection.insert_one({
-        "name": "honey_tea",
-        "description": "꿀이 들어가 달콤하고 부드러운 맛을 지닌 차",
-        "category": "tea",
+        "name": "muscovado_latte",
+        "description": "유기농 사탕수수당을 사용한 특별한 숙성밀크와 커피를 배합한 고소하고 묵직한 카페라떼",
+        "category": "coffee",
         "price": 5000
     })
     menu_collection.insert_one({
-        "name": "milk_tea",
-        "description": "우유가 들어가 차의 맛을 부드럽고 고소하게 만들어주는 음료",
-        "category": "tea",
-        "price": 5500
+        "name": "brown_sugar_macchiato",
+        "description": "고유의 깊은 풍미를 가진 대만산 브라운 슈가가 드리즐 된 달콤한 커피",
+        "category": "coffee",
+        "price": 5000
     })
     menu_collection.insert_one({
-        "name": "lemon_ade",
-        "description": "레몬과 탄산이 섞여 시원하고 상쾌한 맛이 나는 음료",
-        "category": "non_coffee",
-        "price": 5500
+        "name": "jeju_green_oat_latte",
+        "description": "어린찻잎으로 만든 제주산 최고급 말차와 귀리우유를 배합한 고소하고 진한 말차라떼",
+        "category": "beverage",
+        "price": 5000
     })
     menu_collection.insert_one({
-        "name": "green_grape_ade",
-        "description": "청포도의 상큼한 맛과 탄산이 섞여 시원하고 달콤한 맛이 나는 음료",
-        "category": "non_coffee",
-        "price": 5500
-    })
-    menu_collection.insert_one({
-        "name": "sandwich",
-        "description": "여러 가지 재료를 빵 사이에 넣어 만든 음식",
-        "category": "bread",
+        "name": "sweet_coffee",
+        "description": "비정제 설탕으로 만든 베이스에 올라간 하겐다즈 아이스크림은 마음이 저축됨을 표현하였으며 커피와 만나 사르르 녹는 달콤함으로 마무리 됩니다.",
+        "category": "signature",
         "price": 6500
     })
+    menu_collection.insert_one({
+        "name": "piggybank_choco_latte",
+        "description": "어렷을 적 나만의 금고였던 돼지 저금통의 감성을 동전 초콜릿으로 표현한 감성적 음료입니다.",
+        "category": "signature",
+        "price": 6000
+    })
+    menu_collection.insert_one({
+        "name": "bank_schpanner",
+        "description": "달콤하고 쫀득한 생크림이 올라간 아인슈페너로서 잠시의 휴식이 필요한 순간 은행도 카페가 됩니다.",
+        "category": "signature",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "elderflower_ade",
+        "description": "엘더플라워의 은은한 향이 느껴지는 식용꽃으로 장식한 청량한 에이드",
+        "category": "ice_drinks",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "passion_berry_ade",
+        "description": "상큼한 라즈베리와 달콤한 블루베리 베이스의 청량한 에이드",
+        "category": "ice_drinks",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "cafe_coco_and_shot_smoothie",
+        "description": "달콤한 코코넛 블렌디드에 스윗의 에스프레소를 플로팅한 커피 스무디",
+        "category": "ice_drinks",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "plain_yogurt_smoothie",
+        "description": "달콤한 요거트 맛이 풍부한 부드러운 블렌디드 음료",
+        "category": "ice_drinks",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "berry_yogurt_smoothie",
+        "description": "상큼한 라즈베리와 달콤한 블루베리 베이스를 이용한 요거트 블렌디드 음료",
+        "category": "ice_drinks",
+        "price": 5500
+    })
+    menu_collection.insert_one({
+        "name": "verveine_orange_mint",
+        "description": "버베나, 오렌지, 민트가 부드럽게 블렌딩된 섬세한 허브 블렌딩 티",
+        "category": "tea",
+        "price": 4500
+    })
+    menu_collection.insert_one({
+        "name": "rooibos_de_vanille",
+        "description": "프리미엄 루이보스에 바닐라와 아몬드가 더해져 달콤하면서 포근한 느낌을 주는 논카페인 티",
+        "category": "tea",
+        "price": 4500
+    })
+    menu_collection.insert_one({
+        "name": "blue_of_london",
+        "description": "베르가옷 향과 산뜻한 오렌지 향을 더한 여운과 바디감이 풍부한 블렌딩 홍차",
+        "category": "tea",
+        "price": 4500
+    })
+    menu_collection.insert_one({
+        "name": "chamomile_apple_spicy",
+        "description": "캐모마일, 사과 스파이스 허브를 블렌딩하여 따뜻함과 편안함을 느낄 수 있는 허브 블렌딩 티",
+        "category": "tea",
+        "price": 4500
+    })
+
     print("menu 컬렉션이 생성되었습니다.")
+
+# register_menu()
 
 def update_sign_language_description():
 
     menu_collection = db["menu"]
 
     descriptions = {
-        # 당, 우유, 없다, 커피, 진하다, 쓰다
-        "americano": "당, 우유, 커피, 진하다, 쓰다, 없다",
-        # 우유, 넣다, 커피, 부드럽다
+        "americano": "커피, 진하다, 쓰다, 우유, 없다, 당, 약하다",
         "cafe_latte": "우유, 커피, 부드럽다, 넣다",
-        # 달다, 향기, 우유, 커피, 부드럽다
-        "vanilla_latte": "우유, 커피, 향기, 부드럽다, 달다",
-        # 커피, 우유, 거품, 섞다, 커피, 부드럽다
-        "cappuccino": "커피, 우유, 부풀다, 커피, 섞다, 부드럽다",
-        # 초콜릿, 넣다, 커피, 달다, 진하다
-        "cafe_mocha": "ㅊ, 코, 커피, 진하다, 달다, 넣다",
-        "chocolate_latte": "ㅊ, 코, 우유, 넣다, 부드럽다, 달다",
-        "lemon_tea": "레몬, 차, 시다",
-        # 복숭아, 차, 달다, 향기
-        "peach_tea": "복숭아, 차, 향기, 달다",
-        "chamomile_tea": "꽃, 차, 부드럽다, 평화",
-        # 꿀, 차, 달다, 부드럽다
-        "honey_tea": "꿀, 차, 부드럽다, 달다",
-        "milk_tea": "우유, 차, 넣다, 부드럽다",
-        "lemon_ade": "레몬, 사이다, 마시다",
-        "green_grape_ade": "포도, 녹색, 사이다, 마시다",
-        # 빵, 재료, 사이, 넣다
-        "sandwich": "빵, 사이, 재료, 넣다"
+        "wild_dry_cappuccino": "커피, 우유, 부풀다, 커피, 섞다, 부드럽다, 향기, 당, 좋다",
+        "roasted_almond_latte": "커피, 호두, 향기, 좋다, 당, 섞다, 마시다",
+        "muscovado_latte": "우유, 성숙, 당, 사용, 특별, 커피, 섞다, 맛, 깊다, 무겁다, 마시다",
+        "brown_sugar_macchiato": "ㄷ, ㅐ, ㅁ, ㅏ, ㄴ, 당, 갈색, 위, 뿌리다, 당, 커피, 맛, 깊다",
+        "jeju_green_oat_latte": "녹차, 우유, ㄱ, ㅟ, ㄹ, ㅣ, 섞다, 맛, 좋다, 진하다, 마시다",
+        "sweet_coffee": "위, 아이스크림, 커피, 함께, 녹다, 부드럽다, 달다",
+        "piggybank_choco_latte": "ㅊ, 코, 우유, 넣다, 부드럽다, 달다",
+        "bank_schpanner": "생크림, 위, 달다, 부드럽다, 커피, 섞다, 부드럽다",
+        "elderflower_ade": "꽃, ㅇ, ㅔ, ㄹ, 향기, 좋다, 꽃, 먹다, 예쁘다, 과일, 마시다, 시원하다, 좋다",
+        "passion_berry_ade": "과일, ㄹ, ㅏ, ㅈ, 시다, 좋다, 과일, ㅂ, ㄹ, ㅜ, 달다, 섞다, 마시다, 시원하다",
+        "cafe_coco_and_shot_smoothie": "과일, ㅋ, ㅗ, 달다, 얼음, 갈다, 섞다, 커피, 진하다, 위, 마시다, 시원하다",
+        "plain_yogurt_smoothie": "우유, ㅇ, ㅛ, 달다, 맛, 진하다, 부드럽다, 얼음, 갈다, 섞다, 마시다",
+        "berry_yogurt_smoothie": "과일, ㄹ, ㅏ, ㅈ, 시다, 과일, ㅂ, ㄹ, ㅜ, 달다, 우유, ㅇ, ㅛ, 얼음, 갈다, 섞다, 마시다",
+        "verveine_orange_mint": "ㅎ, ㅓ, ㅂ, 향기, 좋다, 과일, 시다, 부드럽다, 섞다, 차, 마시다, 시원하다",
+        "rooibos_de_vanille": "차, ㄹ, ㅜ, ㅇ, 달다, 향기, 좋다, 부드럽다, 호두, 마시다",
+        "blue_of_london": "향기, 좋다, 과일, 시다, 향기, 좋다, 진하다, 무겁다, 많다, 섞다, ㅎ, ㅗ, ㅇ, 차, 마시다",
+        "chamomile_apple_spicy": "ㅋ, ㅐ, ㅁ, 꽃, 사과, 맛, 진하다, 꽃, 향기, 먹다, 섞다, 차, 따뜻하다, 편하다, 느끼다"
     }
 
     for name, desc in descriptions.items():
-        menu_collection.update_one({"name": name}, {"$set": {"sign_language_description": desc}})
+        menu_collection.update_one(
+            {"name": name}, {"$set": {"sign_language_description": desc}}
+        )
 
     print("모든 메뉴에 sign_language_description 필드가 추가되었습니다.")
+
 
 
 # update_sign_language_description()
