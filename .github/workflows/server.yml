@@ -12,7 +12,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -21,7 +22,6 @@ jobs:
         with:
           go-version: '1.21'
           cache: true
-          working-directory: server
 
       - name: Install Protoc
         run: |
@@ -29,15 +29,15 @@ jobs:
           sudo apt-get install -y protobuf-compiler
           go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
           go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
-        working-directory: server
+        working-directory: ./server
 
       - name: Generate Proto files
         run: make proto
-        working-directory: server
+        working-directory: ./server
 
-      - name: Install dependencies
+      - name: Install Go dependencies
         run: go mod download
-        working-directory: server
+        working-directory: ./server
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -48,18 +48,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create env file
+      - name: Create .env file
         run: |
-          echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
-          echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> .env
-          echo "REST_API_PORT=${{ secrets.REST_API_PORT }}" >> .env
-          echo "WEBSOCKET_PORT=${{ secrets.WEBSOCKET_PORT }}" >> .env
-          echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
-          echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
-          echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> .env
-          echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> .env
-          echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> .env
-        working-directory: server
+          echo "APP_ENV=${{ secrets.APP_ENV }}" > server/.env
+          echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> server/.env
+          echo "REST_API_PORT=${{ secrets.REST_API_PORT }}" >> server/.env
+          echo "WEBSOCKET_PORT=${{ secrets.WEBSOCKET_PORT }}" >> server/.env
+          echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> server/.env
+          echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> server/.env
+          echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> server/.env
+          echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> server/.env
+          echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> server/.env
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
@@ -86,10 +85,8 @@ jobs:
           username: ${{ secrets.AWS_EC2_USERNAME }}
           key: ${{ secrets.AWS_EC2_SSH_KEY }}
           script: |
-            # 프로젝트 디렉토리로 이동
             cd /home/ubuntu/capstone-2025-30/server
-            
-            # 환경 변수 파일 생성
+
             echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
             echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> .env
             echo "REST_API_PORT=${{ secrets.REST_API_PORT }}" >> .env
@@ -99,21 +96,16 @@ jobs:
             echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> .env
             echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> .env
             echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> .env
-            
-            # 최신 이미지 가져오기
+
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
-            
-            # 기존 컨테이너 정리
+
             docker stop capstone-server || true
             docker rm capstone-server || true
-            
-            # 새 컨테이너 실행
+
             docker run -d \
               --name capstone-server \
               --network host \
               --env-file .env \
               ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
-            
-            # Nginx 재시작
-            sudo systemctl restart nginx
 
+            sudo systemctl restart nginx
