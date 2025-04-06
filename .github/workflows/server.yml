@@ -109,3 +109,4 @@ jobs:
               ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
 
             sudo systemctl restart nginx
+
