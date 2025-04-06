@@ -20,3 +20,5 @@ message AddTestStructRequest{
 message AddTestStructResponse{
   bool success = 1;
 }
+
+//테스트용
