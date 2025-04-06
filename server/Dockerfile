@@ -40,7 +40,6 @@ COPY nginx.conf /etc/nginx/nginx.conf
 
 # 애플리케이션 및 환경 변수 복사
 COPY --from=builder /app/main .
-COPY --from=builder /app/.dev.env .
 
 # nginx 로그 디렉토리 권한 설정
 RUN chown -R nginx:nginx /var/log/nginx

@@ -1,0 +1,4 @@
+# server/.dockerignore
+
+.dev.env
+*.env
