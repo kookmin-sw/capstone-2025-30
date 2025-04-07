@@ -1,16 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
-import HomeStyles from "@/pages/HomeStyles";
+import CategoryStyles from "@/pages/CategoryStyles";
 
-const OrderButton = ({ icon, text, to }) => {
+import Header from "@/components/Header";
+
+const CategoryButton = ({ icon, text }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const navigate = useNavigate();
 
   const handlePressIn = () => setIsPressed(true);
   const handlePressOut = () => setIsPressed(false);
-  const handleClick = () => navigate(to);
 
   return (
     <button
@@ -19,9 +18,8 @@ const OrderButton = ({ icon, text, to }) => {
       onMouseLeave={handlePressOut}
       onTouchStart={handlePressIn}
       onTouchEnd={handlePressOut}
-      onClick={handleClick}
       style={{
-        ...HomeStyles.orderButton,
+        ...CategoryStyles.categoryButton,
         backgroundColor: isPressed
           ? CustomStyles.primaryBlue
           : CustomStyles.primaryGray,
@@ -33,9 +31,9 @@ const OrderButton = ({ icon, text, to }) => {
       <span
         style={{
           display: "block",
-          fontSize: 80,
-          lineHeight: "80px",
-          marginBottom: 20,
+          fontSize: 60,
+          lineHeight: "68px",
+          marginBottom: 10,
         }}
       >
         {icon}
@@ -45,25 +43,20 @@ const OrderButton = ({ icon, text, to }) => {
   );
 };
 
-const HomePage = () => {
+const CategoryPage = () => {
   return (
     <div>
-      <p style={{ ...HomeStyles.headerIcon }}>🏠</p>
-      <div style={{ ...HomeStyles.container }}>
-        <OrderButton icon="📋" text="주문하기" to="/category" />
-        <OrderButton
-          icon="✅"
-          text={
-            <>
-              주문 상태
-              <br />
-              확인하기
-            </>
-          }
-        />
+      <Header centerIcon="📋" />
+      <div style={{ ...CategoryStyles.container }}>
+        <CategoryButton icon="☕️" text="커피" />
+        <CategoryButton icon="🌿" text="차" />
+        <CategoryButton icon="🧋" text="음료" />
+        <CategoryButton icon="🍰" text="케이크" />
+        <CategoryButton icon="🥯" text="빵" />
+        <CategoryButton icon="🥗" text="샐러드" />
       </div>
     </div>
   );
 };
 
-export default HomePage;
+export default CategoryPage;
