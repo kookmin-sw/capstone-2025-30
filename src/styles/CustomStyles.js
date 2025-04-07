@@ -2,7 +2,7 @@ const CustomStyles = {
   primaryBlack: "#373C42",
   primaryWhite: "#FFFFFF",
   primaryBlue: "#458EFD",
-  pointBlur: "#B6D0FF",
+  pointBlue: "#B6D0FF",
   primaryGray: "#EFEFEF",
   pointGray: "#969696",
   pointRed: "#EF4452",
