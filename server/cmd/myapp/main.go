@@ -53,7 +53,10 @@ func setEnv() {
 		envFile = ".env"
 	}
 
-	err := godotenv.Load(envFile)
+	err := error(nil)
+	if env == "dev" {
+		err = godotenv.Load(envFile)
+	}
 
 	if err != nil {
 		logrus.Fatalf("Error loading .env file : " + err.Error())
