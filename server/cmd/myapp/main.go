@@ -50,7 +50,7 @@ func setEnv() {
 		envFile = ".dev.env"
 
 	default:
-		envFile = ".prod.env"
+		envFile = ".env"
 	}
 
 	err := godotenv.Load(envFile)
