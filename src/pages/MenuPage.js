@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import MenuStyles from "@/pages/MenuStyles";
@@ -9,9 +9,11 @@ import coffeeImage from "@/assets/images/image-coffee.png";
 
 const MenuButton = ({ menu }) => {
   const [isPressed, setIsPressed] = useState(false);
+  const navigate = useNavigate();
 
   const handlePressIn = () => setIsPressed(true);
   const handlePressOut = () => setIsPressed(false);
+  const handleClick = () => navigate(menu.to);
 
   return (
     <button
@@ -20,6 +22,7 @@ const MenuButton = ({ menu }) => {
       onMouseLeave={handlePressOut}
       onTouchStart={handlePressIn}
       onTouchEnd={handlePressOut}
+      onClick={handleClick}
       style={{
         ...MenuStyles.menuButton,
         backgroundColor: isPressed
@@ -53,9 +56,9 @@ const MenuPage = () => {
   const { categoryKey } = useParams();
 
   const menu = [
-    { text: "아메리카노", price: "4500" },
-    { text: "카페라떼", price: "4500" },
-    { text: "콜드브루", price: "4500" },
+    { text: "아메리카노", price: "4500", to: "/detailed-menu/coffee/0" },
+    { text: "카페라떼", price: "4500", to: "/detailed-menu/coffee/1" },
+    { text: "콜드브루", price: "4500", to: "/detailed-menu/coffee/2" },
   ];
 
   return (
@@ -103,6 +106,7 @@ const MenuPage = () => {
           </div>
         </div>
       )}
+
       {categoryKey === "bread" && (
         <div>
           <Header centerIcon="🥯" />
