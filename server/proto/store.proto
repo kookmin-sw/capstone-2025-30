@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package proto;
+
+import "google/protobuf/empty.proto";
+
+option go_package = "capstone-2025-30/proto";
+
+message Store{
+  string id = 1;
+  string name = 2;
+  string location = 3;
+  string store_code = 4;
+}
+
+message StoreIdRequest{
+  string id = 1;
+}
+
+message StoreCodeRequest{
+  string store_code = 1;
+}
+
+message CreateStoreRequest{
+  string name = 1;
+  string location = 2;
+}
+
+message UpdateStoreRequest{
+  string id = 1;
+  string name = 2;
+  string location = 3;
+}
+
+message DeleteStoreRequest{
+  string id = 1;
+}
+
+message StoreResponse{
+  Store store = 1;
+}
+
+service StoreService{
+  rpc CreateStore(CreateStoreRequest) returns (StoreResponse);
+  rpc GetStoreById(StoreIdRequest) returns (StoreResponse);
+  rpc GetStoreByCode(StoreCodeRequest) returns (StoreResponse);
+  rpc UpdateStore(UpdateStoreRequest) returns (StoreResponse);
+  rpc DeleteStore(DeleteStoreRequest) returns (google.protobuf.Empty);
+  rpc GetStoreList(google.protobuf.Empty) returns (stream Store);
+}
