@@ -6,6 +6,10 @@ import (
 	pb "server/gen"
 )
 
+type Server struct {
+	pb.UnimplementedAPIServiceServer
+}
+
 func (s *Server) AddTestStruct(
 	ctx context.Context,
 	req *pb.AddTestStructRequest,
