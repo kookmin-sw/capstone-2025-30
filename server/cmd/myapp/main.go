@@ -33,9 +33,12 @@ func initialize() {
 		logrus.Fatal(http.ListenAndServe(":"+os.Getenv("WEBSOCKET_PORT"), nil))
 	}()
 
-	go grpcHandler.Initialize()
+	grpcConn, err := grpcHandler.Initialize()
+	if err != nil {
+		logrus.Fatalf("failed to start gRPC: %v", err)
+	}
 
-	rest.Initialize()
+	rest.Initialize(grpcConn)
 }
 
 func setEnv() {
