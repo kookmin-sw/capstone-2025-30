@@ -14,7 +14,7 @@ const CheckOrderNumberPage = () => {
 
   return (
     <>
-      <Header centerIcon="✅" />
+      <Header centerIcon="✅" cartIcon={null} />
 
       <div style={{ ...CheckOrderNumberStyles.container }}>
         {/* 숫자 키패드가 잘 나오는지 모바일 환경에서 확인 필요 */}

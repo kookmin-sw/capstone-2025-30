@@ -45,7 +45,7 @@ const Header = ({ centerIcon, cartIcon, goTo = null }) => {
 
       {centerIcon && <div style={styles.centerIcon}>{centerIcon}</div>}
 
-      {cartIcon && (
+      {cartIcon !== null && (
         <button
           style={styles.button}
           onClick={() => navigate("/shopping-cart")}
