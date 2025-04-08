@@ -1,5 +1,5 @@
 import React from "react";
-import CustomStyles from "../styles/CustomStyles";
+import CustomStyles from "@/styles/CustomStyles";
 
 const ButtonSize = ({ size, icon, text, isSelected, onClick }) => {
   const styles = {

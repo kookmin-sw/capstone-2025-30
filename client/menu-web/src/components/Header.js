@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ReactComponent as IconBack } from "@/assets/icons/back.svg";
 import { ReactComponent as IconCart } from "@/assets/icons/cart.svg";
 
-const Header = ({ centerIcon, goTo = null }) => {
+const Header = ({ centerIcon, cartIcon, goTo = null }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
@@ -43,18 +43,16 @@ const Header = ({ centerIcon, goTo = null }) => {
         <IconBack />
       </button>
 
-      {centerIcon ? (
-        <>
-          <div style={styles.centerIcon}>{centerIcon}</div>
+      {centerIcon && <div style={styles.centerIcon}>{centerIcon}</div>}
 
-          <button
-            style={styles.button}
-            onClick={() => navigate("/shopping-cart")}
-          >
-            <IconCart />
-          </button>
-        </>
-      ) : null}
+      {cartIcon && (
+        <button
+          style={styles.button}
+          onClick={() => navigate("/shopping-cart")}
+        >
+          <IconCart />
+        </button>
+      )}
     </div>
   );
 };

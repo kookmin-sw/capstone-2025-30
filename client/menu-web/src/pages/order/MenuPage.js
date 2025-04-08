@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import MenuStyles from "@/pages/MenuStyles";
+import MenuStyles from "@/pages/order/MenuStyles";
 
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";

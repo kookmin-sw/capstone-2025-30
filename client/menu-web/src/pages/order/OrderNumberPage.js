@@ -5,7 +5,7 @@ import Header from "@/components/Header";
 const OrderNumberPage = () => {
   return (
     <>
-      <Header centerIcon={null} goTo="/" />
+      <Header centerIcon={null} cartIcon={null} goTo="/" />
 
       <div
         style={{
