@@ -16,9 +16,9 @@ const ButtonSize = ({ size, icon, text, isSelected, onClick }) => {
       border: "none",
     },
     textSelect: {
-      ...CustomStyles.fontCaption,
-      fontWeight: 700,
-      marginTop: 6,
+      ...CustomStyles.fontHead16,
+      marginTop: 4,
+      color: isSelected ? CustomStyles.primaryWhite : CustomStyles.pointGray,
     },
     textSize: {
       ...CustomStyles.fontSub16,
@@ -26,7 +26,8 @@ const ButtonSize = ({ size, icon, text, isSelected, onClick }) => {
       position: "absolute",
       left: "50%",
       transform: "translateX(-50%)",
-      marginBottom: 10,
+      marginBottom: 16,
+      color: CustomStyles.pointGray,
     },
   };
 
@@ -41,25 +42,9 @@ const ButtonSize = ({ size, icon, text, isSelected, onClick }) => {
         color: isSelected ? CustomStyles.pointBlue : CustomStyles.pointGray,
       }}
     >
-      <div
-        style={{
-          ...styles.textSize,
-          color: CustomStyles.pointGray,
-        }}
-      >
-        {size}
-      </div>
+      <div style={{ ...styles.textSize }}>{size}</div>
       {icon}
-      <div
-        style={{
-          ...styles.textSelect,
-          color: isSelected
-            ? CustomStyles.primaryWhite
-            : CustomStyles.pointGray,
-        }}
-      >
-        {text}
-      </div>
+      <div style={{ ...styles.textSelect }}>{text}</div>
     </button>
   );
 };

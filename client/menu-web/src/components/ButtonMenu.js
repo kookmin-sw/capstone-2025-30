@@ -55,6 +55,7 @@ const ButtonMenu = ({ menu, isNull = false }) => {
       justifyContent: "center",
       alignItems: "center",
     },
+    textMenu: { ...CustomStyles.fontSub16 },
   };
 
   return (
@@ -87,8 +88,8 @@ const ButtonMenu = ({ menu, isNull = false }) => {
             : CustomStyles.primaryBlack,
         }}
       >
-        <div>{menu.text}</div>
-        <div>{menu.price}원</div>
+        <div style={{ ...styles.textMenu, fontWeight: 700 }}>{menu.text}</div>
+        <div style={{ ...styles.textMenu }}>{menu.price}원</div>
       </div>
     </button>
   );

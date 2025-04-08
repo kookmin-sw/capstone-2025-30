@@ -41,8 +41,7 @@ const CommonButton = ({ label, Icon, onPress, style }) => {
       <Icon />
       <div
         style={{
-          ...CustomStyles.fontCaption,
-          fontWeight: 700,
+          ...CustomStyles.fontHead16,
           marginTop: 6,
         }}
       >
