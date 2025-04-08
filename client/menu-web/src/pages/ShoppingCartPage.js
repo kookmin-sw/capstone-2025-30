@@ -151,10 +151,10 @@ const ShoppingCartPage = () => {
 
         <div style={{ ...ShoppingCartStyles.line, height: 5 }} />
 
-        {menu.map((menu, idx) => (
+        {menu.map((item, idx) => (
           <CartList
             key={idx}
-            menu={menu}
+            menu={item}
             isLast={idx === menu.length - 1}
             onIncrease={() => handleIncrease(idx)}
             onDecrease={() => handleDecrease(idx)}

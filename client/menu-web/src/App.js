@@ -6,6 +6,7 @@ import CategoryPage from "@/pages/CategoryPage";
 import MenuPage from "@/pages/MenuPage";
 import DetailedMenuPage from "@/pages/DetailedMenuPage";
 import ShoppingCartPage from "@/pages/ShoppingCartPage";
+import OrderNumberPage from "@/pages/OrderNumberPage";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           element={<DetailedMenuPage />}
         />
         <Route path="/shopping-cart" element={<ShoppingCartPage />} />
-        ShoppingCartPage
+        <Route path="/order-number" element={<OrderNumberPage />} />
       </Routes>
     </BrowserRouter>
   );
