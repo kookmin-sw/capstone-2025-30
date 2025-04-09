@@ -41,13 +41,13 @@ name_url_dict = {
 }
 
 
-DATA_PATH = "angles"
+DATA_PATH = "angles_after_pad"
 data_list = []
 gesture = {}
 label_index = 0
 
 for action in name_url_dict.keys():
-    file_path = os.path.join(DATA_PATH, f"seq_{action}.npy")
+    file_path = os.path.join(DATA_PATH, f"{action}.npy")
     if not os.path.exists(file_path):
         print(f"⚠️ 데이터 누락: {action} - {file_path} 없음")
         continue
@@ -100,7 +100,7 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('90hands_angles.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('90_pad_hands_angles.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
@@ -127,13 +127,13 @@ plt.grid(True)
 plt.show()
 
 
-model.save('90hands_angles.h5')
-print("✅ 모델 저장 완료: 90hands_angles.h5")
+model.save('90_pad_hands_angles.h5')
+print("✅ 모델 저장 완료: 90_pad_hands_angles.h5")
 
 
-with open('gesture_dict.json', 'w', encoding='utf-8') as f:
+with open('pad_gesture_dict.json', 'w', encoding='utf-8') as f:
     json.dump(gesture, f, ensure_ascii=False, indent=2)
-print("✅ 제스처 라벨 딕셔너리 저장 완료: gesture_dict.json")
+print("✅ 제스처 라벨 딕셔너리 저장 완료: pad_gesture_dict.json")
 
 
 """
