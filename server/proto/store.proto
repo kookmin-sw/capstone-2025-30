@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "error.proto";
+
+message Store{
+  string id = 1;
+  string name = 2;
+  string location = 3;
+  string store_code = 4;
+}
+
+message StoreIdRequest{
+  string id = 1;
+}
+
+message StoreCodeRequest{
+  string store_code = 1;
+}
+
+message CreateStoreRequest{
+  string name = 1;
+  string location = 2;
+}
+
+message UpdateStoreRequest{
+  string id = 1;
+  string name = 2;
+  string location = 3;
+}
+
+message DeleteStoreRequest{
+  string id = 1;
+}
+
+message StoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  Store store = 3;
+}
