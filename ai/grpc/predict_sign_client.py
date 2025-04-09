@@ -65,4 +65,5 @@ request = predict_sign_pb2.SequenceInput(
 
 
 response = stub.Predict(request)
+# [예측 결과] Client: client_01, 단어: 커피
 print(f"[예측 결과] Client: {response.client_id}, 단어: {response.predicted_word}")

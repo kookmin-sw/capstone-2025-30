@@ -7,8 +7,8 @@ import tensorflow as tf
 import predict_sign_pb2
 import predict_sign_pb2_grpc
 
-model = tf.keras.models.load_model('../90_pad_hands_angles.h5')
-with open('../pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+model = tf.keras.models.load_model('90_pad_hands_angles.h5')
+with open('pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
