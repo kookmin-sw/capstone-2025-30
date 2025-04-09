@@ -28,7 +28,8 @@ gast==0.6.0
 google-auth==2.38.0
 google-auth-oauthlib==1.2.1
 google-pasta==0.2.0
-grpcio==1.71.0
+grpcio==1.51.1  
+grpcio-tools==1.51.1
 gspread==6.2.0
 h11==0.14.0
 h5py==3.13.0
@@ -58,7 +59,7 @@ MarkupSafe==3.0.2
 marshmallow==3.26.1
 matplotlib==3.10.1
 mdurl==0.1.2
-mediapipe==0.10.21
+mediapipe==0.10.18
 ml_dtypes==0.5.1
 multidict==6.2.0
 mypy-extensions==1.0.0
@@ -74,7 +75,7 @@ packaging==24.2
 pandas==2.2.3
 pillow==11.1.0
 propcache==0.3.1
-protobuf==4.25.6
+protobuf==4.25.3
 pyasn1==0.6.1
 pyasn1_modules==0.4.2
 pycparser==2.22
