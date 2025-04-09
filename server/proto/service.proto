@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "google/protobuf/empty.proto";
+import "test.proto";
+import "store.proto";
+
+
+service APIService {
+  // test api
+  rpc AddTestStruct(AddTestStructRequest) returns (AddTestStructResponse);
+
+  // store api
+  rpc CreateStore(CreateStoreRequest) returns (StoreResponse);
+  rpc GetStoreById(StoreIdRequest) returns (StoreResponse);
+  rpc GetStoreByCode(StoreCodeRequest) returns (StoreResponse);
+  rpc UpdateStore(UpdateStoreRequest) returns (StoreResponse);
+  rpc DeleteStore(DeleteStoreRequest) returns (google.protobuf.Empty);
+  rpc GetStoreList(google.protobuf.Empty) returns (stream Store);
+}

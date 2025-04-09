@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+enum EError {
+  EE_UNSPECIFIED = 0;
+
+  EE_API_FAILED = 10000;
+}
