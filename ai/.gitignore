@@ -6,3 +6,7 @@ hands_dataset
 hands_dataset/
 .env
 *.json
+keypoints
+keypoints/
+angles
+angles/
