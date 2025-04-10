@@ -6,9 +6,10 @@ enum EError {
   EE_UNSPECIFIED = 0;
 
   EE_API_FAILED = 10000;
+  EE_API_AUTH_FAILED = 10001;
 
   // store
 
   // inquiry
-  EE_INQUIRY_STREAM_FAILED = 20000;
+  EE_INQUIRY_STREAM_FAILED = 30000;
 }
