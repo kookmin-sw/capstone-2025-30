@@ -1,18 +1,20 @@
 package grpcHandler
 
 import (
+	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 	"net"
 	"os"
 	pb "server/gen"
+	"time"
 )
-
-var ()
 
 type Server struct {
 	pb.UnimplementedAPIServiceServer
+	AiClient pb.SignAIClient
 }
 
 func Initialize() error {
@@ -25,10 +27,29 @@ func Initialize() error {
 		logrus.Errorln("failed to listen: %v", err)
 	}
 
-	// 인증 인터셉터 : 현재 생략
+	aiHost := os.Getenv("AI_GRPC_HOST")
+	if aiHost == "" {
+		logrus.Errorln("AI_GRPC_HOST is not set")
+		return fmt.Errorf("AI_GRPC_HOST is not set")
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	conn, err := grpc.DialContext(ctx, aiHost, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		logrus.Fatal("failed to connect to AI gRPC server: %v", err)
+	}
+	aiClient := pb.NewSignAIClient(conn)
+
+	// 인증 인터셉터
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(KeyAuthInterceptor),
 	)
+
+	pb.RegisterAPIServiceServer(s, &Server{
+		AiClient: aiClient,
+	})
 
 	pb.RegisterAPIServiceServer(s, &Server{})
 	logrus.Println("server listening at %v", lis.Addr())
