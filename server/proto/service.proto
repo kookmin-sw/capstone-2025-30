@@ -5,7 +5,7 @@ option go_package = "capstone-2025-30/proto";
 import "google/protobuf/empty.proto";
 import "test.proto";
 import "store.proto";
-
+import "inquiry.proto";
 
 service APIService {
   // test api
@@ -18,4 +18,7 @@ service APIService {
   rpc UpdateStore(UpdateStoreRequest) returns (StoreResponse);
   rpc DeleteStore(DeleteStoreRequest) returns (google.protobuf.Empty);
   rpc GetStoreList(google.protobuf.Empty) returns (stream Store);
+
+  // inquiry api
+  rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
 }
