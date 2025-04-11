@@ -19,6 +19,12 @@ const CustomStyles = {
     fontFamily: "Pretendard",
     fontWeight: 700,
   },
+  fontHead16: {
+    fontSize: 16,
+    lineHeight: "24px",
+    fontFamily: "Pretendard",
+    fontWeight: 700,
+  },
   fontSub16: {
     fontSize: 16,
     lineHeight: "24px",

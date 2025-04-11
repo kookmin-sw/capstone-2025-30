@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
-import CategoryStyles from "@/pages/CategoryStyles";
+import CategoryStyles from "@/pages/order/CategoryStyles";
 
 import Header from "@/components/Header";
 

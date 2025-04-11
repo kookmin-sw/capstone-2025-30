@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 
-import DetailedMenuStyles from "@/pages/DetailedMenuStyles";
+import DetailedMenuStyles from "@/pages/order/DetailedMenuStyles";
 
 import Header from "@/components/Header";
 import coffeeImage from "@/assets/images/image-coffee.png";

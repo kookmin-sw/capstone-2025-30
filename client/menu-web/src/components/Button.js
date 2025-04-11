@@ -1,5 +1,5 @@
 import React from "react";
-import CustomStyles from "../styles/CustomStyles";
+import CustomStyles from "@/styles/CustomStyles";
 
 const Button = ({ icon, text, onClick }) => {
   const styles = {

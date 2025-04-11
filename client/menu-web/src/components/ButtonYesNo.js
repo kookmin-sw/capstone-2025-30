@@ -1,5 +1,8 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import CustomStyles from "@/styles/CustomStyles";
+
 import { ReactComponent as IconYes } from "@/assets/icons/yes.svg";
 import { ReactComponent as IconNo } from "@/assets/icons/no.svg";
 
@@ -38,8 +41,7 @@ const CommonButton = ({ label, Icon, onPress, style }) => {
       <Icon />
       <div
         style={{
-          ...CustomStyles.fontCaption,
-          fontWeight: 700,
+          ...CustomStyles.fontHead16,
           marginTop: 6,
         }}
       >
@@ -50,9 +52,16 @@ const CommonButton = ({ label, Icon, onPress, style }) => {
 };
 
 const ButtonYesNo = ({ pressNo }) => {
+  const navigate = useNavigate();
+
   return (
     <div style={{ display: "flex" }}>
-      <CommonButton label="예" Icon={IconYes} style={{ marginRight: 12 }} />
+      <CommonButton
+        label="예"
+        Icon={IconYes}
+        style={{ marginRight: 12 }}
+        onPress={() => navigate("/order-number")}
+      />
       <CommonButton
         label="아니오"
         Icon={IconNo}

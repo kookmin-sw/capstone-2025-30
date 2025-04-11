@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import CustomStyles from "@/styles/CustomStyles";
-import ShoppingCartStyles from "@/pages/ShoppingCartStyles";
+import ShoppingCartStyles from "@/pages/order/ShoppingCartStyles";
 
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
@@ -14,7 +14,7 @@ import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
 import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
 import BottomSheet from "@/components/BottomSheet";
-import ButtonYesNo from "../components/ButtonYesNo";
+import ButtonYesNo from "@/components/ButtonYesNo";
 
 const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
   return (
@@ -141,7 +141,7 @@ const ShoppingCartPage = () => {
 
   return (
     <div>
-      <Header centerIcon={null} />
+      <Header centerIcon={null} cartIcon={null} />
 
       <div style={{ ...ShoppingCartStyles.container }}>
         <div style={{ ...ShoppingCartStyles.textTotalMoney }}>
@@ -151,10 +151,10 @@ const ShoppingCartPage = () => {
 
         <div style={{ ...ShoppingCartStyles.line, height: 5 }} />
 
-        {menu.map((menu, idx) => (
+        {menu.map((item, idx) => (
           <CartList
             key={idx}
-            menu={menu}
+            menu={item}
             isLast={idx === menu.length - 1}
             onIncrease={() => handleIncrease(idx)}
             onDecrease={() => handleDecrease(idx)}
