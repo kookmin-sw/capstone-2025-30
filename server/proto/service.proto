@@ -6,6 +6,7 @@ import "google/protobuf/empty.proto";
 import "test.proto";
 import "store.proto";
 import "inquiry.proto";
+import "menu.proto";
 
 service APIService {
   // test api
@@ -20,4 +21,10 @@ service APIService {
 
   // inquiry api
   rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
+
+  // menu api
+  rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
+  rpc GetCategoryList(GetCategoryListRequest) returns (GetCategoryListResponse);
+  rpc GetMenuList(GetMenuListRequest) returns (GetMenuListResponse);
+  rpc GetMenuDetail(GetMenuDetailRequest) returns (GetMenuDetailResponse);
 }

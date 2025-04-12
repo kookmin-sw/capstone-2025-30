@@ -27,6 +27,10 @@ const (
 	APIService_UpdateStore_FullMethodName     = "/APIService/UpdateStore"
 	APIService_DeleteStore_FullMethodName     = "/APIService/DeleteStore"
 	APIService_StreamInquiries_FullMethodName = "/APIService/StreamInquiries"
+	APIService_CreateMenu_FullMethodName      = "/APIService/CreateMenu"
+	APIService_GetCategoryList_FullMethodName = "/APIService/GetCategoryList"
+	APIService_GetMenuList_FullMethodName     = "/APIService/GetMenuList"
+	APIService_GetMenuDetail_FullMethodName   = "/APIService/GetMenuDetail"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -43,6 +47,11 @@ type APIServiceClient interface {
 	DeleteStore(ctx context.Context, in *DeleteStoreRequest, opts ...grpc.CallOption) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error)
+	// menu api
+	CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error)
+	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListResponse, error)
+	GetMenuList(ctx context.Context, in *GetMenuListRequest, opts ...grpc.CallOption) (*GetMenuListResponse, error)
+	GetMenuDetail(ctx context.Context, in *GetMenuDetailRequest, opts ...grpc.CallOption) (*GetMenuDetailResponse, error)
 }
 
 type aPIServiceClient struct {
@@ -126,18 +135,45 @@ func (c *aPIServiceClient) StreamInquiries(ctx context.Context, opts ...grpc.Cal
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesClient = grpc.ClientStreamingClient[InquiryRequest, InquiryResponse]
 
-func (c *aPIServiceClient) StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error) {
+func (c *aPIServiceClient) CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &APIService_ServiceDesc.Streams[1], APIService_StreamInquiries_FullMethodName, cOpts...)
+	out := new(CreateMenuResponse)
+	err := c.cc.Invoke(ctx, APIService_CreateMenu_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[InquiryRequest, InquiryResponse]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type APIService_StreamInquiriesClient = grpc.ClientStreamingClient[InquiryRequest, InquiryResponse]
+func (c *aPIServiceClient) GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCategoryListResponse)
+	err := c.cc.Invoke(ctx, APIService_GetCategoryList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIServiceClient) GetMenuList(ctx context.Context, in *GetMenuListRequest, opts ...grpc.CallOption) (*GetMenuListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMenuListResponse)
+	err := c.cc.Invoke(ctx, APIService_GetMenuList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIServiceClient) GetMenuDetail(ctx context.Context, in *GetMenuDetailRequest, opts ...grpc.CallOption) (*GetMenuDetailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMenuDetailResponse)
+	err := c.cc.Invoke(ctx, APIService_GetMenuDetail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 // APIServiceServer is the server API for APIService service.
 // All implementations must embed UnimplementedAPIServiceServer
@@ -153,6 +189,11 @@ type APIServiceServer interface {
 	DeleteStore(context.Context, *DeleteStoreRequest) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error
+	// menu api
+	CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error)
+	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListResponse, error)
+	GetMenuList(context.Context, *GetMenuListRequest) (*GetMenuListResponse, error)
+	GetMenuDetail(context.Context, *GetMenuDetailRequest) (*GetMenuDetailResponse, error)
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -184,8 +225,17 @@ func (UnimplementedAPIServiceServer) DeleteStore(context.Context, *DeleteStoreRe
 func (UnimplementedAPIServiceServer) StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamInquiries not implemented")
 }
-func (UnimplementedAPIServiceServer) StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error {
-	return status.Errorf(codes.Unimplemented, "method StreamInquiries not implemented")
+func (UnimplementedAPIServiceServer) CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMenu not implemented")
+}
+func (UnimplementedAPIServiceServer) GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCategoryList not implemented")
+}
+func (UnimplementedAPIServiceServer) GetMenuList(context.Context, *GetMenuListRequest) (*GetMenuListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenuList not implemented")
+}
+func (UnimplementedAPIServiceServer) GetMenuDetail(context.Context, *GetMenuDetailRequest) (*GetMenuDetailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMenuDetail not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
 func (UnimplementedAPIServiceServer) testEmbeddedByValue()                    {}
@@ -323,12 +373,77 @@ func _APIService_StreamInquiries_Handler(srv interface{}, stream grpc.ServerStre
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesServer = grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]
 
-func _APIService_StreamInquiries_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(APIServiceServer).StreamInquiries(&grpc.GenericServerStream[InquiryRequest, InquiryResponse]{ServerStream: stream})
+func _APIService_CreateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMenuRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).CreateMenu(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_CreateMenu_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).CreateMenu(ctx, req.(*CreateMenuRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type APIService_StreamInquiriesServer = grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]
+func _APIService_GetCategoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCategoryListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetCategoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetCategoryList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetCategoryList(ctx, req.(*GetCategoryListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _APIService_GetMenuList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMenuListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetMenuList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetMenuList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetMenuList(ctx, req.(*GetMenuListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _APIService_GetMenuDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMenuDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetMenuDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetMenuDetail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetMenuDetail(ctx, req.(*GetMenuDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 // APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
 // It's only intended for direct use with grpc.RegisterService,
@@ -361,13 +476,24 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "DeleteStore",
 			Handler:    _APIService_DeleteStore_Handler,
 		},
+		{
+			MethodName: "CreateMenu",
+			Handler:    _APIService_CreateMenu_Handler,
+		},
+		{
+			MethodName: "GetCategoryList",
+			Handler:    _APIService_GetCategoryList_Handler,
+		},
+		{
+			MethodName: "GetMenuList",
+			Handler:    _APIService_GetMenuList_Handler,
+		},
+		{
+			MethodName: "GetMenuDetail",
+			Handler:    _APIService_GetMenuDetail_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "StreamInquiries",
-			Handler:       _APIService_StreamInquiries_Handler,
-			ClientStreams: true,
-		},
 		{
 			StreamName:    "StreamInquiries",
 			Handler:       _APIService_StreamInquiries_Handler,

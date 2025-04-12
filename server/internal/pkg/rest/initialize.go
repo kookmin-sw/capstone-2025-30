@@ -46,6 +46,12 @@ func Initialize() {
 	r.PUT("/rest/store/:store_code", restHandler.UpdateStore)
 	r.DELETE("/rest/store/:store_code", restHandler.DeleteStore)
 
+	// menu api
+	r.POST("/rest/menu/:store_code", restHandler.CreateMenu)
+	r.GET("/rest/menu/:store_code/category", restHandler.GetCategoryList)
+	r.GET("/rest/menu/:store_code/menuList", restHandler.GetMenuList)
+	r.GET("/rest/menu/:store_code/menuDetail", restHandler.GetMenuDetail)
+
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
 	logrus.Infof("Rest API server is running on port %s", port)
