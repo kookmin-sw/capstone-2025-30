@@ -5,9 +5,11 @@ import "go.mongodb.org/mongo-driver/mongo"
 var (
 	UserColl  = &mongo.Collection{}
 	StoreColl = &mongo.Collection{}
+	MenuColl  = &mongo.Collection{}
 )
 
 func defineCollections() {
 	UserColl = Client.Database(name).Collection("user")
 	StoreColl = Client.Database(name).Collection("store")
+	MenuColl = Client.Database(name).Collection("store_menu")
 }
