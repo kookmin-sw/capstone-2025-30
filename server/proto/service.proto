@@ -12,10 +12,9 @@ service APIService {
   rpc AddTestStruct(AddTestStructRequest) returns (AddTestStructResponse);
 
   // store api
-  rpc CreateStore(CreateStoreRequest) returns (StoreResponse);
-  rpc GetStoreById(StoreIdRequest) returns (StoreResponse);
-  rpc GetStoreByCode(StoreCodeRequest) returns (StoreResponse);
-  rpc UpdateStore(UpdateStoreRequest) returns (StoreResponse);
-  rpc DeleteStore(DeleteStoreRequest) returns (google.protobuf.Empty);
-  rpc GetStoreList(google.protobuf.Empty) returns (stream Store);
+  rpc CreateStore(CreateStoreRequest) returns (CreateStoreResponse);
+  rpc GetStoreList(google.protobuf.Empty) returns (GetStoreListResponse);
+  rpc GetStore(GetStoreRequest) returns (GetStoreResponse);
+  rpc UpdateStore(UpdateStoreRequest) returns (UpdateStoreResponse);
+  rpc DeleteStore(DeleteStoreRequest) returns (DeleteStoreResponse);
 }
