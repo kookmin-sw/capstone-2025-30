@@ -20,12 +20,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	APIService_AddTestStruct_FullMethodName = "/APIService/AddTestStruct"
-	APIService_CreateStore_FullMethodName   = "/APIService/CreateStore"
-	APIService_GetStoreList_FullMethodName  = "/APIService/GetStoreList"
-	APIService_GetStore_FullMethodName      = "/APIService/GetStore"
-	APIService_UpdateStore_FullMethodName   = "/APIService/UpdateStore"
-	APIService_DeleteStore_FullMethodName   = "/APIService/DeleteStore"
+	APIService_AddTestStruct_FullMethodName   = "/APIService/AddTestStruct"
+	APIService_CreateStore_FullMethodName     = "/APIService/CreateStore"
+	APIService_GetStoreList_FullMethodName    = "/APIService/GetStoreList"
+	APIService_GetStore_FullMethodName        = "/APIService/GetStore"
+	APIService_UpdateStore_FullMethodName     = "/APIService/UpdateStore"
+	APIService_DeleteStore_FullMethodName     = "/APIService/DeleteStore"
+	APIService_StreamInquiries_FullMethodName = "/APIService/StreamInquiries"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -40,6 +41,8 @@ type APIServiceClient interface {
 	GetStore(ctx context.Context, in *GetStoreRequest, opts ...grpc.CallOption) (*GetStoreResponse, error)
 	UpdateStore(ctx context.Context, in *UpdateStoreRequest, opts ...grpc.CallOption) (*UpdateStoreResponse, error)
 	DeleteStore(ctx context.Context, in *DeleteStoreRequest, opts ...grpc.CallOption) (*DeleteStoreResponse, error)
+	// inquiry api
+	StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error)
 }
 
 type aPIServiceClient struct {
@@ -110,6 +113,19 @@ func (c *aPIServiceClient) DeleteStore(ctx context.Context, in *DeleteStoreReque
 	return out, nil
 }
 
+func (c *aPIServiceClient) StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	stream, err := c.cc.NewStream(ctx, &APIService_ServiceDesc.Streams[0], APIService_StreamInquiries_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[InquiryRequest, InquiryResponse]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type APIService_StreamInquiriesClient = grpc.ClientStreamingClient[InquiryRequest, InquiryResponse]
+
 // APIServiceServer is the server API for APIService service.
 // All implementations must embed UnimplementedAPIServiceServer
 // for forward compatibility.
@@ -122,6 +138,8 @@ type APIServiceServer interface {
 	GetStore(context.Context, *GetStoreRequest) (*GetStoreResponse, error)
 	UpdateStore(context.Context, *UpdateStoreRequest) (*UpdateStoreResponse, error)
 	DeleteStore(context.Context, *DeleteStoreRequest) (*DeleteStoreResponse, error)
+	// inquiry api
+	StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -149,6 +167,9 @@ func (UnimplementedAPIServiceServer) UpdateStore(context.Context, *UpdateStoreRe
 }
 func (UnimplementedAPIServiceServer) DeleteStore(context.Context, *DeleteStoreRequest) (*DeleteStoreResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteStore not implemented")
+}
+func (UnimplementedAPIServiceServer) StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method StreamInquiries not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
 func (UnimplementedAPIServiceServer) testEmbeddedByValue()                    {}
@@ -279,6 +300,13 @@ func _APIService_DeleteStore_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _APIService_StreamInquiries_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(APIServiceServer).StreamInquiries(&grpc.GenericServerStream[InquiryRequest, InquiryResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type APIService_StreamInquiriesServer = grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]
+
 // APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -311,6 +339,12 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _APIService_DeleteStore_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "StreamInquiries",
+			Handler:       _APIService_StreamInquiries_Handler,
+			ClientStreams: true,
+		},
+	},
 	Metadata: "service.proto",
 }

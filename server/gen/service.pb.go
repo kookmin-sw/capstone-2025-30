@@ -26,7 +26,7 @@ var File_service_proto protoreflect.FileDescriptor
 const file_service_proto_rawDesc = "" +
 	"\n" +
 	"\rservice.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\n" +
-	"test.proto\x1a\vstore.proto2\xea\x02\n" +
+	"test.proto\x1a\vstore.proto\x1a\rinquiry.proto2\xa2\x03\n" +
 	"\n" +
 	"APIService\x12>\n" +
 	"\rAddTestStruct\x12\x15.AddTestStructRequest\x1a\x16.AddTestStructResponse\x128\n" +
@@ -34,7 +34,8 @@ const file_service_proto_rawDesc = "" +
 	"\fGetStoreList\x12\x16.google.protobuf.Empty\x1a\x15.GetStoreListResponse\x12/\n" +
 	"\bGetStore\x12\x10.GetStoreRequest\x1a\x11.GetStoreResponse\x128\n" +
 	"\vUpdateStore\x12\x13.UpdateStoreRequest\x1a\x14.UpdateStoreResponse\x128\n" +
-	"\vDeleteStore\x12\x13.DeleteStoreRequest\x1a\x14.DeleteStoreResponseB\x18Z\x16capstone-2025-30/protob\x06proto3"
+	"\vDeleteStore\x12\x13.DeleteStoreRequest\x1a\x14.DeleteStoreResponse\x126\n" +
+	"\x0fStreamInquiries\x12\x0f.InquiryRequest\x1a\x10.InquiryResponse(\x01B\x18Z\x16capstone-2025-30/protob\x06proto3"
 
 var file_service_proto_goTypes = []any{
 	(*AddTestStructRequest)(nil),  // 0: AddTestStructRequest
@@ -43,12 +44,14 @@ var file_service_proto_goTypes = []any{
 	(*GetStoreRequest)(nil),       // 3: GetStoreRequest
 	(*UpdateStoreRequest)(nil),    // 4: UpdateStoreRequest
 	(*DeleteStoreRequest)(nil),    // 5: DeleteStoreRequest
-	(*AddTestStructResponse)(nil), // 6: AddTestStructResponse
-	(*CreateStoreResponse)(nil),   // 7: CreateStoreResponse
-	(*GetStoreListResponse)(nil),  // 8: GetStoreListResponse
-	(*GetStoreResponse)(nil),      // 9: GetStoreResponse
-	(*UpdateStoreResponse)(nil),   // 10: UpdateStoreResponse
-	(*DeleteStoreResponse)(nil),   // 11: DeleteStoreResponse
+	(*InquiryRequest)(nil),        // 6: InquiryRequest
+	(*AddTestStructResponse)(nil), // 7: AddTestStructResponse
+	(*CreateStoreResponse)(nil),   // 8: CreateStoreResponse
+	(*GetStoreListResponse)(nil),  // 9: GetStoreListResponse
+	(*GetStoreResponse)(nil),      // 10: GetStoreResponse
+	(*UpdateStoreResponse)(nil),   // 11: UpdateStoreResponse
+	(*DeleteStoreResponse)(nil),   // 12: DeleteStoreResponse
+	(*InquiryResponse)(nil),       // 13: InquiryResponse
 }
 var file_service_proto_depIdxs = []int32{
 	0,  // 0: APIService.AddTestStruct:input_type -> AddTestStructRequest
@@ -57,14 +60,16 @@ var file_service_proto_depIdxs = []int32{
 	3,  // 3: APIService.GetStore:input_type -> GetStoreRequest
 	4,  // 4: APIService.UpdateStore:input_type -> UpdateStoreRequest
 	5,  // 5: APIService.DeleteStore:input_type -> DeleteStoreRequest
-	6,  // 6: APIService.AddTestStruct:output_type -> AddTestStructResponse
-	7,  // 7: APIService.CreateStore:output_type -> CreateStoreResponse
-	8,  // 8: APIService.GetStoreList:output_type -> GetStoreListResponse
-	9,  // 9: APIService.GetStore:output_type -> GetStoreResponse
-	10, // 10: APIService.UpdateStore:output_type -> UpdateStoreResponse
-	11, // 11: APIService.DeleteStore:output_type -> DeleteStoreResponse
-	6,  // [6:12] is the sub-list for method output_type
-	0,  // [0:6] is the sub-list for method input_type
+	6,  // 6: APIService.StreamInquiries:input_type -> InquiryRequest
+	7,  // 7: APIService.AddTestStruct:output_type -> AddTestStructResponse
+	8,  // 8: APIService.CreateStore:output_type -> CreateStoreResponse
+	9,  // 9: APIService.GetStoreList:output_type -> GetStoreListResponse
+	10, // 10: APIService.GetStore:output_type -> GetStoreResponse
+	11, // 11: APIService.UpdateStore:output_type -> UpdateStoreResponse
+	12, // 12: APIService.DeleteStore:output_type -> DeleteStoreResponse
+	13, // 13: APIService.StreamInquiries:output_type -> InquiryResponse
+	7,  // [7:14] is the sub-list for method output_type
+	0,  // [0:7] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -77,6 +82,7 @@ func file_service_proto_init() {
 	}
 	file_test_proto_init()
 	file_store_proto_init()
+	file_inquiry_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

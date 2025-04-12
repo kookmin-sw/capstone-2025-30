@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "error.proto";
+
+message InquiryRequest{
+  string store_code = 1; // 가게 code
+  string frame_data = 2; // 영상 한 프레임 좌표 데이터
+  string inquiry_type = 3; // 문의 종류(주문 문의사항 / 일반 문의사항)
+}
+
+
+message InquiryResponse{
+  int32 total_received = 1; // 총 수신된 request 수
+  string translated_korean = 2; // 번역된 한국어
+  bool success = 3; // 성공 여부
+  optional EError error = 4; // 에러 코드
+}
