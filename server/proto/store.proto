@@ -4,20 +4,12 @@ option go_package = "capstone-2025-30/proto";
 
 import "error.proto";
 
-message Store{
-  string id = 1;
+message ViewStore{
+  string store_code = 1;
   string name = 2;
   string location = 3;
-  string store_code = 4;
 }
 
-message StoreIdRequest{
-  string id = 1;
-}
-
-message StoreCodeRequest{
-  string store_code = 1;
-}
 
 message CreateStoreRequest{
   string name = 1;
@@ -25,17 +17,43 @@ message CreateStoreRequest{
 }
 
 message UpdateStoreRequest{
-  string id = 1;
+  string store_code = 1;
   string name = 2;
   string location = 3;
 }
-
-message DeleteStoreRequest{
-  string id = 1;
+message GetStoreRequest{
+  string store_code = 1;
 }
 
-message StoreResponse{
+message DeleteStoreRequest{
+  string store_code = 1;
+}
+
+message CreateStoreResponse{
   bool success = 1;
   optional EError error = 2;
-  Store store = 3;
+  ViewStore store = 3;
+}
+
+message GetStoreListResponse{
+  bool success = 1;
+  optional EError error = 2;
+  repeated ViewStore stores = 3;
+}
+
+message GetStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewStore store = 3;
+}
+
+message UpdateStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewStore store = 3;
+}
+
+message DeleteStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
 }
