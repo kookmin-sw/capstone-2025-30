@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
-import HomeStyles from "@/pages/HomeStyles";
+import HomeStyles from "@/pages/order/HomeStyles";
 
 const OrderButton = ({ icon, text, to }) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -60,6 +60,7 @@ const HomePage = () => {
               확인하기
             </>
           }
+          to="/check-order-number"
         />
       </div>
     </div>

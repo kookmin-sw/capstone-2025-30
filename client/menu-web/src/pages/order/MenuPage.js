@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import MenuStyles from "@/pages/MenuStyles";
+import MenuStyles from "@/pages/order/MenuStyles";
 
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
@@ -21,8 +21,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="☕️" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>
@@ -32,8 +32,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="🌿" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>
@@ -43,8 +43,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="🧋" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>
@@ -54,8 +54,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="🍰" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>
@@ -65,8 +65,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="🥯" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>
@@ -76,8 +76,8 @@ const MenuPage = () => {
         <div>
           <Header centerIcon="🥗" />
           <div style={{ ...MenuStyles.container }}>
-            {menu.map((menu, idx) => (
-              <ButtonMenu key={idx} menu={menu} />
+            {menu.map((item, idx) => (
+              <ButtonMenu key={idx} menu={item} />
             ))}
           </div>
         </div>

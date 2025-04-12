@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+message SequenceInput {
+  repeated float values = 1;
+  string client_id = 2;
+}
+
+message PredictResult {
+  string client_id = 1;
+  string predicted_word = 2;
+  float confidence = 3;
+}
+
+service SignAI {
+  rpc Predict(SequenceInput) returns (PredictResult);
+}
