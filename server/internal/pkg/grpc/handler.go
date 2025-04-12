@@ -51,7 +51,6 @@ func Initialize() error {
 		AiClient: aiClient,
 	})
 
-	pb.RegisterAPIServiceServer(s, &Server{})
 	logrus.Println("server listening at %v", lis.Addr())
 
 	initializeFailed := make(chan bool)

@@ -9,6 +9,7 @@ import (
 	mauth "server/internal/pkg/database/mongodb/auth"
 	"server/internal/pkg/utils"
 	"sync"
+	"time"
 )
 
 func (s *Server) StreamInquiries(
@@ -29,46 +30,78 @@ func (s *Server) StreamInquiries(
 		}
 	}()
 
-	var sequence []float32
-	var totalReceived int32 = 0
-	var storeObjectID *string
-	var once sync.Once
+	var (
+		sequence       []float32
+		totalReceived  int32 = 0
+		storeObjectID  *string
+		once           sync.Once
+		timeoutSeconds = 10 * time.Second
+	)
+
+	recvChan := make(chan *pb.InquiryRequest)
+	errChan := make(chan error)
 
 	// 데이터 스트리밍으로 받아서 축적하기
-	for {
-		req, err := stream.Recv()
-		if err != nil {
-			if err.Error() == "EOF" {
-				break
-			}
-			logrus.Error("error receiving stream: ", err)
-			panic(pb.EError_EE_INQUIRY_STREAM_FAILED)
-		}
-
-		once.Do(func() {
-			storeObjectID, err = mauth.GetObjectIdInStore(req.StoreCode)
+	go func() {
+		for {
+			req, err := stream.Recv()
 			if err != nil {
-				logrus.Error("failed to get store object ID: ", err)
-				panic(pb.EError_EE_API_FAILED)
+				errChan <- err
+				return
 			}
-		})
-
-		logrus.Infof("StreamInquiries received: store_code=%s, type=%s, data=%s", req.StoreCode, req.InquiryType, req.FrameData)
-
-		var frame struct {
-			People struct {
-				PoseKeyPoints2D []float32 `json:"pose_keypoints_2d"`
-			} `json:"people"`
+			recvChan <- req
 		}
+	}()
 
-		if err := json.Unmarshal([]byte(req.FrameData), &frame); err != nil {
-			logrus.Warn("error unmarshalling frame data: ", err)
-			continue
+	timer := time.NewTimer(timeoutSeconds)
+
+loop:
+	for {
+		select {
+		case req := <-recvChan:
+			if !timer.Stop() {
+				<-timer.C
+			}
+			timer.Reset(timeoutSeconds)
+
+			once.Do(func() {
+				var err error
+				storeObjectID, err = mauth.GetObjectIdInStore(req.StoreCode)
+				if err != nil {
+					logrus.Error("failed to get store object ID: ", err)
+					panic(pb.EError_EE_API_FAILED)
+				}
+			})
+
+			logrus.Infof("StreamInquiries received: store_code=%s, type=%s, data=%s", req.StoreCode, req.InquiryType, req.FrameData)
+
+			var frame []float32
+
+			if err := json.Unmarshal([]byte(req.FrameData), &frame); err != nil {
+				logrus.Warn("error unmarshalling frame data: ", err)
+				continue
+			}
+
+			//test info
+			logrus.Infof("marshalled frame data: %v", frame)
+
+			sequence = append(sequence, frame...)
+			totalReceived++
+		case err := <-errChan:
+			if err.Error() == "EOF" {
+				logrus.Info("client finished sending stream(EOF)")
+			} else {
+				logrus.Error("error receiving stream: ", err)
+			}
+			break loop
+		case <-timer.C:
+			logrus.Info("no data received for %v seconds, timing out stream", timeoutSeconds)
+			break loop
 		}
-
-		sequence = append(sequence, frame.People.PoseKeyPoints2D...)
-		totalReceived++
 	}
+
+	// test info
+	logrus.Infof("total received: %d", totalReceived)
 
 	// 축적한 데이터 ai 로 전송
 	predictResp, err := s.AiClient.Predict(stream.Context(), &pb.SequenceInput{
