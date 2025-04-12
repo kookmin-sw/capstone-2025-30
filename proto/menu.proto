@@ -1,0 +1,78 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "error.proto";
+
+message Option {
+  string type = 1;
+  repeated string choices = 2;
+  repeated int32 option_price = 3; // optional
+}
+
+message ViewMenu {
+  string category = 1;
+  string name = 2;
+  int32 menu_price = 3;
+  string image = 4;
+}
+
+message ViewMenuDetail{
+  string category = 1;
+  string name = 2;
+  int32 menu_price = 3;
+  string image = 4;
+  repeated string sign_language_urls = 5;
+  repeated Option options = 6;
+}
+
+message CreateMenuRequest {
+  string store_code = 1;
+  string category = 2;
+  string name = 3;
+  int32 menu_price = 4;
+  repeated Option options = 5;
+  string description = 6;
+  string sign_language_description = 7;
+  repeated string sign_language_urls = 8;
+  string image = 9;
+}
+
+message GetCategoryListRequest{
+  string store_code = 1;
+}
+
+message GetMenuListRequest {
+  string store_code = 1;
+  string category = 2;
+}
+
+message GetMenuDetailRequest{
+  string store_code = 1;
+  string category = 2;
+  string name = 3;
+}
+
+message CreateMenuResponse {
+  bool success = 1;
+  optional EError error = 2;
+  ViewMenu menu = 3;
+}
+
+message GetCategoryListResponse{
+  bool success = 1;
+  optional EError error = 2;
+  repeated string categories = 3;
+}
+
+message GetMenuListResponse {
+  bool success = 1;
+  optional EError error = 2;
+  repeated ViewMenu menus = 3;
+}
+
+message GetMenuDetailResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewMenuDetail menu = 3;
+}

@@ -26,7 +26,8 @@ var File_service_proto protoreflect.FileDescriptor
 const file_service_proto_rawDesc = "" +
 	"\n" +
 	"\rservice.proto\x1a\x1bgoogle/protobuf/empty.proto\x1a\n" +
-	"test.proto\x1a\vstore.proto\x1a\rinquiry.proto2\xa2\x03\n" +
+	"test.proto\x1a\vstore.proto\x1a\rinquiry.proto\x1a\n" +
+	"menu.proto2\x99\x05\n" +
 	"\n" +
 	"APIService\x12>\n" +
 	"\rAddTestStruct\x12\x15.AddTestStructRequest\x1a\x16.AddTestStructResponse\x128\n" +
@@ -35,23 +36,36 @@ const file_service_proto_rawDesc = "" +
 	"\bGetStore\x12\x10.GetStoreRequest\x1a\x11.GetStoreResponse\x128\n" +
 	"\vUpdateStore\x12\x13.UpdateStoreRequest\x1a\x14.UpdateStoreResponse\x128\n" +
 	"\vDeleteStore\x12\x13.DeleteStoreRequest\x1a\x14.DeleteStoreResponse\x126\n" +
-	"\x0fStreamInquiries\x12\x0f.InquiryRequest\x1a\x10.InquiryResponse(\x01B\x18Z\x16capstone-2025-30/protob\x06proto3"
+	"\x0fStreamInquiries\x12\x0f.InquiryRequest\x1a\x10.InquiryResponse(\x01\x125\n" +
+	"\n" +
+	"CreateMenu\x12\x12.CreateMenuRequest\x1a\x13.CreateMenuResponse\x12D\n" +
+	"\x0fGetCategoryList\x12\x17.GetCategoryListRequest\x1a\x18.GetCategoryListResponse\x128\n" +
+	"\vGetMenuList\x12\x13.GetMenuListRequest\x1a\x14.GetMenuListResponse\x12>\n" +
+	"\rGetMenuDetail\x12\x15.GetMenuDetailRequest\x1a\x16.GetMenuDetailResponseB\x18Z\x16capstone-2025-30/protob\x06proto3"
 
 var file_service_proto_goTypes = []any{
-	(*AddTestStructRequest)(nil),  // 0: AddTestStructRequest
-	(*CreateStoreRequest)(nil),    // 1: CreateStoreRequest
-	(*emptypb.Empty)(nil),         // 2: google.protobuf.Empty
-	(*GetStoreRequest)(nil),       // 3: GetStoreRequest
-	(*UpdateStoreRequest)(nil),    // 4: UpdateStoreRequest
-	(*DeleteStoreRequest)(nil),    // 5: DeleteStoreRequest
-	(*InquiryRequest)(nil),        // 6: InquiryRequest
-	(*AddTestStructResponse)(nil), // 7: AddTestStructResponse
-	(*CreateStoreResponse)(nil),   // 8: CreateStoreResponse
-	(*GetStoreListResponse)(nil),  // 9: GetStoreListResponse
-	(*GetStoreResponse)(nil),      // 10: GetStoreResponse
-	(*UpdateStoreResponse)(nil),   // 11: UpdateStoreResponse
-	(*DeleteStoreResponse)(nil),   // 12: DeleteStoreResponse
-	(*InquiryResponse)(nil),       // 13: InquiryResponse
+	(*AddTestStructRequest)(nil),    // 0: AddTestStructRequest
+	(*CreateStoreRequest)(nil),      // 1: CreateStoreRequest
+	(*emptypb.Empty)(nil),           // 2: google.protobuf.Empty
+	(*GetStoreRequest)(nil),         // 3: GetStoreRequest
+	(*UpdateStoreRequest)(nil),      // 4: UpdateStoreRequest
+	(*DeleteStoreRequest)(nil),      // 5: DeleteStoreRequest
+	(*InquiryRequest)(nil),          // 6: InquiryRequest
+	(*CreateMenuRequest)(nil),       // 7: CreateMenuRequest
+	(*GetCategoryListRequest)(nil),  // 8: GetCategoryListRequest
+	(*GetMenuListRequest)(nil),      // 9: GetMenuListRequest
+	(*GetMenuDetailRequest)(nil),    // 10: GetMenuDetailRequest
+	(*AddTestStructResponse)(nil),   // 11: AddTestStructResponse
+	(*CreateStoreResponse)(nil),     // 12: CreateStoreResponse
+	(*GetStoreListResponse)(nil),    // 13: GetStoreListResponse
+	(*GetStoreResponse)(nil),        // 14: GetStoreResponse
+	(*UpdateStoreResponse)(nil),     // 15: UpdateStoreResponse
+	(*DeleteStoreResponse)(nil),     // 16: DeleteStoreResponse
+	(*InquiryResponse)(nil),         // 17: InquiryResponse
+	(*CreateMenuResponse)(nil),      // 18: CreateMenuResponse
+	(*GetCategoryListResponse)(nil), // 19: GetCategoryListResponse
+	(*GetMenuListResponse)(nil),     // 20: GetMenuListResponse
+	(*GetMenuDetailResponse)(nil),   // 21: GetMenuDetailResponse
 }
 var file_service_proto_depIdxs = []int32{
 	0,  // 0: APIService.AddTestStruct:input_type -> AddTestStructRequest
@@ -61,15 +75,23 @@ var file_service_proto_depIdxs = []int32{
 	4,  // 4: APIService.UpdateStore:input_type -> UpdateStoreRequest
 	5,  // 5: APIService.DeleteStore:input_type -> DeleteStoreRequest
 	6,  // 6: APIService.StreamInquiries:input_type -> InquiryRequest
-	7,  // 7: APIService.AddTestStruct:output_type -> AddTestStructResponse
-	8,  // 8: APIService.CreateStore:output_type -> CreateStoreResponse
-	9,  // 9: APIService.GetStoreList:output_type -> GetStoreListResponse
-	10, // 10: APIService.GetStore:output_type -> GetStoreResponse
-	11, // 11: APIService.UpdateStore:output_type -> UpdateStoreResponse
-	12, // 12: APIService.DeleteStore:output_type -> DeleteStoreResponse
-	13, // 13: APIService.StreamInquiries:output_type -> InquiryResponse
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
+	7,  // 7: APIService.CreateMenu:input_type -> CreateMenuRequest
+	8,  // 8: APIService.GetCategoryList:input_type -> GetCategoryListRequest
+	9,  // 9: APIService.GetMenuList:input_type -> GetMenuListRequest
+	10, // 10: APIService.GetMenuDetail:input_type -> GetMenuDetailRequest
+	11, // 11: APIService.AddTestStruct:output_type -> AddTestStructResponse
+	12, // 12: APIService.CreateStore:output_type -> CreateStoreResponse
+	13, // 13: APIService.GetStoreList:output_type -> GetStoreListResponse
+	14, // 14: APIService.GetStore:output_type -> GetStoreResponse
+	15, // 15: APIService.UpdateStore:output_type -> UpdateStoreResponse
+	16, // 16: APIService.DeleteStore:output_type -> DeleteStoreResponse
+	17, // 17: APIService.StreamInquiries:output_type -> InquiryResponse
+	18, // 18: APIService.CreateMenu:output_type -> CreateMenuResponse
+	19, // 19: APIService.GetCategoryList:output_type -> GetCategoryListResponse
+	20, // 20: APIService.GetMenuList:output_type -> GetMenuListResponse
+	21, // 21: APIService.GetMenuDetail:output_type -> GetMenuDetailResponse
+	11, // [11:22] is the sub-list for method output_type
+	0,  // [0:11] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -83,6 +105,7 @@ func file_service_proto_init() {
 	file_test_proto_init()
 	file_store_proto_init()
 	file_inquiry_proto_init()
+	file_menu_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
