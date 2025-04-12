@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SignAI_Predict_FullMethodName = "/SignAI/Predict"
+	SignAI_Predict_FullMethodName = "/predict.SignAI/Predict"
 )
 
 // SignAIClient is the client API for SignAI service.
@@ -108,7 +108,7 @@ func _SignAI_Predict_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var SignAI_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "SignAI",
+	ServiceName: "predict.SignAI",
 	HandlerType: (*SignAIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
