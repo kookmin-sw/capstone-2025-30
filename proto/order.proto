@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "error.proto";
+
+// 옵션 선택
+message ItemOptions{
+  map<string, string> choices = 1; //{"size": "보통", "temperature": "차갑게"}
+}
+
+// 주문 야이템
+message OrderItem{
+  string name = 1;
+  int32 quantity = 2;
+  ItemOptions options = 3;
+  int32 item_price = 4; // 기본 가격 + 옵션 가격 합계
+  string image = 5;
+}
+
+// 주문 상태
+enum OrderStatus{
+  ORDER_UNSPECIFIED = 0;// 디폴트
+  ORDER_PENDING = 1;    // 결제 전
+  ORDER_PROCESSING = 2; // 제조 중
+  ORDER_DONE = 3;       // 제조 완료
+}
+
+message ViewOrderSummary{
+  int32 order_number = 1;
+  OrderStatus status = 2;
+  string created_at = 3;
+}
+
+// 주문 내역
+message Order{
+  string store_code = 1;
+  int32 order_number = 2;
+  OrderStatus status = 3;
+  repeated OrderItem items = 4;
+}
+
+message CreateOrderRequest{
+  string store_code = 1;
+  bool dine_in = 2; // 매장 = true, 포장 = false
+  repeated OrderItem items = 3;
+  int32 total_price = 4;
+}
+
+message GetOrderStatusRequest{
+  string store_code = 1;
+  int32 order_number = 2;
+}
+
+message GetOrderListRequest{
+  string store_code = 1;
+}
+
+message UpdateOrderStatusRequest{
+  string store_code = 1;
+  int32 order_number = 2;
+  OrderStatus status = 3;
+}
+
+message CreateOrderResponse{
+  bool success = 1;
+  optional EError error = 2;
+  int32 order_number = 3;
+}
+
+message GetOrderStatusResponse {
+  bool success = 1;
+  optional EError error = 2;
+  OrderStatus status = 3;
+  bool dine_in = 4;
+  repeated OrderItem items = 5;
+  int32 total_price = 6;
+}
+
+message GetOrderListResponse{
+  bool success = 1;
+  optional EError error = 2;
+  repeated ViewOrderSummary orders = 3;
+}
+
+message UpdateOrderStatusResponse {
+  bool success = 1;
+  optional EError error = 2;
+  OrderStatus status = 3;
+}

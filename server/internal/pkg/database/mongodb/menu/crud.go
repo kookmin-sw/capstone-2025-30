@@ -84,3 +84,21 @@ func GetMMenuDetail(storeCode, category, menu string) (*dbstructure.MMenu, error
 
 	return &result, nil
 }
+
+func FindMenuImage(storeCode string, name string) (string, error) {
+	filter := bson.M{
+		"store_code": storeCode,
+		"name":       name,
+	}
+
+	var result struct {
+		Image string `bson:"image"`
+	}
+
+	err := mongodb.MenuColl.FindOne(context.Background(), filter).Decode(&result)
+	if err != nil {
+		return "", err
+	}
+
+	return result.Image, nil
+}
