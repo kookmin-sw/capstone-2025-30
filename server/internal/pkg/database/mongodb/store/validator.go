@@ -1,4 +1,4 @@
-package mauth
+package mstore
 
 import (
 	"context"
@@ -8,13 +8,11 @@ import (
 	"time"
 )
 
-func GetObjectIdInStore(storeId string) (*string, error) {
+func ValidateStoreCodeAndGetObjectID(storeCode string) (primitive.ObjectID, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
-	filter := bson.M{
-		"store_code": storeId,
-	}
+	filter := bson.M{"store_code": storeCode}
 
 	var result struct {
 		ID primitive.ObjectID `bson:"_id"`
@@ -22,9 +20,8 @@ func GetObjectIdInStore(storeId string) (*string, error) {
 
 	err := mongodb.StoreColl.FindOne(ctx, filter).Decode(&result)
 	if err != nil {
-		return nil, err
+		return primitive.NilObjectID, err
 	}
 
-	objectIDStr := result.ID.Hex()
-	return &objectIDStr, nil
+	return result.ID, nil
 }

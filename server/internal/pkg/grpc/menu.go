@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc/status"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
+	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
 )
@@ -22,7 +23,13 @@ func (s *Server) CreateMenu(ctx context.Context, req *pb.CreateMenuRequest) (res
 		}
 	}()
 
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
 	mMenu := dbstructure.MMenu{
+		StoreID:          storeID,
 		StoreCode:        req.StoreCode,
 		Category:         req.Category,
 		Name:             req.Name,
@@ -34,7 +41,7 @@ func (s *Server) CreateMenu(ctx context.Context, req *pb.CreateMenuRequest) (res
 		Image:            req.Image,
 	}
 
-	err := mmenu.CreateMMenu(&mMenu)
+	err = mmenu.CreateMMenu(&mMenu)
 	if err != nil {
 		panic(fmt.Errorf("faild to create mMenu': %v", err))
 	}
@@ -56,10 +63,16 @@ func (s *Server) GetCategoryList(ctx context.Context, req *pb.GetCategoryListReq
 		}
 	}()
 
-	categories, err := mmenu.GetCategoryList(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	categories, err := mmenu.GetCategoryList(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to get category list from mStore: %v", err))
 	}
+
 	return &pb.GetCategoryListResponse{
 		Success:    true,
 		Error:      nil,
@@ -77,7 +90,12 @@ func (s *Server) GetMenuList(ctx context.Context, req *pb.GetMenuListRequest) (r
 		}
 	}()
 
-	mMenus, err := mmenu.GetMMenuList(req.StoreCode, req.Category)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mMenus, err := mmenu.GetMMenuList(storeID, req.Category)
 	if err != nil {
 		{
 			panic(fmt.Errorf("failed to get mMenu: %v", err))
@@ -110,7 +128,12 @@ func (s *Server) GetMenuDetail(ctx context.Context, req *pb.GetMenuDetailRequest
 		}
 	}()
 
-	mMenu, err := mmenu.GetMMenuDetail(req.StoreCode, req.Category, req.Name)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mMenu, err := mmenu.GetMMenuDetail(storeID, req.Category, req.Name)
 	if err != nil {
 		panic(fmt.Errorf("failed to get mStore: %v", err))
 	}

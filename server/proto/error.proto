@@ -9,7 +9,7 @@ enum EError {
   EE_API_AUTH_FAILED = 10001;
 
   // store
-
+  EE_STORE_NOT_FOUND = 20001;
   // inquiry
   EE_INQUIRY_STREAM_FAILED = 30000;
 }
