@@ -104,9 +104,12 @@ jobs:
 
             docker run -d \
               --name capstone-server \
+              --dns=8.8.8.8 \
+              --restart unless-stopped \
               --network host \
               --env-file .env \
               ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
+  
 
             sudo systemctl restart nginx
 
