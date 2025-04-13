@@ -21,6 +21,7 @@ type MOrderItem struct {
 // 주문 전체
 type MOrder struct {
 	ID          primitive.ObjectID `bson:"_id,omitempty" json:"ID"`
+	StoreID     primitive.ObjectID `bson:"store_id" json:"StoreID"`
 	StoreCode   string             `bson:"store_code" json:"StoreCode"`
 	OrderNumber int32              `bson:"order_number" json:"OrderNumber"`
 	DineIn      bool               `bson:"dine_in" json:"DineIn"`

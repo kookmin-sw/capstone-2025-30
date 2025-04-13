@@ -10,6 +10,7 @@ type MOption struct {
 
 type MMenu struct {
 	ID               primitive.ObjectID `bson:"_id,omitempty" json:"ID"`
+	StoreID          primitive.ObjectID `bson:"store_id" json:"StoreID"`
 	StoreCode        string             `bson:"store_code" json:"StoreCode"`
 	Category         string             `bson:"category" json:"Category"`
 	Name             string             `bson:"name" json:"Name"`
