@@ -37,6 +37,11 @@ func (h *RestHandler) CreateMenu(c *gin.Context) {
 
 	grpcRes, err := authClient.CreateMenu(ctx, &req)
 	if err != nil {
+		logrus.Errorf("CreateMenu failed: %v", err)
+		//c.JSON(http.StatusBadRequest, gin.H{
+		//	"success": grpcRes.GetSuccess(),        // false
+		//	"error":   grpcRes.GetError().String(), // "EE_STORE_NOT_FOUND"
+		//})
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
