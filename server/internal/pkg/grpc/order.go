@@ -10,6 +10,7 @@ import (
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
 	morder "server/internal/pkg/database/mongodb/order"
+	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
 	"time"
@@ -25,11 +26,16 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		}
 	}()
 
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
 	// 주문 아이템 변환
 	var items []dbstructure.MOrderItem
 	for _, item := range req.Items {
 
-		image, err := mmenu.FindMenuImage(req.StoreCode, item.Name)
+		image, err := mmenu.FindMenuImage(storeID, item.Name)
 		if err != nil {
 			logrus.Warnf("Image not found for %s: %v", item.Name, err)
 			image = ""
@@ -47,6 +53,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 	// 주문 구조체 생성
 	mOrder := dbstructure.MOrder{
 		ID:         primitive.NewObjectID(),
+		StoreID:    storeID,
 		StoreCode:  req.StoreCode,
 		DineIn:     req.DineIn,
 		Status:     pb.OrderStatus_ORDER_PENDING,
@@ -57,7 +64,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 	}
 
 	// DB 저장 (번호 포함됨)
-	err := morder.CreateMOrder(&mOrder)
+	err = morder.CreateMOrder(&mOrder)
 	if err != nil {
 		panic(fmt.Errorf("failed to create order: %v", err))
 	}
@@ -79,7 +86,12 @@ func (s *Server) GetOrderStatus(ctx context.Context, req *pb.GetOrderStatusReque
 		}
 	}()
 
-	mOrder, err := morder.GetMOrderStatus(req.StoreCode, req.OrderNumber)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mOrder, err := morder.GetMOrderStatus(storeID, req.OrderNumber)
 	if err != nil {
 		panic(fmt.Errorf("failed to get mOrder status: %v", err))
 	}
@@ -115,7 +127,12 @@ func (s *Server) GetOrderList(ctx context.Context, req *pb.GetOrderListRequest) 
 		}
 	}()
 
-	mOrders, err := morder.GetMOrderList(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mOrders, err := morder.GetMOrderList(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to get order list: %v", err))
 	}
@@ -146,7 +163,12 @@ func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatu
 		}
 	}()
 
-	err := morder.UpdateMOrderStatus(req.StoreCode, req.OrderNumber, req.Status)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	err = morder.UpdateMOrderStatus(storeID, req.OrderNumber, req.Status)
 	if err != nil {
 		panic(fmt.Errorf("failed to update order status: %v", err))
 	}

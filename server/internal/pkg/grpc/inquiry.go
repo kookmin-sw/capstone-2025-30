@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	pb "server/gen"
-	mauth "server/internal/pkg/database/mongodb/auth"
+	mstore "server/internal/pkg/database/mongodb/store"
 	"server/internal/pkg/utils"
 	"sync"
 	"time"
@@ -66,11 +66,12 @@ loop:
 
 			once.Do(func() {
 				var err error
-				storeObjectID, err = mauth.GetObjectIdInStore(req.StoreCode)
+				objectID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 				if err != nil {
-					logrus.Error("failed to get store object ID: ", err)
-					panic(pb.EError_EE_API_FAILED)
+					panic(pb.EError_EE_STORE_NOT_FOUND)
 				}
+				str := objectID.Hex()
+				storeObjectID = &str
 			})
 
 			logrus.Infof("StreamInquiries received: store_code=%s, type=%s, data=%s", req.StoreCode, req.InquiryType, req.FrameData)
