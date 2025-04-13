@@ -27,6 +27,8 @@ const (
 	EError_EE_UNSPECIFIED     EError = 0
 	EError_EE_API_FAILED      EError = 10000
 	EError_EE_API_AUTH_FAILED EError = 10001
+	// store
+	EError_EE_STORE_NOT_FOUND EError = 20001
 	// inquiry
 	EError_EE_INQUIRY_STREAM_FAILED EError = 30000
 )
@@ -37,12 +39,14 @@ var (
 		0:     "EE_UNSPECIFIED",
 		10000: "EE_API_FAILED",
 		10001: "EE_API_AUTH_FAILED",
+		20001: "EE_STORE_NOT_FOUND",
 		30000: "EE_INQUIRY_STREAM_FAILED",
 	}
 	EError_value = map[string]int32{
 		"EE_UNSPECIFIED":           0,
 		"EE_API_FAILED":            10000,
 		"EE_API_AUTH_FAILED":       10001,
+		"EE_STORE_NOT_FOUND":       20001,
 		"EE_INQUIRY_STREAM_FAILED": 30000,
 	}
 )
@@ -78,11 +82,12 @@ var File_error_proto protoreflect.FileDescriptor
 
 const file_error_proto_rawDesc = "" +
 	"\n" +
-	"\verror.proto*i\n" +
+	"\verror.proto*\x83\x01\n" +
 	"\x06EError\x12\x12\n" +
 	"\x0eEE_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\rEE_API_FAILED\x10\x90N\x12\x17\n" +
-	"\x12EE_API_AUTH_FAILED\x10\x91N\x12\x1e\n" +
+	"\x12EE_API_AUTH_FAILED\x10\x91N\x12\x18\n" +
+	"\x12EE_STORE_NOT_FOUND\x10\xa1\x9c\x01\x12\x1e\n" +
 	"\x18EE_INQUIRY_STREAM_FAILED\x10\xb0\xea\x01B\x18Z\x16capstone-2025-30/protob\x06proto3"
 
 var (
