@@ -49,6 +49,19 @@ func Initialize() {
 		//}
 
 		defineCollections()
-		// index 생성 할까? 말까?
+		createIndexes()
 	})
+}
+
+func createIndexes() {
+	for _, colIdx := range indexes {
+		coll := Client.Database(name).Collection(colIdx.Name)
+
+		_, err := coll.Indexes().CreateMany(context.Background(), colIdx.Indexes)
+		if err != nil {
+			logrus.Errorf("❌ Failed to create indexes for collection %s: %v", colIdx.Name, err)
+		} else {
+			logrus.Infof("✅ Indexes created for collection %s", colIdx.Name)
+		}
+	}
 }
