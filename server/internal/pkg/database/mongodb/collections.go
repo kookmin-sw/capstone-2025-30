@@ -3,13 +3,17 @@ package mongodb
 import "go.mongodb.org/mongo-driver/mongo"
 
 var (
-	UserColl  = &mongo.Collection{}
-	StoreColl = &mongo.Collection{}
-	MenuColl  = &mongo.Collection{}
+	UserColl    = &mongo.Collection{}
+	StoreColl   = &mongo.Collection{}
+	MenuColl    = &mongo.Collection{}
+	OrderColl   = &mongo.Collection{}
+	CounterColl = &mongo.Collection{}
 )
 
 func defineCollections() {
 	UserColl = Client.Database(name).Collection("user")
 	StoreColl = Client.Database(name).Collection("store")
 	MenuColl = Client.Database(name).Collection("store_menu")
+	OrderColl = Client.Database(name).Collection("order")
+	CounterColl = Client.Database(name).Collection("order_counter")
 }
