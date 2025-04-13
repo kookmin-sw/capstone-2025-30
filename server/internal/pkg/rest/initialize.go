@@ -52,6 +52,12 @@ func Initialize() {
 	r.GET("/rest/menu/:store_code/menuList", restHandler.GetMenuList)
 	r.GET("/rest/menu/:store_code/menuDetail", restHandler.GetMenuDetail)
 
+	// order api
+	r.POST("/rest/order/:store_code", restHandler.CreateOrder)
+	r.GET("/rest/order/:store_code/:order_number", restHandler.GetOrderStatus)
+	r.GET("/rest/order/:store_code/orderList", restHandler.GetOrderList)
+	r.PUT("/rest/order/:store_code/:order_number/status", restHandler.UpdateOrderStatus)
+
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
 	logrus.Infof("Rest API server is running on port %s", port)
