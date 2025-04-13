@@ -3,6 +3,7 @@ package morder
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	pb "server/gen"
@@ -38,9 +39,9 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	return err
 }
 
-func GetMOrderStatus(storeCode string, orderNumber int32) (*dbstructure.MOrder, error) {
+func GetMOrderStatus(storeID primitive.ObjectID, orderNumber int32) (*dbstructure.MOrder, error) {
 	filter := bson.M{
-		"store_code":   storeCode,
+		"store_id":     storeID,
 		"order_number": orderNumber,
 	}
 
@@ -57,8 +58,8 @@ func GetMOrderStatus(storeCode string, orderNumber int32) (*dbstructure.MOrder, 
 	return &order, nil
 }
 
-func GetMOrderList(storeCode string) ([]dbstructure.MOrder, error) {
-	filter := bson.M{"store_code": storeCode}
+func GetMOrderList(storeID primitive.ObjectID) ([]dbstructure.MOrder, error) {
+	filter := bson.M{"store_id": storeID}
 	ctx := context.Background()
 
 	opts := options.Find().SetSort(bson.D{{"created_at", -1}}).SetLimit(100)
@@ -81,7 +82,7 @@ func GetMOrderList(storeCode string) ([]dbstructure.MOrder, error) {
 	return orders, nil
 }
 
-func UpdateMOrderStatus(storeCode string, orderNumber int32, newStatus pb.OrderStatus) error {
+func UpdateMOrderStatus(storeID primitive.ObjectID, orderNumber int32, newStatus pb.OrderStatus) error {
 	session, err := mongodb.Client.StartSession()
 	if err != nil {
 		return err
@@ -90,7 +91,7 @@ func UpdateMOrderStatus(storeCode string, orderNumber int32, newStatus pb.OrderS
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
 		filter := bson.M{
-			"store_code":   storeCode,
+			"store_id":     storeID,
 			"order_number": orderNumber,
 		}
 		update := bson.M{

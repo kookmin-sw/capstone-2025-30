@@ -3,6 +3,7 @@ package menustore
 import (
 	"context"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
@@ -24,8 +25,8 @@ func CreateMMenu(mMenu *dbstructure.MMenu) error {
 	return err
 }
 
-func GetCategoryList(storeCode string) ([]string, error) {
-	filter := bson.M{"store_code": storeCode}
+func GetCategoryList(storeID primitive.ObjectID) ([]string, error) {
+	filter := bson.M{"store_id": storeID}
 	ctx := context.Background()
 
 	results, err := mongodb.MenuColl.Distinct(ctx, "category", filter)
@@ -43,10 +44,10 @@ func GetCategoryList(storeCode string) ([]string, error) {
 	return categories, nil
 }
 
-func GetMMenuList(storeCode string, category string) ([]dbstructure.MMenu, error) {
+func GetMMenuList(storeID primitive.ObjectID, category string) ([]dbstructure.MMenu, error) {
 	filter := bson.M{
-		"store_code": storeCode,
-		"category":   category,
+		"store_id": storeID,
+		"category": category,
 	}
 
 	cursor, err := mongodb.MenuColl.Find(context.Background(), filter)
@@ -67,11 +68,11 @@ func GetMMenuList(storeCode string, category string) ([]dbstructure.MMenu, error
 	return menus, nil
 }
 
-func GetMMenuDetail(storeCode, category, menu string) (*dbstructure.MMenu, error) {
+func GetMMenuDetail(storeID primitive.ObjectID, category, menu string) (*dbstructure.MMenu, error) {
 	filter := bson.M{
-		"store_code": storeCode,
-		"category":   category,
-		"name":       menu,
+		"store_id": storeID,
+		"category": category,
+		"name":     menu,
 	}
 
 	var result dbstructure.MMenu
@@ -85,10 +86,10 @@ func GetMMenuDetail(storeCode, category, menu string) (*dbstructure.MMenu, error
 	return &result, nil
 }
 
-func FindMenuImage(storeCode string, name string) (string, error) {
+func FindMenuImage(storeID primitive.ObjectID, name string) (string, error) {
 	filter := bson.M{
-		"store_code": storeCode,
-		"name":       name,
+		"store_id": storeID,
+		"name":     name,
 	}
 
 	var result struct {
