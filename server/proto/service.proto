@@ -7,6 +7,7 @@ import "test.proto";
 import "store.proto";
 import "inquiry.proto";
 import "menu.proto";
+import "order.proto";
 
 service APIService {
   // test api
@@ -27,4 +28,10 @@ service APIService {
   rpc GetCategoryList(GetCategoryListRequest) returns (GetCategoryListResponse);
   rpc GetMenuList(GetMenuListRequest) returns (GetMenuListResponse);
   rpc GetMenuDetail(GetMenuDetailRequest) returns (GetMenuDetailResponse);
+
+  // order api
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc GetOrderStatus(GetOrderStatusRequest) returns (GetOrderStatusResponse);
+  rpc GetOrderList(GetOrderListRequest) returns (GetOrderListResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (UpdateOrderStatusResponse);
 }

@@ -20,17 +20,21 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	APIService_AddTestStruct_FullMethodName   = "/APIService/AddTestStruct"
-	APIService_CreateStore_FullMethodName     = "/APIService/CreateStore"
-	APIService_GetStoreList_FullMethodName    = "/APIService/GetStoreList"
-	APIService_GetStore_FullMethodName        = "/APIService/GetStore"
-	APIService_UpdateStore_FullMethodName     = "/APIService/UpdateStore"
-	APIService_DeleteStore_FullMethodName     = "/APIService/DeleteStore"
-	APIService_StreamInquiries_FullMethodName = "/APIService/StreamInquiries"
-	APIService_CreateMenu_FullMethodName      = "/APIService/CreateMenu"
-	APIService_GetCategoryList_FullMethodName = "/APIService/GetCategoryList"
-	APIService_GetMenuList_FullMethodName     = "/APIService/GetMenuList"
-	APIService_GetMenuDetail_FullMethodName   = "/APIService/GetMenuDetail"
+	APIService_AddTestStruct_FullMethodName     = "/APIService/AddTestStruct"
+	APIService_CreateStore_FullMethodName       = "/APIService/CreateStore"
+	APIService_GetStoreList_FullMethodName      = "/APIService/GetStoreList"
+	APIService_GetStore_FullMethodName          = "/APIService/GetStore"
+	APIService_UpdateStore_FullMethodName       = "/APIService/UpdateStore"
+	APIService_DeleteStore_FullMethodName       = "/APIService/DeleteStore"
+	APIService_StreamInquiries_FullMethodName   = "/APIService/StreamInquiries"
+	APIService_CreateMenu_FullMethodName        = "/APIService/CreateMenu"
+	APIService_GetCategoryList_FullMethodName   = "/APIService/GetCategoryList"
+	APIService_GetMenuList_FullMethodName       = "/APIService/GetMenuList"
+	APIService_GetMenuDetail_FullMethodName     = "/APIService/GetMenuDetail"
+	APIService_CreateOrder_FullMethodName       = "/APIService/CreateOrder"
+	APIService_GetOrderStatus_FullMethodName    = "/APIService/GetOrderStatus"
+	APIService_GetOrderList_FullMethodName      = "/APIService/GetOrderList"
+	APIService_UpdateOrderStatus_FullMethodName = "/APIService/UpdateOrderStatus"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -52,6 +56,11 @@ type APIServiceClient interface {
 	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListResponse, error)
 	GetMenuList(ctx context.Context, in *GetMenuListRequest, opts ...grpc.CallOption) (*GetMenuListResponse, error)
 	GetMenuDetail(ctx context.Context, in *GetMenuDetailRequest, opts ...grpc.CallOption) (*GetMenuDetailResponse, error)
+	// order api
+	CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error)
+	GetOrderStatus(ctx context.Context, in *GetOrderStatusRequest, opts ...grpc.CallOption) (*GetOrderStatusResponse, error)
+	GetOrderList(ctx context.Context, in *GetOrderListRequest, opts ...grpc.CallOption) (*GetOrderListResponse, error)
+	UpdateOrderStatus(ctx context.Context, in *UpdateOrderStatusRequest, opts ...grpc.CallOption) (*UpdateOrderStatusResponse, error)
 }
 
 type aPIServiceClient struct {
@@ -175,6 +184,46 @@ func (c *aPIServiceClient) GetMenuDetail(ctx context.Context, in *GetMenuDetailR
 	return out, nil
 }
 
+func (c *aPIServiceClient) CreateOrder(ctx context.Context, in *CreateOrderRequest, opts ...grpc.CallOption) (*CreateOrderResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateOrderResponse)
+	err := c.cc.Invoke(ctx, APIService_CreateOrder_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIServiceClient) GetOrderStatus(ctx context.Context, in *GetOrderStatusRequest, opts ...grpc.CallOption) (*GetOrderStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrderStatusResponse)
+	err := c.cc.Invoke(ctx, APIService_GetOrderStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIServiceClient) GetOrderList(ctx context.Context, in *GetOrderListRequest, opts ...grpc.CallOption) (*GetOrderListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetOrderListResponse)
+	err := c.cc.Invoke(ctx, APIService_GetOrderList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *aPIServiceClient) UpdateOrderStatus(ctx context.Context, in *UpdateOrderStatusRequest, opts ...grpc.CallOption) (*UpdateOrderStatusResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateOrderStatusResponse)
+	err := c.cc.Invoke(ctx, APIService_UpdateOrderStatus_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServiceServer is the server API for APIService service.
 // All implementations must embed UnimplementedAPIServiceServer
 // for forward compatibility.
@@ -194,6 +243,11 @@ type APIServiceServer interface {
 	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListResponse, error)
 	GetMenuList(context.Context, *GetMenuListRequest) (*GetMenuListResponse, error)
 	GetMenuDetail(context.Context, *GetMenuDetailRequest) (*GetMenuDetailResponse, error)
+	// order api
+	CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error)
+	GetOrderStatus(context.Context, *GetOrderStatusRequest) (*GetOrderStatusResponse, error)
+	GetOrderList(context.Context, *GetOrderListRequest) (*GetOrderListResponse, error)
+	UpdateOrderStatus(context.Context, *UpdateOrderStatusRequest) (*UpdateOrderStatusResponse, error)
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -236,6 +290,18 @@ func (UnimplementedAPIServiceServer) GetMenuList(context.Context, *GetMenuListRe
 }
 func (UnimplementedAPIServiceServer) GetMenuDetail(context.Context, *GetMenuDetailRequest) (*GetMenuDetailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMenuDetail not implemented")
+}
+func (UnimplementedAPIServiceServer) CreateOrder(context.Context, *CreateOrderRequest) (*CreateOrderResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateOrder not implemented")
+}
+func (UnimplementedAPIServiceServer) GetOrderStatus(context.Context, *GetOrderStatusRequest) (*GetOrderStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderStatus not implemented")
+}
+func (UnimplementedAPIServiceServer) GetOrderList(context.Context, *GetOrderListRequest) (*GetOrderListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrderList not implemented")
+}
+func (UnimplementedAPIServiceServer) UpdateOrderStatus(context.Context, *UpdateOrderStatusRequest) (*UpdateOrderStatusResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderStatus not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
 func (UnimplementedAPIServiceServer) testEmbeddedByValue()                    {}
@@ -445,6 +511,78 @@ func _APIService_GetMenuDetail_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _APIService_CreateOrder_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateOrderRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).CreateOrder(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_CreateOrder_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).CreateOrder(ctx, req.(*CreateOrderRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _APIService_GetOrderStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrderStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetOrderStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetOrderStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetOrderStatus(ctx, req.(*GetOrderStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _APIService_GetOrderList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrderListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetOrderList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetOrderList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetOrderList(ctx, req.(*GetOrderListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _APIService_UpdateOrderStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateOrderStatusRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).UpdateOrderStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_UpdateOrderStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).UpdateOrderStatus(ctx, req.(*UpdateOrderStatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -491,6 +629,22 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMenuDetail",
 			Handler:    _APIService_GetMenuDetail_Handler,
+		},
+		{
+			MethodName: "CreateOrder",
+			Handler:    _APIService_CreateOrder_Handler,
+		},
+		{
+			MethodName: "GetOrderStatus",
+			Handler:    _APIService_GetOrderStatus_Handler,
+		},
+		{
+			MethodName: "GetOrderList",
+			Handler:    _APIService_GetOrderList_Handler,
+		},
+		{
+			MethodName: "UpdateOrderStatus",
+			Handler:    _APIService_UpdateOrderStatus_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
