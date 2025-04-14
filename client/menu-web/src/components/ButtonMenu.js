@@ -20,7 +20,7 @@ const ButtonMenu = ({ menu, isNull = false }) => {
 
   const handleClick = () => {
     if (isNull) return;
-    navigate(menu.to);
+    navigate(`/detailed-menu/${menu.category}/${menu.name}`);
   };
 
   const styles = {
@@ -55,7 +55,13 @@ const ButtonMenu = ({ menu, isNull = false }) => {
       justifyContent: "center",
       alignItems: "center",
     },
-    textMenu: { ...CustomStyles.fontSub16 },
+    textMenu: {
+      ...CustomStyles.fontSub16,
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
+      maxWidth: "132px",
+    },
   };
 
   return (
@@ -88,8 +94,8 @@ const ButtonMenu = ({ menu, isNull = false }) => {
             : CustomStyles.primaryBlack,
         }}
       >
-        <div style={{ ...styles.textMenu, fontWeight: 700 }}>{menu.text}</div>
-        <div style={{ ...styles.textMenu }}>{menu.price}원</div>
+        <div style={{ ...styles.textMenu, fontWeight: 700 }}>{menu.name}</div>
+        <div style={{ ...styles.textMenu }}>{menu.menu_price}원</div>
       </div>
     </button>
   );

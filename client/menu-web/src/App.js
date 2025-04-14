@@ -16,9 +16,9 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/category" element={<CategoryPage />} />
-        <Route path="/menu/:categoryKey" element={<MenuPage />} />
+        <Route path="/menu/:categoryPath" element={<MenuPage />} />
         <Route
-          path="/detailed-menu/:categoryKey/:id"
+          path="/detailed-menu/:categoryPath/:menuPath"
           element={<DetailedMenuPage />}
         />
         <Route path="/shopping-cart" element={<ShoppingCartPage />} />

@@ -10,13 +10,13 @@ const DetailedMenuStyles = {
     justifyContent: "space-between",
     alignItems: "center",
   },
-  menuButton: {
+  menuImage: {
     position: "relative",
     overflow: "hidden",
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-end",
-    width: 140,
+    minWidth: 140,
     height: 164,
     backgroundSize: "cover",
     backgroundRepeat: "no-repeat",
@@ -25,12 +25,14 @@ const DetailedMenuStyles = {
   },
   textMenu: {
     ...CustomStyles.fontHead28,
+    margin: "0 0 0 16px",
+    textAlign: "right",
   },
   line: {
     width: "100%",
     height: 1.5,
     backgroundColor: CustomStyles.primaryGray,
-    margin: "25px 0 25px 0",
+    margin: "24px 0",
   },
 };
 
