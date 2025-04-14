@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 
@@ -51,16 +50,14 @@ const CommonButton = ({ label, Icon, onPress, style }) => {
   );
 };
 
-const ButtonYesNo = ({ pressNo }) => {
-  const navigate = useNavigate();
-
+const ButtonYesNo = ({ pressYes, pressNo }) => {
   return (
     <div style={{ display: "flex" }}>
       <CommonButton
         label="예"
         Icon={IconYes}
         style={{ marginRight: 12 }}
-        onPress={() => navigate("/order-number")}
+        onPress={pressYes}
       />
       <CommonButton
         label="아니오"

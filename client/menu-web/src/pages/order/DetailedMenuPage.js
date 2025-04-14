@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import DetailedMenuStyles from "@/pages/order/DetailedMenuStyles";
 
 import { getDetailMenu } from "../../config/api";
+import { useCart } from "../../context/CartContext";
 import Header from "@/components/Header";
 import coffeeImage from "@/assets/images/image-coffee.png";
 import { ReactComponent as IconCold } from "@/assets/icons/cold.svg";
@@ -15,14 +16,19 @@ import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 import ButtonTemperature from "@/components/ButtonTemperature";
 import ButtonSize from "@/components/ButtonSize";
 import Button from "@/components/Button";
+import BottomSheet from "@/components/BottomSheet";
+import ButtonYesNo from "@/components/ButtonYesNo";
 
 const DetailedMenuPage = () => {
+  const navigate = useNavigate();
   const videoRef = useRef(null);
   const { categoryPath, menuPath } = useParams();
+  const { addToCart } = useCart();
   const [detailMenu, setDetailMenu] = useState([]);
   const [selectedTemp, setSelectedTemp] = useState("차갑게");
   const [selectedSize, setSelectedSize] = useState("적게");
   const [isEnded, setIsEnded] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const handleReplay = () => {
     setIsEnded(false);
@@ -58,8 +64,20 @@ const DetailedMenuPage = () => {
 
   const menuPrice = detailMenu.menu_price + sizeOptionPrice();
 
+  const handleAddCart = () => {
+    addToCart({
+      category: categoryPath,
+      name: menuPath,
+      menu_price: menuPrice,
+      temp: selectedTemp,
+      size: selectedSize,
+      count: 1,
+    });
+    setIsBottomSheetOpen(true);
+  };
+
   return (
-    <div>
+    <>
       {categoryPath === "커피" && <Header centerIcon="☕️" />}
       {categoryPath === "차" && <Header centerIcon="🌿" />}
       {categoryPath === "음료" && <Header centerIcon="🧋" />}
@@ -201,10 +219,30 @@ const DetailedMenuPage = () => {
         <Button
           icon={<IconShoppingCart />}
           text="장바구니 담기"
-          onClick={() => {}}
+          onClick={handleAddCart}
         />
       </div>
-    </div>
+
+      {isBottomSheetOpen && (
+        <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
+          {/* 장바구니에 담겼고, 장바구니로 이동하시겠냐는 영상 */}
+          <div
+            style={{
+              width: "100%",
+              paddingTop: "100%",
+              backgroundColor: "#D0D0D0",
+              borderRadius: 16,
+            }}
+          />
+          <div style={{ margin: "24px 0 24px 0" }}>
+            <ButtonYesNo
+              pressYes={() => navigate("/shopping-cart")}
+              pressNo={() => setIsBottomSheetOpen(false)}
+            />
+          </div>
+        </BottomSheet>
+      )}
+    </>
   );
 };
 

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import ShoppingCartStyles from "@/pages/order/ShoppingCartStyles";
 
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
+import { useCart } from "../../context/CartContext";
 import { ReactComponent as IconDelete } from "@/assets/icons/delete.svg";
 import { ReactComponent as IconPlus } from "@/assets/icons/plus.svg";
 import { ReactComponent as IconSubtraction } from "@/assets/icons/subtraction.svg";
@@ -15,8 +17,9 @@ import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
 import BottomSheet from "@/components/BottomSheet";
 import ButtonYesNo from "@/components/ButtonYesNo";
+import { useEffect } from "react";
 
-const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
+const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
   return (
     <>
       <div
@@ -35,7 +38,9 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
             alignItems: "flex-end",
           }}
         >
-          <IconDelete />
+          <div onClick={onDelete} style={{ cursor: "pointer" }}>
+            <IconDelete />
+          </div>
 
           <div
             style={{
@@ -51,7 +56,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
                 alignItems: "center",
               }}
             >
-              {menu.temp === "ice" ? (
+              {menu.temp === "차갑게" ? (
                 <div style={{ color: CustomStyles.pointBlue, margin: "0 4px" }}>
                   <IconCold width={30} height={30} />
                 </div>
@@ -70,14 +75,18 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
                 <div
                   style={{ ...ShoppingCartStyles.textSize, margin: "8px 0" }}
                 >
-                  {menu.size}
+                  {menu.size === "적게"
+                    ? "S"
+                    : menu.size === "보통"
+                    ? "M"
+                    : "L"}
                 </div>
                 <IconSize width={30} height={32.73} />
               </div>
             </div>
 
             <div style={{ ...ShoppingCartStyles.textPrice, margin: "4px 0" }}>
-              {menu.price * menu.count}원
+              {menu.menu_price * menu.count}원
             </div>
 
             <div
@@ -112,13 +121,14 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
 };
 
 const ShoppingCartPage = () => {
+  const navigate = useNavigate();
+  const { cartItems, removeFromCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [menu, setMenu] = useState(cartItems);
 
-  const [menu, setMenu] = useState([
-    { text: "아메리카노", price: 4500, temp: "ice", size: "S", count: 1 },
-    { text: "카페라떼", price: 4500, temp: "hot", size: "L", count: 1 },
-    { text: "콜드브루", price: 4500, temp: "ice", size: "M", count: 1 },
-  ]);
+  useEffect(() => {
+    setMenu(cartItems);
+  }, [cartItems]);
 
   const handleIncrease = (index) => {
     const newMenus = [...menu];
@@ -134,8 +144,12 @@ const ShoppingCartPage = () => {
     }
   };
 
+  const handleDelete = (index) => {
+    removeFromCart(index);
+  };
+
   const totalMoney = menu.reduce(
-    (sum, item) => sum + item.price * item.count,
+    (sum, item) => sum + item.menu_price * item.count,
     0
   );
 
@@ -158,6 +172,7 @@ const ShoppingCartPage = () => {
             isLast={idx === menu.length - 1}
             onIncrease={() => handleIncrease(idx)}
             onDecrease={() => handleDecrease(idx)}
+            onDelete={() => handleDelete(idx)}
           />
         ))}
 
@@ -180,7 +195,10 @@ const ShoppingCartPage = () => {
               }}
             />
             <div style={{ margin: "24px 0 24px 0" }}>
-              <ButtonYesNo pressNo={() => setIsBottomSheetOpen(false)} />
+              <ButtonYesNo
+                pressYes={() => navigate("/order-number")}
+                pressNo={() => setIsBottomSheetOpen(false)}
+              />
             </div>
           </BottomSheet>
         )}
