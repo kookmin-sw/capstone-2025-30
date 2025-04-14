@@ -64,6 +64,12 @@ func Initialize() {
 }
 
 func apiKeyAuthMiddleware(c *gin.Context) {
+	if c.Request.Method == http.MethodOptions {
+		c.Status(http.StatusOK)
+		c.Abort()
+		return
+	}
+
 	apiKey := c.GetHeader("api-key")
 	if apiKey != XApiKey {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid API key"})
