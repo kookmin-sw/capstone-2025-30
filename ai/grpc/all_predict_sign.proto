@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package predict;
+
+message FrameSequenceInput {
+    repeated bytes frames = 1;
+    string client_id = 2;
+    float fps = 3;
+    float video_length = 4;
+}
+
+message PredictResult {
+    string client_id = 1;
+    string predicted_sentence = 2;
+    float confidence = 3; 
+}
+
+service SignAI {
+    rpc PredictFromFrames(FrameSequenceInput) returns (PredictResult);
+}
