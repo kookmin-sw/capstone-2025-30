@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
@@ -7,6 +7,7 @@ import ShoppingCartStyles from "@/pages/order/ShoppingCartStyles";
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
 import { useCart } from "../../context/CartContext";
+import { createOrder } from "../../config/api";
 import { ReactComponent as IconDelete } from "@/assets/icons/delete.svg";
 import { ReactComponent as IconPlus } from "@/assets/icons/plus.svg";
 import { ReactComponent as IconSubtraction } from "@/assets/icons/subtraction.svg";
@@ -17,7 +18,6 @@ import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
 import BottomSheet from "@/components/BottomSheet";
 import ButtonYesNo from "@/components/ButtonYesNo";
-import { useEffect } from "react";
 
 const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
   return (
@@ -86,7 +86,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
             </div>
 
             <div style={{ ...ShoppingCartStyles.textPrice, margin: "4px 0" }}>
-              {menu.menu_price * menu.count}원
+              {menu.menu_price * menu.quantity}원
             </div>
 
             <div
@@ -102,7 +102,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
               <div
                 style={{ ...ShoppingCartStyles.textPrice, margin: "0 20px" }}
               >
-                {menu.count}
+                {menu.quantity}
               </div>
               <div onClick={onIncrease} style={{ cursor: "pointer" }}>
                 <IconPlus />
@@ -122,7 +122,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const { cartItems, removeFromCart } = useCart();
+  const { isDineIn, cartItems, removeFromCart, clearCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [menu, setMenu] = useState(cartItems);
 
@@ -132,14 +132,14 @@ const ShoppingCartPage = () => {
 
   const handleIncrease = (index) => {
     const newMenus = [...menu];
-    newMenus[index].count += 1;
+    newMenus[index].quantity += 1;
     setMenu(newMenus);
   };
 
   const handleDecrease = (index) => {
     const newMenus = [...menu];
-    if (newMenus[index].count > 1) {
-      newMenus[index].count -= 1;
+    if (newMenus[index].quantity > 1) {
+      newMenus[index].quantity -= 1;
       setMenu(newMenus);
     }
   };
@@ -149,9 +149,40 @@ const ShoppingCartPage = () => {
   };
 
   const totalMoney = menu.reduce(
-    (sum, item) => sum + item.menu_price * item.count,
+    (sum, item) => sum + item.menu_price * item.quantity,
     0
   );
+
+  const formattedCartItems = cartItems.map((item) => ({
+    name: item.name,
+    quantity: item.quantity,
+    options: {
+      choices: {
+        temperature: item.temp,
+        size: item.size,
+      },
+    },
+    item_price: item.menu_price,
+  }));
+
+  const fetchCreateOrder = async () => {
+    try {
+      const category = await createOrder(
+        isDineIn,
+        totalMoney,
+        formattedCartItems
+      );
+      clearCart();
+      navigate("/order-number", {
+        state: { orderNumber: category.data.order_number },
+      });
+    } catch (error) {
+      console.error(
+        "주문 생성 오류:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   return (
     <div>
@@ -215,7 +246,7 @@ const ShoppingCartPage = () => {
             />
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
-                pressYes={() => navigate("/order-number")}
+                pressYes={fetchCreateOrder}
                 pressNo={() => setIsBottomSheetOpen(false)}
               />
             </div>

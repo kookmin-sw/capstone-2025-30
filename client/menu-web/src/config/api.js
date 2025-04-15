@@ -23,12 +23,12 @@ export const getDetailMenu = (category, menu) => {
 };
 
 export const createOrder = (isDineIn, totalPrice, items) => {
-  const formData = new FormData();
-  formData.append("dine_in", isDineIn);
-  formData.append("total_price", totalPrice);
-  formData.append("items", items);
-
-  return api.post("/rest/order/5fjVwE8z", formData);
+  const body = {
+    dine_in: isDineIn,
+    total_price: totalPrice,
+    items: items,
+  };
+  return api.post("/rest/order/5fjVwE8z", body);
 };
 
 export const getOrderNumber = (orderNumber) => {

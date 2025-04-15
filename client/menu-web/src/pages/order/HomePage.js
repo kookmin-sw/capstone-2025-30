@@ -49,7 +49,7 @@ const OrderButton = ({ icon, text, onClick }) => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { setIsDiveIn } = useCart();
+  const { setIsDineIn } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   return (
@@ -87,11 +87,11 @@ const HomePage = () => {
           <div style={{ margin: "24px 0 24px 0" }}>
             <ButtonYesNo
               pressYes={() => {
-                setIsDiveIn(true);
+                setIsDineIn(true);
                 navigate("/category");
               }}
               pressNo={() => {
-                setIsDiveIn(false);
+                setIsDineIn(false);
                 navigate("/category");
               }}
             />

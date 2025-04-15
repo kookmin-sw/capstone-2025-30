@@ -68,7 +68,7 @@ const DetailedMenuPage = () => {
       menu_price: menuPrice,
       temp: selectedTemp,
       size: selectedSize,
-      count: 1,
+      quantity: 1,
     });
     navigate(`/menu/${categoryPath}`, {
       state: { cartModal: true },

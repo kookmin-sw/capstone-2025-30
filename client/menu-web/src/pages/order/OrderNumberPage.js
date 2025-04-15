@@ -1,8 +1,10 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 
 import Header from "@/components/Header";
 
 const OrderNumberPage = () => {
+  const { state } = useLocation();
   return (
     <>
       <Header centerIcon={null} cartIcon={null} goTo="/" />
@@ -33,7 +35,7 @@ const OrderNumberPage = () => {
             marginTop: 40,
           }}
         >
-          163
+          {state?.orderNumber}
         </div>
       </div>
     </>
