@@ -17,7 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 
 import tensorflow as tf
-from tensorflow.keras.layers import Dense, Flatten, Conv1D, MaxPooling1D, TimeDistributed, Reshape, Input, Dropout
+from tensorflow.keras.layers import Masking, LSTM, Dense, Flatten, Conv1D, MaxPooling1D, TimeDistributed, Reshape, Input, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
@@ -76,8 +76,9 @@ x_train, x_val, y_train, y_val = train_test_split(
 )
 
 model = Sequential([
-    Input(shape=x_train.shape[1:]),
-    LSTM(128, return_sequences=True), 
+    Input(shape=x_train.shape[1:]),              
+    Masking(mask_value=0.0),                     
+    LSTM(128, return_sequences=True),
     LSTM(64),
     Dense(64, activation='relu'),
     Dropout(0.5),
