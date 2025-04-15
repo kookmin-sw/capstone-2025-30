@@ -16,8 +16,6 @@ import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 import ButtonTemperature from "@/components/ButtonTemperature";
 import ButtonSize from "@/components/ButtonSize";
 import Button from "@/components/Button";
-import BottomSheet from "@/components/BottomSheet";
-import ButtonYesNo from "@/components/ButtonYesNo";
 
 const DetailedMenuPage = () => {
   const navigate = useNavigate();
@@ -28,7 +26,6 @@ const DetailedMenuPage = () => {
   const [selectedTemp, setSelectedTemp] = useState("차갑게");
   const [selectedSize, setSelectedSize] = useState("적게");
   const [isEnded, setIsEnded] = useState(false);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const handleReplay = () => {
     setIsEnded(false);
@@ -73,7 +70,10 @@ const DetailedMenuPage = () => {
       size: selectedSize,
       count: 1,
     });
-    setIsBottomSheetOpen(true);
+    navigate(`/menu/${categoryPath}`, {
+      state: { cartModal: true },
+      replace: true, // 뒤로가기 불가하도록 히스토리 스택 대체하기
+    });
   };
 
   return (
@@ -222,26 +222,6 @@ const DetailedMenuPage = () => {
           onClick={handleAddCart}
         />
       </div>
-
-      {isBottomSheetOpen && (
-        <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
-          {/* 장바구니에 담겼고, 장바구니로 이동하시겠냐는 영상 */}
-          <div
-            style={{
-              width: "100%",
-              paddingTop: "100%",
-              backgroundColor: "#D0D0D0",
-              borderRadius: 16,
-            }}
-          />
-          <div style={{ margin: "24px 0 24px 0" }}>
-            <ButtonYesNo
-              pressYes={() => navigate("/shopping-cart")}
-              pressNo={() => setIsBottomSheetOpen(false)}
-            />
-          </div>
-        </BottomSheet>
-      )}
     </>
   );
 };

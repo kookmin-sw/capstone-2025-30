@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
@@ -6,6 +6,7 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [isDiveIn, setIsDiveIn] = useState(null);
 
   const addToCart = (item) => {
     setCartItems((prev) => {
@@ -24,10 +25,10 @@ export const CartProvider = ({ children }) => {
           ...updatedItems[index],
           count: updatedItems[index].count + 1,
         };
-        // console.log(updatedItems);
+        console.log(updatedItems);
         return updatedItems;
       } else {
-        // console.log([...prev, item]);
+        console.log([...prev, item]);
         return [...prev, item];
       }
     });
@@ -37,8 +38,20 @@ export const CartProvider = ({ children }) => {
     setCartItems((prev) => prev.filter((_, i) => i !== index));
   };
 
+  useEffect(() => {
+    console.log(isDiveIn);
+  }, [isDiveIn]);
+
   return (
-    <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{
+        isDiveIn,
+        setIsDiveIn,
+        cartItems,
+        addToCart,
+        removeFromCart,
+      }}
+    >
       {children}
     </CartContext.Provider>
   );

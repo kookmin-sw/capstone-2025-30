@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import CustomStyles from "@/styles/CustomStyles";
 import HomeStyles from "@/pages/order/HomeStyles";
 
-const OrderButton = ({ icon, text, to }) => {
+import { useCart } from "../../context/CartContext";
+import BottomSheet from "@/components/BottomSheet";
+import ButtonYesNo from "@/components/ButtonYesNo";
+
+const OrderButton = ({ icon, text, onClick }) => {
   const [isPressed, setIsPressed] = useState(false);
-  const navigate = useNavigate();
 
   const handlePressIn = () => setIsPressed(true);
   const handlePressOut = () => setIsPressed(false);
-  const handleClick = () => navigate(to);
 
   return (
     <button
@@ -19,7 +21,7 @@ const OrderButton = ({ icon, text, to }) => {
       onMouseLeave={handlePressOut}
       onTouchStart={handlePressIn}
       onTouchEnd={handlePressOut}
-      onClick={handleClick}
+      onClick={onClick}
       style={{
         ...HomeStyles.orderButton,
         backgroundColor: isPressed
@@ -46,11 +48,19 @@ const OrderButton = ({ icon, text, to }) => {
 };
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  const { setIsDiveIn } = useCart();
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
   return (
-    <div>
+    <>
       <p style={{ ...HomeStyles.headerIcon }}>🏠</p>
       <div style={{ ...HomeStyles.container }}>
-        <OrderButton icon="📋" text="주문하기" to="/category" />
+        <OrderButton
+          icon="📋"
+          text="주문하기"
+          onClick={() => setIsBottomSheetOpen(true)}
+        />
         <OrderButton
           icon="✅"
           text={
@@ -60,10 +70,35 @@ const HomePage = () => {
               확인하기
             </>
           }
-          to="/check-order-number"
+          onClick={() => navigate("/check-order-number")}
         />
       </div>
-    </div>
+
+      {isBottomSheetOpen && (
+        <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
+          <div
+            style={{
+              width: "100%",
+              paddingTop: "100%",
+              backgroundColor: "#D0D0D0",
+              borderRadius: 16,
+            }}
+          />
+          <div style={{ margin: "24px 0 24px 0" }}>
+            <ButtonYesNo
+              pressYes={() => {
+                setIsDiveIn(true);
+                navigate("/category");
+              }}
+              pressNo={() => {
+                setIsDiveIn(false);
+                navigate("/category");
+              }}
+            />
+          </div>
+        </BottomSheet>
+      )}
+    </>
   );
 };
 

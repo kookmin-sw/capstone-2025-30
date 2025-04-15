@@ -30,6 +30,15 @@ const ShoppingCartStyles = {
     ...CustomStyles.fontHead24,
     color: CustomStyles.primaryBlack,
   },
+  textEmpty: {
+    fontSize: 20,
+    lineHeight: "28px",
+    fontFamily: "Pretendard",
+    fontWeight: 400,
+    color: CustomStyles.primaryBlack,
+    textAlign: "center",
+    marginTop: "15vh",
+  },
 };
 
 export default ShoppingCartStyles;

@@ -40,6 +40,18 @@ const MenuStyles = {
     justifyContent: "center",
     alignItems: "center",
   },
+  modalCart: {
+    ...CustomStyles.fontHead16,
+    position: "fixed",
+    bottom: 80,
+    left: "50%",
+    transform: "translateX(-50%)",
+    backgroundColor: CustomStyles.primaryBlue,
+    color: CustomStyles.primaryWhite,
+    padding: "10px",
+    borderRadius: "24px",
+    zIndex: 100,
+  },
 };
 
 export default MenuStyles;

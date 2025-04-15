@@ -21,7 +21,7 @@ import { useEffect } from "react";
 
 const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
   return (
-    <>
+    <div>
       <div
         style={{
           display: "flex",
@@ -116,7 +116,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
       ) : (
         <div style={{ height: 70 }} />
       )}
-    </>
+    </div>
   );
 };
 
@@ -165,27 +165,46 @@ const ShoppingCartPage = () => {
 
         <div style={{ ...ShoppingCartStyles.line, height: 5 }} />
 
-        {menu.map((item, idx) => (
-          <CartList
-            key={idx}
-            menu={item}
-            isLast={idx === menu.length - 1}
-            onIncrease={() => handleIncrease(idx)}
-            onDecrease={() => handleDecrease(idx)}
-            onDelete={() => handleDelete(idx)}
-          />
-        ))}
-
-        <Button
-          icon={<IconCheck />}
-          text="주문하기"
-          onClick={() => {
-            setIsBottomSheetOpen(true);
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "70vh",
           }}
-        />
+        >
+          {cartItems.length !== 0 ? (
+            <>
+              {menu.map((item, idx) => (
+                <CartList
+                  key={idx}
+                  menu={item}
+                  isLast={idx === cartItems.length - 1}
+                  onIncrease={() => handleIncrease(idx)}
+                  onDecrease={() => handleDecrease(idx)}
+                  onDelete={() => handleDelete(idx)}
+                />
+              ))}
+            </>
+          ) : (
+            <div style={{ ...ShoppingCartStyles.textEmpty }}>
+              장바구니가 비었습니다.
+            </div>
+          )}
+
+          <Button
+            icon={<IconCheck />}
+            text="주문하기"
+            disabled={cartItems.length === 0}
+            onClick={() => {
+              cartItems.length !== 0 && setIsBottomSheetOpen(true);
+            }}
+          />
+        </div>
 
         {isBottomSheetOpen && (
           <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
+            {/* 이대로 주문하시겠냐는 영상 넣기 */}
             <div
               style={{
                 width: "100%",

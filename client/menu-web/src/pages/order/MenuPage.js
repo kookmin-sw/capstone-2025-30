@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 
 import MenuStyles from "@/pages/order/MenuStyles";
 
@@ -9,7 +9,9 @@ import ButtonMenu from "@/components/ButtonMenu";
 
 const MenuPage = () => {
   const { categoryPath } = useParams();
+  const { state } = useLocation();
   const [menus, setMenus] = useState([]);
+  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     const fetchGetMenu = async () => {
@@ -25,6 +27,16 @@ const MenuPage = () => {
     };
     fetchGetMenu();
   }, [categoryPath]);
+
+  useEffect(() => {
+    if (state?.cartModal) {
+      setShowCartModal(true);
+      const timer = setTimeout(() => {
+        setShowCartModal(false);
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [state]);
 
   return (
     <div style={{ marginBottom: 40 }}>
@@ -43,6 +55,10 @@ const MenuPage = () => {
         </div>
       ) : (
         <></>
+      )}
+
+      {showCartModal && (
+        <div style={{ ...MenuStyles.modalCart }}>장바구니에 담겼습니다!</div>
       )}
     </div>
   );
