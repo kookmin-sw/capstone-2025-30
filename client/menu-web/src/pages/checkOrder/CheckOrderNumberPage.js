@@ -50,8 +50,12 @@ const CheckOrderNumberPage = () => {
         <Button
           icon={<IconCheck />}
           text="입력 완료"
+          disabled={value.length === 0}
           onClick={() => {
-            navigate("/order-process");
+            value.length !== 0 &&
+              navigate("/order-process", {
+                state: { checkOrderNumber: value },
+              });
           }}
         />
       </div>
