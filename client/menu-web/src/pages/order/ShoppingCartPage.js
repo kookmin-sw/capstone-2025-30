@@ -123,9 +123,10 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
-  const { isDineIn, cartItems, removeFromCart, clearCart } = useCart();
+  const { cartItems, removeFromCart, clearCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [menu, setMenu] = useState(cartItems);
+  const [isDineIn, setIsDineIn] = useState(null);
 
   useEffect(() => {
     setMenu(cartItems);
@@ -239,8 +240,14 @@ const ShoppingCartPage = () => {
             <SignVideo src="/assets/video/드시고가실건가요.mp4" />
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
-                pressYes={fetchCreateOrder}
-                pressNo={() => setIsBottomSheetOpen(false)}
+                pressYes={() => {
+                  setIsDineIn(true);
+                  fetchCreateOrder();
+                }}
+                pressNo={() => {
+                  setIsDineIn(false);
+                  fetchCreateOrder();
+                }}
               />
             </div>
           </BottomSheet>

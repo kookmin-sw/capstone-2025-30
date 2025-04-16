@@ -3,11 +3,6 @@ import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import HomeStyles from "@/pages/order/HomeStyles";
-
-import { useCart } from "../../context/CartContext";
-import BottomSheet from "@/components/BottomSheet";
-import ButtonYesNo from "@/components/ButtonYesNo";
-
 const OrderButton = ({ icon, text, onClick }) => {
   const [isPressed, setIsPressed] = useState(false);
 
@@ -49,8 +44,6 @@ const OrderButton = ({ icon, text, onClick }) => {
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const { setIsDineIn } = useCart();
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   return (
     <>
@@ -59,7 +52,7 @@ const HomePage = () => {
         <OrderButton
           icon="📋"
           text="주문하기"
-          onClick={() => setIsBottomSheetOpen(true)}
+          onClick={() => navigate("/category")}
         />
         <OrderButton
           icon="✅"
@@ -73,31 +66,6 @@ const HomePage = () => {
           onClick={() => navigate("/check-order-number")}
         />
       </div>
-
-      {isBottomSheetOpen && (
-        <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
-          <div
-            style={{
-              width: "100%",
-              paddingTop: "100%",
-              backgroundColor: "#D0D0D0",
-              borderRadius: 16,
-            }}
-          />
-          <div style={{ margin: "24px 0 24px 0" }}>
-            <ButtonYesNo
-              pressYes={() => {
-                setIsDineIn(true);
-                navigate("/category");
-              }}
-              pressNo={() => {
-                setIsDineIn(false);
-                navigate("/category");
-              }}
-            />
-          </div>
-        </BottomSheet>
-      )}
     </>
   );
 };
