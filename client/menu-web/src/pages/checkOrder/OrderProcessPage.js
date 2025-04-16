@@ -77,7 +77,6 @@ const OrderProcessPage = () => {
         const category = await getOrderNumber(state?.checkOrderNumber);
         setOrderInformation(category.data);
         setMenu(category.data.items);
-        console.log(category.data);
       } catch (error) {
         console.error(
           "주문 과정 조회 오류:",
@@ -86,6 +85,12 @@ const OrderProcessPage = () => {
       }
     };
     fetchGetOrderNumber();
+
+    const intervalId = setInterval(() => {
+      fetchGetOrderNumber();
+    }, 30000);
+
+    return () => clearInterval(intervalId);
   }, [state?.checkOrderNumber]);
 
   return (
