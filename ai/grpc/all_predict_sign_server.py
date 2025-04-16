@@ -7,11 +7,12 @@ import mediapipe as mp
 import cv2
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
-import load_rag
+import load_to_korean_rag
+import load_to_sign_rag
 
-model = tf.keras.models.load_model('90_masked_angles.h5')
+model = tf.keras.models.load_model('models/90_masked_angles.h5')
 
-with open('pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('gesture_dict/pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
@@ -162,7 +163,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
             )
 
         final_sentence = ' '.join(sentences)
-        final_sentence = load_rag.get_translate_fron_sign_language(final_sentence)
+        final_sentence = load_to_korean_rag.get_translate_from_sign_language(final_sentence)
 
         print(final_sentence)
         avg_confidence = float(np.mean(confidences))
@@ -171,6 +172,17 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
             client_id=client_id,
             predicted_sentence=final_sentence,
             confidence=avg_confidence
+        )
+
+    def TranslateKoreanToSignUrls(self, request, context):
+        inqury = request.message
+        client_id = request.client_id
+
+        urls = load_to_sign_rag.get_sign_language_url_list(inqury)
+
+        return all_predict_sign_pb2.SignUrlResult(
+            client_id=client_id,
+            urls=urls
         )
 
 
