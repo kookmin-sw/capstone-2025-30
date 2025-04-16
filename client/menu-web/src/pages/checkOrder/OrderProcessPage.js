@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
@@ -7,10 +7,10 @@ import OrderProcessStyles from "@/pages/checkOrder/OrderProcessStyles";
 import { getOrderNumber } from "../../config/api";
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
+import SignVideo from "@/components/SignVideo";
 import { ReactComponent as IconCold } from "@/assets/icons/cold.svg";
 import { ReactComponent as IconHot } from "@/assets/icons/hot.svg";
 import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
-import { useState } from "react";
 
 const OrderList = ({ menu, isLast }) => {
   return (
@@ -96,15 +96,9 @@ const OrderProcessPage = () => {
         <div style={{ ...OrderProcessStyles.container }}>
           <div style={{ ...OrderProcessStyles.textProcess }}>메뉴 준비중</div>
 
-          <div
-            style={{
-              width: "100%",
-              paddingTop: "100%",
-              backgroundColor: "#D0D0D0",
-              borderRadius: 16,
-              marginBottom: 72,
-            }}
-          />
+          <div style={{ margin: "0 0 70px 0" }}>
+            <SignVideo src="/assets/video/메뉴준비중입니다.mp4" />
+          </div>
 
           {menu.map((item, idx) => (
             <OrderList key={idx} menu={item} isLast={idx === menu.length - 1} />
@@ -113,16 +107,7 @@ const OrderProcessPage = () => {
       ) : (
         <div style={{ ...OrderProcessStyles.container }}>
           <div style={{ ...OrderProcessStyles.textProcess }}>제조 완료</div>
-
-          <div
-            style={{
-              width: "100%",
-              paddingTop: "100%",
-              backgroundColor: "#D0D0D0",
-              borderRadius: 16,
-              marginBottom: 72,
-            }}
-          />
+          <SignVideo src="/assets/video/주문완료되었습니다.mp4" />
         </div>
       )}
     </>

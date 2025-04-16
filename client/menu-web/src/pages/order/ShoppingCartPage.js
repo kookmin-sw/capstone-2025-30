@@ -17,6 +17,7 @@ import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
 import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
 import BottomSheet from "@/components/BottomSheet";
+import SignVideo from "@/components/SignVideo";
 import ButtonYesNo from "@/components/ButtonYesNo";
 
 const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
@@ -235,15 +236,7 @@ const ShoppingCartPage = () => {
 
         {isBottomSheetOpen && (
           <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
-            {/* 이대로 주문하시겠냐는 영상 넣기 */}
-            <div
-              style={{
-                width: "100%",
-                paddingTop: "100%",
-                backgroundColor: "#D0D0D0",
-                borderRadius: 16,
-              }}
-            />
+            <SignVideo src="/assets/video/드시고가실건가요.mp4" />
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
                 pressYes={fetchCreateOrder}

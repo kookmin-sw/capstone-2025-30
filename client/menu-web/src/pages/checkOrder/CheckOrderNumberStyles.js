@@ -10,27 +10,15 @@ const CheckOrderNumberStyles = {
     justifyContent: "space-between",
     alignItems: "center",
   },
-  menuButton: {
-    position: "relative",
-    overflow: "hidden",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-end",
-    width: 140,
-    height: 164,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
-    borderRadius: 16,
-  },
-  textMenu: {
+  inputOrderNumber: {
     ...CustomStyles.fontHead28,
-  },
-  line: {
+    textAlign: "center",
+    padding: "8px 0",
     width: "100%",
-    height: 1.5,
-    backgroundColor: CustomStyles.primaryGray,
-    margin: "25px 0 25px 0",
+    border: "none",
+    borderBottom: "1px solid #969696",
+    outline: "none",
+    margin: "20px 0 40px 0",
   },
 };
 

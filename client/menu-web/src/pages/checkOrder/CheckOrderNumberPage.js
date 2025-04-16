@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import CustomStyles from "@/styles/CustomStyles";
 import CheckOrderNumberStyles from "@/pages/checkOrder/CheckOrderNumberStyles";
 
 import Header from "@/components/Header";
 import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
+import SignVideo from "@/components/SignVideo";
 
 const CheckOrderNumberPage = () => {
   const navigate = useNavigate();
@@ -25,27 +25,12 @@ const CheckOrderNumberPage = () => {
           placeholder="주문번호 입력"
           value={value}
           onChange={(e) => setValue(e.target.value)}
-          style={{
-            ...CustomStyles.fontHead28,
-            textAlign: "center",
-            padding: "8px 0",
-            width: "100%",
-            border: "none",
-            borderBottom: "1px solid #969696",
-            outline: "none",
-            margin: "20px 0 40px 0",
-          }}
+          style={{ ...CheckOrderNumberStyles.inputOrderNumber }}
         />
 
-        <div
-          style={{
-            width: "100%",
-            paddingTop: "100%",
-            backgroundColor: "#D0D0D0",
-            borderRadius: 16,
-            marginBottom: 72,
-          }}
-        />
+        <div style={{ margin: "0 0 70px 0" }}>
+          <SignVideo src="/assets/video/주문번호를입력해주세요.mp4" />
+        </div>
 
         <Button
           icon={<IconCheck />}
