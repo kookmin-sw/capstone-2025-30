@@ -107,7 +107,7 @@ const OrderProcessPage = () => {
       ) : (
         <div style={{ ...OrderProcessStyles.container }}>
           <div style={{ ...OrderProcessStyles.textProcess }}>제조 완료</div>
-          <SignVideo src="/assets/video/주문완료되었습니다.mp4" />
+          <SignVideo src="/assets/video/제조완료.mp4" />
         </div>
       )}
     </>

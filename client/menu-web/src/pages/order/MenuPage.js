@@ -39,7 +39,12 @@ const MenuPage = () => {
       {categoryPath === "샐러드" && <Header centerIcon="🥗" />}
 
       {menus && menus.length > 0 ? (
-        <div style={{ ...MenuStyles.container }}>
+        <div
+          style={{
+            ...MenuStyles.container,
+            paddingBottom: cartItems.length > 0 ? 60 : 0,
+          }}
+        >
           {menus.map((item, idx) => (
             <ButtonMenu key={idx} menu={item} />
           ))}
