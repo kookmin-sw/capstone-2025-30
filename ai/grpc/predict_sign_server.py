@@ -7,8 +7,8 @@ import tensorflow as tf
 import predict_sign_pb2
 import predict_sign_pb2_grpc
 
-model = tf.keras.models.load_model('90_pad_hands_angles.h5')
-with open('pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+model = tf.keras.models.load_model('90_masked_angles.h5')
+with open('gesture_dict/pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
@@ -42,10 +42,13 @@ class SignAIService(predict_sign_pb2_grpc.SignAIServicer):
         pred = model.predict(np.expand_dims(seq, axis=0))
         pred_label = np.argmax(pred[0])
         predicted_word = actions[pred_label]
+        res = pred[0]
+        action_confidence = res[np.argmax(res)]
 
         return predict_sign_pb2.PredictResult(
             client_id=request.client_id,
-            predicted_word=predicted_word
+            predicted_word=predicted_word,
+            confidence=action_confidence
         )
 
 

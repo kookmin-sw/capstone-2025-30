@@ -15,6 +15,17 @@ message PredictResult {
     float confidence = 3; 
 }
 
+message KoreanInput {
+    string message = 1;
+    string client_id = 2;
+}
+
+message SignUrlResult {
+    string client_id = 1;
+    repeated string urls = 2;
+}
+
 service SignAI {
     rpc PredictFromFrames(FrameSequenceInput) returns (PredictResult);
+    rpc TranslateKoreanToSignUrls(KoreanInput) returns (SignUrlResult);
 }
