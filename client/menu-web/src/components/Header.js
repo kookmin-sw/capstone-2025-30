@@ -1,11 +1,15 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+import CustomStyles from "@/styles/CustomStyles";
+
+import { useCart } from "../context/CartContext";
 import { ReactComponent as IconBack } from "@/assets/icons/back.svg";
 import { ReactComponent as IconCart } from "@/assets/icons/cart.svg";
 
 const Header = ({ centerIcon, cartIcon, goTo = null }) => {
   const navigate = useNavigate();
+  const { cartItems } = useCart();
 
   const goBack = () => {
     if (goTo) {
@@ -31,9 +35,26 @@ const Header = ({ centerIcon, cartIcon, goTo = null }) => {
       lineHeight: "56px",
     },
     button: {
+      position: "relative",
       background: "none",
       border: "none",
       cursor: "pointer",
+    },
+    quantityCircle: {
+      ...CustomStyles.fontCaption,
+      fontWeight: 700,
+      position: "absolute",
+      top: -2,
+      right: 0,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: 16,
+      height: 16,
+      backgroundColor: CustomStyles.pointRed,
+      color: CustomStyles.primaryWhite,
+
+      borderRadius: "50%",
     },
   };
 
@@ -50,6 +71,11 @@ const Header = ({ centerIcon, cartIcon, goTo = null }) => {
           style={styles.button}
           onClick={() => navigate("/shopping-cart")}
         >
+          {cartItems.length > 0 && (
+            <div style={styles.quantityCircle}>
+              {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
+            </div>
+          )}
           <IconCart />
         </button>
       )}
