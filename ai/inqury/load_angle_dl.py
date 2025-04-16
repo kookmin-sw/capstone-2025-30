@@ -15,7 +15,7 @@ actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
 seq_length = 90
 
-model = tf.keras.models.load_model('90_pad_hands_angles.h5')
+model = tf.keras.models.load_model('models/90_masked_angles.h5')
 print(model.input_shape)
 
 

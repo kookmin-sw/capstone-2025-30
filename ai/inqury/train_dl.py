@@ -23,11 +23,9 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import EarlyStopping
 
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
-from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
-
+import random
 
 load_dotenv()
 mongo_db_url = os.getenv("MONGO_DB_URL")
@@ -75,6 +73,45 @@ x_train, x_val, y_train, y_val = train_test_split(
     x_data, y_data, test_size=0.1, random_state=2021
 )
 
+def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2.0):
+    augmented = seq.copy()
+
+    # 1. ⏱️ Temporal jitter: 순서를 약간 섞음
+    if random.random() < jitter_prob:
+        idx = np.arange(len(augmented))
+        jitter = np.clip(np.random.normal(0, 1, size=len(idx)), -2, 2).astype(int)
+        jittered_idx = np.clip(idx + jitter, 0, len(idx) - 1)
+        augmented = augmented[jittered_idx]
+
+    # 2. 🌫️ Joint 좌표에 noise 추가
+    joint_dim = 21 * 3  # 63
+    augmented[:, :joint_dim] += np.random.normal(0, noise_std, size=(augmented.shape[0], joint_dim))
+
+    # 3. 🔄 각도 값에 ±1~2도 perturbation
+    angle_dim = 15
+    angle_start = joint_dim
+    angle_end = joint_dim + angle_dim
+    perturb = np.random.uniform(-angle_perturb_range, angle_perturb_range, size=(augmented.shape[0], angle_dim))
+    augmented[:, angle_start:angle_end] += perturb
+
+    return augmented
+
+augmented_train = []
+augmented_labels = []
+
+for i in range(len(x_train)):
+    augmented_train.append(x_train[i])
+    augmented_labels.append(y_train[i])
+
+    # 증강 샘플 추가 (예: 1개씩 증강 → 2배 데이터)
+    augmented_train.append(augment_sequence(x_train[i]))
+    augmented_labels.append(y_train[i])
+
+x_train = np.array(augmented_train)
+y_train = np.array(augmented_labels)
+
+print(f"📦 증강된 학습 데이터: {x_train.shape}, 라벨: {y_train.shape}")
+
 model = Sequential([
     Input(shape=x_train.shape[1:]),              
     Masking(mask_value=0.0),                     
@@ -101,7 +138,7 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('90_pad_hands_angles.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('90_aug_masked_angles.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
@@ -128,8 +165,8 @@ plt.grid(True)
 plt.show()
 
 
-model.save('90_pad_hands_angles.h5')
-print("✅ 모델 저장 완료: 90_pad_hands_angles.h5")
+model.save('90_aug_masked_angles.h5')
+print("✅ 모델 저장 완료: 90_aug_masked_angles.h5")
 
 
 with open('pad_gesture_dict.json', 'w', encoding='utf-8') as f:

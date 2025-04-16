@@ -1,7 +1,6 @@
 import cv2
 import numpy as np
 import grpc
-import time
 import mediapipe as mp
 
 import predict_sign_pb2
@@ -18,7 +17,12 @@ if not cap.isOpened():
     exit()
 
 fps = cap.get(cv2.CAP_PROP_FPS)
-start_frame = int(fps * 0.5)
+# 0.5 부터 3.0씩 텀을 둬서 프레임을 가져감
+# 0.5 - 3.5
+# 4.0 - 7.0 ...
+# 0.5: 커피, 4: 진하다, 19: 달다, 22: 약하다, 
+# 8: 쓰다, 12: 우유, 16: 없다,  
+start_frame = int(fps * 18.00)
 seq_length = 90
 
 mp_hands = mp.solutions.hands
@@ -66,4 +70,4 @@ request = predict_sign_pb2.SequenceInput(
 
 response = stub.Predict(request)
 # [예측 결과] Client: client_01, 단어: 커피
-print(f"[예측 결과] Client: {response.client_id}, 단어: {response.predicted_word}")
+print(f"[예측 결과] Client: {response.client_id}, 단어: {response.predicted_word}, 정확도: {response.confidence}")
