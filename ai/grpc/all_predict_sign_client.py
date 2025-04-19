@@ -4,7 +4,17 @@ import os
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
 
-channel = grpc.insecure_channel('localhost:50051',
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+host = os.getenv("AI_EC2_HOST")
+with open("certs/server.crt", "rb") as f:
+        trusted_certs = f.read()
+credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
+
+channel = grpc.secure_channel(f"{host}:50051",
+                              credentials,
                                   options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
                                            ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
 stub = all_predict_sign_pb2_grpc.SignAIStub(channel)

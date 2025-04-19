@@ -1,13 +1,22 @@
 import grpc
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+host = os.getenv("AI_EC2_HOST")
+with open("certs/server.crt", "rb") as f:
+    trusted_certs = f.read()
 
 def run():
-    channel = grpc.insecure_channel('localhost:50051')
+    credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
+    channel = grpc.secure_channel(f"{host}:50051", credentials)
+    # channel = grpc.secure_channel(f"localhost:50051", credentials)
     stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
     request = all_predict_sign_pb2.KoreanInput(
-        message="커피에 설탕 한 개 넣어 주세요",
+        message="현재 카페 자리가 없어요",
         client_id="client_01"
     )
 

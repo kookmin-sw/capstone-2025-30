@@ -3,16 +3,29 @@ version: "3.8"
 services:
   ai-server:
     build: .
-    container_name: grpc_ai_server
+    container_name: ai-server
     ports:
       - "50051:50051"
     networks:
       - my_network
     volumes:
       - ./models:/app/models
+      - ./certs:/app/certs
       - ./gesture_dict:/app/gesture_dict
       - ./docs:/app/docs
     command: ["python", "grpc/all_predict_sign_server.py"] 
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/certs     
+    ports:
+      - "443:443"
+    depends_on:
+      - ai-server
+    networks:
+      - my_network
 
 networks:
   my_network:

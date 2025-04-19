@@ -6,7 +6,8 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
-from langchain.retrievers import BM25Retriever, EnsembleRetriever
+from langchain_community.retrievers import BM25Retriever
+from langchain.retrievers import EnsembleRetriever
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 from pydantic import BaseModel
@@ -153,7 +154,7 @@ def get_sign_language_url_list(inqury):
     
     return url_list
 
-# urls = get_sign_language_url_list("고소하고 은은한 단맛과 균형잡힌 밸런스가 특징")
+# urls = get_sign_language_url_list("감사합니다")
 # print("\n📦 전체 URL 리스트:")
 # for i, url in enumerate(urls, 1):
-#     print(f"{i}. {url}")capstone-2025-30/ai/load_to_sign_rag.py
+#     print(f"{i}. {url}")
