@@ -185,17 +185,36 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
             urls=urls
         )
 
+def load_tls_credentials():
+    with open('certs/server.crt', 'rb') as f:
+        certificate_chain = f.read()
+    with open('certs/server.key', 'rb') as f:
+        private_key = f.read()
+
+    return grpc.ssl_server_credentials([(private_key, certificate_chain)])
+
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
-                        options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),
-                                 ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])
-    all_predict_sign_pb2_grpc.add_SignAIServicer_to_server(SignAIService(), server)
-    server.add_insecure_port('[::]:50051')
-    print("🚀 AI 서버 실행 중... 포트: 50051")
-    server.start()
-    server.wait_for_termination()
+    try:
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10),
+                             options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),
+                                      ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])
+        all_predict_sign_pb2_grpc.add_SignAIServicer_to_server(SignAIService(), server)
+        
+        print("🔐 TLS 인증서 로드 시도 중...")
+        creds = load_tls_credentials()
+        print("✅ TLS 인증서 로드 성공")
+        
+        port_result = server.add_secure_port('[::]:50051', creds)
+        print(f"✅ 포트 바인딩 결과: {port_result}")
+        
+        print("🚀 AI 서버 실행 중... 포트: 443")
+        server.start()
+        server.wait_for_termination()
+    except Exception as e:
+        print("❌ 서버 실행 중 에러 발생:", e)
 
 if __name__ == '__main__':
+    print("🚀 메인으로 실행됨")
     serve()
