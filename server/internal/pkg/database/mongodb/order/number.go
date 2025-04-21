@@ -23,7 +23,7 @@ func ensureCounterInitialized(storeCode string) error {
 	return nil
 }
 
-func GetNextOrderNumber(storeCode string) (int32, error) {
+func GetNextOrderNumber(ctx mongo.SessionContext, storeCode string) (int32, error) {
 	// 초기화
 	if err := ensureCounterInitialized(storeCode); err != nil {
 		return 0, err
@@ -38,7 +38,7 @@ func GetNextOrderNumber(storeCode string) (int32, error) {
 		Seq int32 `bson:"seq"`
 	}
 
-	err := mongodb.CounterColl.FindOneAndUpdate(context.Background(), filter, update, opts).Decode(&result)
+	err := mongodb.CounterColl.FindOneAndUpdate(ctx, filter, update, opts).Decode(&result)
 	if err != nil {
 		return 0, err
 	}
