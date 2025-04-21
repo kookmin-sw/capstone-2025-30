@@ -19,7 +19,7 @@ service APIService {
   rpc GetStore(GetStoreRequest) returns (GetStoreResponse);
   rpc UpdateStore(UpdateStoreRequest) returns (UpdateStoreResponse);
   rpc DeleteStore(DeleteStoreRequest) returns (DeleteStoreResponse);
-
+  
   // inquiry api
   rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
 
