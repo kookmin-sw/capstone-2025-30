@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
+	mstore "server/internal/pkg/database/mongodb/store"
 	"sync"
 )
 
@@ -33,8 +34,14 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 0.2 Authorization
-	client_id := r.URL.Query().Get("client_id")
-	// userId is valid func 만들어서 check -> userId db 에서 확인 후 없으면 invaild
+	store_code := r.URL.Query().Get("store_code")
+	//userId is valid func 만들어서 check -> userId db 에서 확인 후 없으면 invaild
+	_, err := mstore.ValidateStoreCodeAndGetObjectID(store_code)
+	if err != nil {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		logrus.Errorln("Unauthorized, invalid client_id")
+		return
+	}
 
 	// 1. Http -> WebSocket Upgrade
 	conn, err := upgrader.Upgrade(w, r, nil)
@@ -46,15 +53,15 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	// 3. connection save
 	WebSocketClientsMutex.Lock()
-	WebSocketClients[client_id] = conn
+	WebSocketClients[store_code] = conn
 	WebSocketClientsMutex.Unlock()
 	defer func() {
 		WebSocketClientsMutex.Lock()
-		delete(WebSocketClients, client_id)
+		delete(WebSocketClients, store_code)
 		WebSocketClientsMutex.Unlock()
 	}()
 
-	logrus.Infof("Client connected save: %s (%s)", conn.RemoteAddr(), client_id)
+	logrus.Infof("Client connected save: %s (%s)", conn.RemoteAddr(), store_code)
 
 	// 4. message read
 	for {

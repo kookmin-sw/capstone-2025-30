@@ -13,4 +13,7 @@ enum EError {
 
   // inquiry
   EE_INQUIRY_STREAM_FAILED = 30000;
+
+  // order
+  EE_ORDER_AND_NOTIFICATION_DB_ADD_FAILED = 40000;
 }

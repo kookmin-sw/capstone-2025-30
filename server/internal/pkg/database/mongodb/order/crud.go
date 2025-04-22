@@ -14,16 +14,6 @@ import (
 
 func CreateMOrder(mOrder *dbstructure.MOrder) error {
 
-	orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
-	if err != nil {
-		return err
-	}
-
-	mOrder.OrderNumber = orderNumber
-	mOrder.Status = pb.OrderStatus_ORDER_PENDING
-	mOrder.CreatedAt = time.Now()
-	mOrder.UpdatedAt = time.Now()
-
 	session, err := mongodb.Client.StartSession()
 	if err != nil {
 		return err
@@ -31,7 +21,45 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		_, err := mongodb.OrderColl.InsertOne(sc, mOrder)
+		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		if err != nil {
+			return nil, err
+		}
+
+		mOrder.OrderNumber = orderNumber
+		mOrder.Status = pb.OrderStatus_ORDER_PENDING
+		mOrder.CreatedAt = time.Now()
+		mOrder.UpdatedAt = time.Now()
+
+		_, err = mongodb.OrderColl.InsertOne(sc, mOrder)
+		return nil, err
+	}
+
+	_, err = session.WithTransaction(context.Background(), callback)
+	return err
+}
+
+func CreateMOrderAndMNotificationMessageWithTransaction(mOrder *dbstructure.MOrder, mNotificationMessage *dbstructure.MNotificationMessage) error {
+	session, err := mongodb.Client.StartSession()
+	if err != nil {
+		return err
+	}
+	defer session.EndSession(context.Background())
+
+	callback := func(sc mongo.SessionContext) (interface{}, error) {
+		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		if err != nil {
+			return nil, err
+		}
+
+		mOrder.OrderNumber = orderNumber
+		_, err = mongodb.OrderColl.InsertOne(sc, mOrder)
+		if err != nil {
+			return nil, err
+		}
+
+		mNotificationMessage.Number = int(orderNumber)
+		_, err = mongodb.NotificationColl.InsertOne(sc, mNotificationMessage)
 		return nil, err
 	}
 

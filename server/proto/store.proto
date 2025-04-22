@@ -10,7 +10,6 @@ message ViewStore{
   string location = 3;
 }
 
-
 message CreateStoreRequest{
   string name = 1;
   string location = 2;

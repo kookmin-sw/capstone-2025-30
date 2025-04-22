@@ -3,17 +3,19 @@ package grpcHandler
 import (
 	"context"
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
 	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
+	websocketHandler "server/internal/pkg/websocket"
 	"time"
+
+	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (res *pb.CreateOrderResponse, errRes error) {
@@ -51,6 +53,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 	}
 
 	// 주문 구조체 생성
+	createTime := time.Now()
 	mOrder := dbstructure.MOrder{
 		ID:         primitive.NewObjectID(),
 		StoreID:    storeID,
@@ -59,15 +62,55 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		Status:     pb.OrderStatus_ORDER_PENDING,
 		Items:      items,
 		TotalPrice: req.TotalPrice,
-		CreatedAt:  time.Now(),
-		UpdatedAt:  time.Now(),
+		CreatedAt:  createTime,
+		UpdatedAt:  createTime,
 	}
 
-	// DB 저장 (번호 포함됨)
-	err = morder.CreateMOrder(&mOrder)
-	if err != nil {
-		panic(fmt.Errorf("failed to create order: %v", err))
+	// 알림 DB에 저장
+	mNotificationMessage := dbstructure.MNotificationMessage{
+		ID:        primitive.NewObjectID(),
+		StoreCode: storeID,
+		Title:     utils.NotificationTitleOrder,
+		Accepted:  false,
+		Deleted:   false,
+		CreatedAt: createTime,
+		UpdatedAt: createTime,
 	}
+
+	err = morder.CreateMOrderAndMNotificationMessageWithTransaction(&mOrder, &mNotificationMessage)
+	if err != nil {
+		panic(pb.EError_EE_ORDER_AND_NOTIFICATION_DB_ADD_FAILED)
+	}
+
+	go func() {
+		maxRetries := 3
+		backoff := time.Second // 초기 대기 시간 1초
+		// 웹소켓 전송 시도
+		notification := websocketHandler.WebSocketMessage{
+			Type: utils.WebSocketMessageTypeNotification,
+			Data: websocketHandler.NotificationData{
+				Title: utils.NotificationTitleOrder,
+				Num:   mNotificationMessage.Number,
+			},
+		}
+
+		for attempt := 1; attempt <= maxRetries; attempt++ {
+			if err := websocketHandler.SendMessageToClient(req.StoreCode, notification); err != nil {
+				logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
+
+				if attempt == maxRetries {
+					logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
+					return // 모든 시도 실패 후 종료
+				}
+
+				// 다음 시도 전 대기
+				time.Sleep(backoff)
+				backoff *= 2 // 지수 백오프
+			} else {
+				return // 성공 시 종료
+			}
+		}
+	}()
 
 	return &pb.CreateOrderResponse{
 		Success:     true,
