@@ -7,13 +7,13 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-func SendMessageToClient(client_id string, message WebSocketMessage) error {
+func SendMessageToClient(store_code string, message WebSocketMessage) error {
 	WebSocketClientsMutex.RLock()
-	conn, ok := WebSocketClients[client_id]
+	conn, ok := WebSocketClients[store_code]
 	WebSocketClientsMutex.RUnlock()
 
 	if !ok {
-		return fmt.Errorf("client not found: %s", client_id)
+		return fmt.Errorf("client not found: %s", store_code)
 	}
 
 	messageJSON, err := json.Marshal(message)
@@ -25,7 +25,7 @@ func SendMessageToClient(client_id string, message WebSocketMessage) error {
 }
 
 type WebSocketMessage struct {
-	Type string      `json:"type"` //notification, orderMessage, inquryMessage
+	Type string      `json:"type"` //notification, orderMessage, inquiryMessage
 	Data interface{} `json:"data"`
 }
 
