@@ -191,9 +191,11 @@ def load_tls_credentials():
     with open('certs/server.key', 'rb') as f:
         private_key = f.read()
 
-    return grpc.ssl_server_credentials([(private_key, certificate_chain)])
-
-
+    return grpc.ssl_server_credentials(
+        [(private_key, certificate_chain)],
+        root_certificates=None,
+        require_client_auth=False
+    )
 
 def serve():
     try:
@@ -209,7 +211,7 @@ def serve():
         port_result = server.add_secure_port('[::]:50051', creds)
         print(f"✅ 포트 바인딩 결과: {port_result}")
         
-        print("🚀 AI 서버 실행 중... 포트: 443")
+        print("🚀 AI 서버 실행 중... 포트: 50051")
         server.start()
         server.wait_for_termination()
     except Exception as e:
