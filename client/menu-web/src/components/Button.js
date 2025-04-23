@@ -1,7 +1,7 @@
 import React from "react";
 import CustomStyles from "@/styles/CustomStyles";
 
-const Button = ({ icon, text, onClick }) => {
+const Button = ({ icon, text, disabled = false, onClick }) => {
   const styles = {
     button: {
       ...CustomStyles.fontHead24,
@@ -10,10 +10,12 @@ const Button = ({ icon, text, onClick }) => {
       justifyContent: "center",
       alignItems: "center",
       padding: "15px",
-      backgroundColor: CustomStyles.primaryBlue,
-      color: CustomStyles.primaryWhite,
+      backgroundColor: disabled
+        ? CustomStyles.primaryGray
+        : CustomStyles.primaryBlue,
+      color: disabled ? CustomStyles.pointGray : CustomStyles.primaryWhite,
       borderRadius: 32,
-      cursor: "pointer",
+      cursor: disabled ? "none" : "pointer",
       marginBottom: 50,
       border: "none",
     },

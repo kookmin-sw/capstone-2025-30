@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import ShoppingCartStyles from "@/pages/order/ShoppingCartStyles";
 
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
+import { useCart } from "../../context/CartContext";
+import { createOrder } from "../../config/api";
 import { ReactComponent as IconDelete } from "@/assets/icons/delete.svg";
 import { ReactComponent as IconPlus } from "@/assets/icons/plus.svg";
 import { ReactComponent as IconSubtraction } from "@/assets/icons/subtraction.svg";
@@ -16,9 +19,9 @@ import Button from "@/components/Button";
 import BottomSheet from "@/components/BottomSheet";
 import ButtonYesNo from "@/components/ButtonYesNo";
 
-const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
+const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
   return (
-    <>
+    <div>
       <div
         style={{
           display: "flex",
@@ -35,7 +38,9 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
             alignItems: "flex-end",
           }}
         >
-          <IconDelete />
+          <div onClick={onDelete} style={{ cursor: "pointer" }}>
+            <IconDelete />
+          </div>
 
           <div
             style={{
@@ -51,7 +56,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
                 alignItems: "center",
               }}
             >
-              {menu.temp === "ice" ? (
+              {menu.temp === "차갑게" ? (
                 <div style={{ color: CustomStyles.pointBlue, margin: "0 4px" }}>
                   <IconCold width={30} height={30} />
                 </div>
@@ -70,14 +75,18 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
                 <div
                   style={{ ...ShoppingCartStyles.textSize, margin: "8px 0" }}
                 >
-                  {menu.size}
+                  {menu.size === "적게"
+                    ? "S"
+                    : menu.size === "보통"
+                    ? "M"
+                    : "L"}
                 </div>
                 <IconSize width={30} height={32.73} />
               </div>
             </div>
 
             <div style={{ ...ShoppingCartStyles.textPrice, margin: "4px 0" }}>
-              {menu.price * menu.count}원
+              {menu.menu_price * menu.quantity}원
             </div>
 
             <div
@@ -93,7 +102,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
               <div
                 style={{ ...ShoppingCartStyles.textPrice, margin: "0 20px" }}
               >
-                {menu.count}
+                {menu.quantity}
               </div>
               <div onClick={onIncrease} style={{ cursor: "pointer" }}>
                 <IconPlus />
@@ -107,37 +116,73 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease }) => {
       ) : (
         <div style={{ height: 70 }} />
       )}
-    </>
+    </div>
   );
 };
 
 const ShoppingCartPage = () => {
+  const navigate = useNavigate();
+  const { isDineIn, cartItems, removeFromCart, clearCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [menu, setMenu] = useState(cartItems);
 
-  const [menu, setMenu] = useState([
-    { text: "아메리카노", price: 4500, temp: "ice", size: "S", count: 1 },
-    { text: "카페라떼", price: 4500, temp: "hot", size: "L", count: 1 },
-    { text: "콜드브루", price: 4500, temp: "ice", size: "M", count: 1 },
-  ]);
+  useEffect(() => {
+    setMenu(cartItems);
+  }, [cartItems]);
 
   const handleIncrease = (index) => {
     const newMenus = [...menu];
-    newMenus[index].count += 1;
+    newMenus[index].quantity += 1;
     setMenu(newMenus);
   };
 
   const handleDecrease = (index) => {
     const newMenus = [...menu];
-    if (newMenus[index].count > 1) {
-      newMenus[index].count -= 1;
+    if (newMenus[index].quantity > 1) {
+      newMenus[index].quantity -= 1;
       setMenu(newMenus);
     }
   };
 
+  const handleDelete = (index) => {
+    removeFromCart(index);
+  };
+
   const totalMoney = menu.reduce(
-    (sum, item) => sum + item.price * item.count,
+    (sum, item) => sum + item.menu_price * item.quantity,
     0
   );
+
+  const formattedCartItems = cartItems.map((item) => ({
+    name: item.name,
+    quantity: item.quantity,
+    options: {
+      choices: {
+        temperature: item.temp,
+        size: item.size,
+      },
+    },
+    item_price: item.menu_price,
+  }));
+
+  const fetchCreateOrder = async () => {
+    try {
+      const category = await createOrder(
+        isDineIn,
+        totalMoney,
+        formattedCartItems
+      );
+      clearCart();
+      navigate("/order-number", {
+        state: { orderNumber: category.data.order_number },
+      });
+    } catch (error) {
+      console.error(
+        "주문 생성 오류:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
 
   return (
     <div>
@@ -151,26 +196,46 @@ const ShoppingCartPage = () => {
 
         <div style={{ ...ShoppingCartStyles.line, height: 5 }} />
 
-        {menu.map((item, idx) => (
-          <CartList
-            key={idx}
-            menu={item}
-            isLast={idx === menu.length - 1}
-            onIncrease={() => handleIncrease(idx)}
-            onDecrease={() => handleDecrease(idx)}
-          />
-        ))}
-
-        <Button
-          icon={<IconCheck />}
-          text="주문하기"
-          onClick={() => {
-            setIsBottomSheetOpen(true);
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+            height: "70vh",
           }}
-        />
+        >
+          {cartItems.length !== 0 ? (
+            <>
+              {menu.map((item, idx) => (
+                <CartList
+                  key={idx}
+                  menu={item}
+                  isLast={idx === cartItems.length - 1}
+                  onIncrease={() => handleIncrease(idx)}
+                  onDecrease={() => handleDecrease(idx)}
+                  onDelete={() => handleDelete(idx)}
+                />
+              ))}
+            </>
+          ) : (
+            <div style={{ ...ShoppingCartStyles.textEmpty }}>
+              장바구니가 비었습니다.
+            </div>
+          )}
+
+          <Button
+            icon={<IconCheck />}
+            text="주문하기"
+            disabled={cartItems.length === 0}
+            onClick={() => {
+              cartItems.length !== 0 && setIsBottomSheetOpen(true);
+            }}
+          />
+        </div>
 
         {isBottomSheetOpen && (
           <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
+            {/* 이대로 주문하시겠냐는 영상 넣기 */}
             <div
               style={{
                 width: "100%",
@@ -180,7 +245,10 @@ const ShoppingCartPage = () => {
               }}
             />
             <div style={{ margin: "24px 0 24px 0" }}>
-              <ButtonYesNo pressNo={() => setIsBottomSheetOpen(false)} />
+              <ButtonYesNo
+                pressYes={fetchCreateOrder}
+                pressNo={() => setIsBottomSheetOpen(false)}
+              />
             </div>
           </BottomSheet>
         )}

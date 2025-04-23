@@ -1,6 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import { CartProvider } from "./context/CartContext";
+
 import HomePage from "@/pages/order/HomePage";
 import CategoryPage from "@/pages/order/CategoryPage";
 import MenuPage from "@/pages/order/MenuPage";
@@ -13,19 +15,24 @@ import CheckOrderNumberPage from "@/pages/checkOrder/CheckOrderNumberPage";
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/category" element={<CategoryPage />} />
-        <Route path="/menu/:categoryKey" element={<MenuPage />} />
-        <Route
-          path="/detailed-menu/:categoryKey/:id"
-          element={<DetailedMenuPage />}
-        />
-        <Route path="/shopping-cart" element={<ShoppingCartPage />} />
-        <Route path="/order-number" element={<OrderNumberPage />} />
-        <Route path="/check-order-number" element={<CheckOrderNumberPage />} />
-        <Route path="/order-process" element={<OrderProcessPage />} />
-      </Routes>
+      <CartProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/category" element={<CategoryPage />} />
+          <Route path="/menu/:categoryPath" element={<MenuPage />} />
+          <Route
+            path="/detailed-menu/:categoryPath/:menuPath"
+            element={<DetailedMenuPage />}
+          />
+          <Route path="/shopping-cart" element={<ShoppingCartPage />} />
+          <Route path="/order-number" element={<OrderNumberPage />} />
+          <Route
+            path="/check-order-number"
+            element={<CheckOrderNumberPage />}
+          />
+          <Route path="/order-process" element={<OrderProcessPage />} />
+        </Routes>
+      </CartProvider>
     </BrowserRouter>
   );
 }

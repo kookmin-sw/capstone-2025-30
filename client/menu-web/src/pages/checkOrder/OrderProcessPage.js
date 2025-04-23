@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import OrderProcessStyles from "@/pages/checkOrder/OrderProcessStyles";
 
+import { getOrderNumber } from "../../config/api";
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
 import { ReactComponent as IconCold } from "@/assets/icons/cold.svg";
 import { ReactComponent as IconHot } from "@/assets/icons/hot.svg";
 import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
+import { useState } from "react";
 
 const OrderList = ({ menu, isLast }) => {
   return (
@@ -27,7 +30,7 @@ const OrderList = ({ menu, isLast }) => {
             alignItems: "center",
           }}
         >
-          {menu.temp === "ice" ? (
+          {menu.options.choices.temperature === "차갑게" ? (
             <div style={{ color: CustomStyles.pointBlue, margin: "0 4px" }}>
               <IconCold width={30} height={30} />
             </div>
@@ -44,7 +47,11 @@ const OrderList = ({ menu, isLast }) => {
             }}
           >
             <div style={{ ...OrderProcessStyles.textSize, margin: "8px 0" }}>
-              {menu.size}
+              {menu.options.choices.size === "적게"
+                ? "S"
+                : menu.options.choices.size === "보통"
+                ? "M"
+                : "L"}
             </div>
             <IconSize width={30} height={32.73} />
           </div>
@@ -60,19 +67,32 @@ const OrderList = ({ menu, isLast }) => {
 };
 
 const OrderProcessPage = () => {
-  const menu = [
-    { text: "아메리카노", price: 4500, temp: "ice", size: "S", count: 1 },
-    { text: "카페라떼", price: 4500, temp: "hot", size: "L", count: 1 },
-    { text: "콜드브루", price: 4500, temp: "ice", size: "M", count: 1 },
-  ];
+  const { state } = useLocation();
+  const [orderInformation, setOrderInformation] = useState([]);
+  const [menu, setMenu] = useState([]);
 
-  const isCompleted = true; // 확인용 임시 변수
+  useEffect(() => {
+    const fetchGetOrderNumber = async () => {
+      try {
+        const category = await getOrderNumber(state?.checkOrderNumber);
+        setOrderInformation(category.data);
+        setMenu(category.data.items);
+        console.log(category.data);
+      } catch (error) {
+        console.error(
+          "주문 과정 조회 오류:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+    fetchGetOrderNumber();
+  }, [state?.checkOrderNumber]);
 
   return (
     <>
       <Header centerIcon="✅" cartIcon={null} />
 
-      {isCompleted ? (
+      {orderInformation?.dine_in ? (
         <div style={{ ...OrderProcessStyles.container }}>
           <div style={{ ...OrderProcessStyles.textProcess }}>메뉴 준비중</div>
 
