@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import MenuStyles from "@/pages/order/MenuStyles";
 
 import { getMenu } from "../../config/api";
+import { useCart } from "../../context/CartContext";
 import Header from "@/components/Header";
 import ButtonMenu from "@/components/ButtonMenu";
+import BottomCart from "@/components/BottomCart";
 
 const MenuPage = () => {
   const { categoryPath } = useParams();
-  const { state } = useLocation();
+  const { cartItems } = useCart();
   const [menus, setMenus] = useState([]);
-  const [showCartModal, setShowCartModal] = useState(false);
 
   useEffect(() => {
     const fetchGetMenu = async () => {
@@ -28,16 +29,6 @@ const MenuPage = () => {
     fetchGetMenu();
   }, [categoryPath]);
 
-  useEffect(() => {
-    if (state?.cartModal) {
-      setShowCartModal(true);
-      const timer = setTimeout(() => {
-        setShowCartModal(false);
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
-  }, [state]);
-
   return (
     <div style={{ marginBottom: 40 }}>
       {categoryPath === "커피" && <Header centerIcon="☕️" />}
@@ -48,7 +39,12 @@ const MenuPage = () => {
       {categoryPath === "샐러드" && <Header centerIcon="🥗" />}
 
       {menus && menus.length > 0 ? (
-        <div style={{ ...MenuStyles.container }}>
+        <div
+          style={{
+            ...MenuStyles.container,
+            paddingBottom: cartItems.length > 0 ? 60 : 0,
+          }}
+        >
           {menus.map((item, idx) => (
             <ButtonMenu key={idx} menu={item} />
           ))}
@@ -57,8 +53,18 @@ const MenuPage = () => {
         <></>
       )}
 
-      {showCartModal && (
-        <div style={{ ...MenuStyles.modalCart }}>장바구니에 담겼습니다!</div>
+      {cartItems.length > 0 && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 100,
+          }}
+        >
+          <BottomCart />
+        </div>
       )}
     </div>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 
 import Header from "@/components/Header";
+import SignVideo from "@/components/SignVideo";
 
 const OrderNumberPage = () => {
   const { state } = useLocation();
@@ -17,14 +18,7 @@ const OrderNumberPage = () => {
           alignItems: "center",
         }}
       >
-        <div
-          style={{
-            width: "100%",
-            paddingTop: "100%",
-            backgroundColor: "#D0D0D0",
-            borderRadius: 16,
-          }}
-        />
+        <SignVideo src="/assets/video/카운터로가서휴대폰을보여주세요.mp4" />
 
         <div
           style={{

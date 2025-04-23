@@ -6,7 +6,6 @@ export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [isDineIn, setIsDineIn] = useState(null);
 
   const addToCart = (item) => {
     setCartItems((prev) => {
@@ -42,15 +41,9 @@ export const CartProvider = ({ children }) => {
     setCartItems([]);
   };
 
-  //   useEffect(() => {
-  //     console.log(isDineIn);
-  //   }, [isDineIn]);
-
   return (
     <CartContext.Provider
       value={{
-        isDineIn,
-        setIsDineIn,
         cartItems,
         addToCart,
         removeFromCart,

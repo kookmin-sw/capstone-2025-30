@@ -25,12 +25,20 @@ const DetailedMenuPage = () => {
   const [detailMenu, setDetailMenu] = useState([]);
   const [selectedTemp, setSelectedTemp] = useState("차갑게");
   const [selectedSize, setSelectedSize] = useState("적게");
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
 
   const handleReplay = () => {
     setIsEnded(false);
-    videoRef.current.currentTime = 0;
-    videoRef.current.play();
+    setCurrentIndex(0);
+  };
+
+  const handleVideoEnd = () => {
+    if (currentIndex < detailMenu.sign_language_urls?.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setIsEnded(true);
+    }
   };
 
   useEffect(() => {
@@ -116,22 +124,24 @@ const DetailedMenuPage = () => {
             borderRadius: 16,
           }}
         >
-          <video
-            ref={videoRef}
-            src={detailMenu.sign_language_urls?.[1]} // 추후 한 개의 영상으로 오면 인덱스 빼기
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              borderRadius: 16,
-            }}
-            autoPlay
-            muted
-            onEnded={() => setIsEnded(true)}
-          />
+          {detailMenu.sign_language_urls && (
+            <video
+              ref={videoRef}
+              src={detailMenu.sign_language_urls[currentIndex]}
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: 16,
+              }}
+              autoPlay
+              muted
+              onEnded={handleVideoEnd}
+            />
+          )}
           {isEnded && (
             <>
               <div
