@@ -9,6 +9,7 @@ var (
 	OrderColl        = &mongo.Collection{}
 	CounterColl      = &mongo.Collection{}
 	NotificationColl = &mongo.Collection{}
+	MessageColl      = &mongo.Collection{}
 )
 
 func defineCollections() {
@@ -18,4 +19,5 @@ func defineCollections() {
 	OrderColl = Client.Database(name).Collection("order")
 	CounterColl = Client.Database(name).Collection("order_counter")
 	NotificationColl = Client.Database(name).Collection("notification")
+	MessageColl = Client.Database(name).Collection("message")
 }
