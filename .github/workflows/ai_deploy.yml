@@ -53,4 +53,5 @@ jobs:
           key: ${{ secrets.AI_EC2_SSH_KEY }}
           script: |
             cd /home/ubuntu/app/ai
-            docker-compose up -d --build
+            docker-compose down -v   
+            docker-compose up -d --build 
