@@ -3,6 +3,9 @@ import grpc
 import os
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
+import numpy as np
+import mediapipe as mp
+import json
 
 from dotenv import load_dotenv
 import os
@@ -13,12 +16,20 @@ with open("certs/server.crt", "rb") as f:
         trusted_certs = f.read()
 credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
+# 배포용
 channel = grpc.secure_channel(f"{host}:50051",
                               credentials,
-                                  options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
-                                           ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
+                                  options=[('grpc.max_send_message_length', 10 * 1024 * 1024),
+                                           ('grpc.max_receive_message_length', 10 * 1024 * 1024)]) 
+
+# 로컬용
+# channel = grpc.insecure_channel(f"localhost:50051",
+#                                 options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
+#                                          ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
+
 stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
+# --- 영상 열기 ---
 video_path = '아메리카노_수어통합본.mp4'
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
@@ -27,58 +38,82 @@ if not cap.isOpened():
 
 fps = cap.get(cv2.CAP_PROP_FPS)
 frame_count = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-video_length = frame_count / fps
 print(f"비디오 FPS: {fps}")
 
-frames = []
+
+# --- Mediapipe 초기화 ---
+mp_hands = mp.solutions.hands
+hands = mp_hands.Hands(static_image_mode=True, max_num_hands=2)
+
+def compute_angles(joints_63):
+    joints = joints_63.reshape(-1, 21, 3)
+    seq_out = []
+
+    for joint in joints:
+        v1 = joint[[0,1,2,3,0,5,6,7,0,9,10,11,0,13,14,15,0,17,18,19], :]
+        v2 = joint[[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20], :]
+        v = v2 - v1
+        v = v / np.linalg.norm(v, axis=1)[:, np.newaxis]
+
+        angle = np.arccos(np.einsum('nt,nt->n',
+            v[[0,1,2,4,5,6,8,9,10,12,13,14,16,17,18],:], 
+            v[[1,2,3,5,6,7,9,10,11,13,14,15,17,18,19],:]
+        ))
+        angle = np.degrees(angle)
+        feature = np.concatenate([joint.flatten(), angle])
+        seq_out.append(feature)
+
+    return np.array(seq_out)
+
+# --- 프레임 분석 ---
+joint_data_list = []
 
 while True:
     ret, frame = cap.read()
     if not ret:
         break
 
-    success, buffer = cv2.imencode('.jpg', frame)
-    if success:
-        frame_bytes = buffer.tobytes()
-        frames.append(frame_bytes)
+    img_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    result = hands.process(img_rgb)
+
+    if result.multi_hand_landmarks:
+        for res in result.multi_hand_landmarks:
+            joint = np.zeros((21, 3))
+            for j, lm in enumerate(res.landmark):
+                joint[j] = [lm.x, lm.y, lm.z]
+
+            joint_data_list.append(joint.flatten())
 
 cap.release()
+hands.close()
 
-if len(frames) == 0:
-    print("⚠️ 전송할 프레임이 없습니다.")
-    exit()
+print(f"📌 추출된 손 좌표 개수: {len(joint_data_list)}")
 
+joints_np = np.array(joint_data_list) 
+angles = compute_angles(joints_np)  
 
-# Client : 프레임 별로 저장하는 코드
-save_dir = "saved_frames"
-os.makedirs(save_dir, exist_ok=True)
-
-for idx, frame_bytes in enumerate(frames):
-    frame_path = os.path.join(save_dir, f"frame_{idx:05d}.jpg") 
-    with open(frame_path, 'wb') as f:
-        f.write(frame_bytes)
-
-print(f"✅ 총 {len(frames)}개의 프레임이 '{save_dir}' 폴더에 저장되었습니다.")
-
-frame_files = sorted([f for f in os.listdir(save_dir) if f.endswith('.jpg')])
-
-# Server : jpg 들을 읽어서 한 배열에 묶어주는 코드
-frames = []
-for file_name in frame_files:
-    frame_path = os.path.join(save_dir, file_name)
-    with open(frame_path, 'rb') as f:
-        frame_bytes = f.read()
-        frames.append(frame_bytes)
-
+flat_joints = angles.flatten().tolist()  
 
 request = all_predict_sign_pb2.FrameSequenceInput(
-    frames=frames,
-    client_id="client_01",
-    fps=fps,
-    video_length=video_length
+    frames=flat_joints,
+    store_id="store_object_id",
+    fps=int(fps),
+    video_length=frame_count
 )
 
-
 response = stub.PredictFromFrames(request)
+print(f"[결과] Store: {response.store_id}, 문장: {response.predicted_sentence}, Confidence: {response.confidence:.4f}")
 
-print(f"[예측 결과] Client: {response.client_id}, 한국어 문장: {response.predicted_sentence}")
+
+# --- For Postman ---
+# request_data = {
+#     "store_id": "store_object_id",
+#     "fps": int(fps),
+#     "video_length": frame_count,
+#     "frames": flat_joints,
+# }
+
+# with open("frame_sequence_input.json", "w", encoding="utf-8") as f:
+#     json.dump(request_data, f, ensure_ascii=False, indent=2)
+
+# print("✅ JSON 저장 완료: frame_sequence_input.json")
