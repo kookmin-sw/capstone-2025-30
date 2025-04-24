@@ -12,8 +12,7 @@ import os
 
 load_dotenv()
 host = os.getenv("AI_EC2_HOST")
-with open("certs/server.crt", "rb") as f:
-        trusted_certs = f.read()
+trusted_certs = os.environ['AI_TLS_CRT'].encode('utf-8')
 credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
 # 배포용

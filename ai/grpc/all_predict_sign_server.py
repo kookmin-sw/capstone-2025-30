@@ -5,6 +5,7 @@ import json
 import numpy as np
 import mediapipe as mp
 import cv2
+import os
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
 import load_to_korean_rag
@@ -151,10 +152,8 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
         )
 
 def load_tls_credentials():
-    with open('certs/server.crt', 'rb') as f:
-        certificate_chain = f.read()
-    with open('certs/server.key', 'rb') as f:
-        private_key = f.read()
+    certificate_chain = os.environ['AI_TLS_CRT'].encode('utf-8')
+    private_key = os.environ['AI_TLS_KEY'].encode('utf-8')
 
     return grpc.ssl_server_credentials(
         [(private_key, certificate_chain)],
