@@ -174,7 +174,7 @@ def serve():
         
         # 배포용
         port_result = server.add_secure_port('[::]:50051', creds)
-        
+
         # 로컬용
         # port_result = server.add_insecure_port('[::]:50051')
         print(f"✅ 포트 바인딩 결과: {port_result}")
@@ -182,6 +182,7 @@ def serve():
         print("🚀 AI 서버 실행 중... 포트: 50051")
         server.start()
         server.wait_for_termination()
+        
     except Exception as e:
         print("❌ 서버 실행 중 에러 발생:", e)
 
