@@ -2,6 +2,9 @@ FROM python:3.10
 
 WORKDIR /app
 
+RUN python -m venv /env
+ENV PATH="/env/bin:$PATH"
+
 COPY requirements.txt .
 RUN pip install --upgrade pip
 
