@@ -42,7 +42,7 @@ jobs:
           host: ${{ secrets.AI_EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.AI_EC2_SSH_KEY }}
-          source: "ai"
+          source: "ai/*"
           target: "/home/ubuntu/ai"
 
       - name: Deploy to EC2
