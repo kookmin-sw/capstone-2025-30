@@ -43,7 +43,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.AI_EC2_SSH_KEY }}
           source: "ai"
-          target: "/home/ubuntu/app"
+          target: "/home/ubuntu/ai"
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
@@ -52,6 +52,6 @@ jobs:
           username: ubuntu
           key: ${{ secrets.AI_EC2_SSH_KEY }}
           script: |
-            cd /home/ubuntu/app/ai
+            cd /home/ubuntu/ai
             docker-compose down -v   
             docker-compose up -d --build 
