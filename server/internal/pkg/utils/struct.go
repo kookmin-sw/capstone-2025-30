@@ -19,3 +19,9 @@ const (
 	MessageStatusRead      = "read"
 	MessageStatusPending   = "pending"
 )
+
+// grpc StreamInquiries inquiryType
+const (
+	StreamDataTypeOrder   = "order"
+	StreamDataTypeInquiry = "inquiry"
+)
