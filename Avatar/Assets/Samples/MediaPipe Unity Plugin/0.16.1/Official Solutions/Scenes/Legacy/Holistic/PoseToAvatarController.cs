@@ -9,9 +9,16 @@ public class PoseToAvatarController : MonoBehaviour
 {
     public Animator anim;
     public NormalizedLandmarkList PoseLandmarkList;
+    public NormalizedLandmarkList RightHandLandmarkList;
+    public NormalizedLandmarkList LeftHandLandmarkList;
+    public NormalizedLandmarkList FaceLandmarkList;
     StoreJointData storeData;
     MoveAvatar moveAvatar;
     Vector3[] realJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
+    Vector3[] realLeftHandJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
+    Vector3[] realRightHandJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
+
+    
     [Range(0f, 200f)]
     public float poseScale = 100f;
     float screenWidth = Screen.width;
@@ -26,6 +33,18 @@ public class PoseToAvatarController : MonoBehaviour
     {
         this.PoseLandmarkList = poseLandmarkList;
     }
+    public void ApplyFaceToAvatar(NormalizedLandmarkList faceLandmarkList)
+    {
+        this.FaceLandmarkList = faceLandmarkList;
+    }
+    public void ApplyLHandToAvatar(NormalizedLandmarkList lhandLandmarkList)
+    {
+        this.LeftHandLandmarkList = lhandLandmarkList;
+    }
+    public void ApplyRHandToAvatar(NormalizedLandmarkList rhandLandmarkList)
+    {
+        this.RightHandLandmarkList = rhandLandmarkList;
+    }
     
     private void Start()
     {
@@ -34,6 +53,9 @@ public class PoseToAvatarController : MonoBehaviour
         storeData.InitializeAnimator(anim);
         moveAvatar = gameObject.AddComponent<MoveAvatar>();
         realJoint = new Vector3[33];
+        realLeftHandJoint = new Vector3[21];
+        realRightHandJoint = new Vector3[21];
+        
     }
 
     private void Update()
@@ -54,8 +76,33 @@ public class PoseToAvatarController : MonoBehaviour
                 j++;
             }
         }
+        
+        int l = 0;
+        // position은 절대 좌표임
+        // 왼손
+        for (int i = 0; i < 21; i++)
+        {
+            // Landmark 데이터를 trackJoint에 저장하는 코드
+            realLeftHandJoint[l].x = LeftHandLandmarkList.Landmark[i].X * screenWidth - offsetX;
+            realLeftHandJoint[l].y = -LeftHandLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+            realLeftHandJoint[l].z = LeftHandLandmarkList.Landmark[i].Z;
+            l++;
+        }
+        
+        int r = 0;
+        // position은 절대 좌표임
+        // 오른손
+        for (int i = 0; i < 21; i++)
+        {
+            // Landmark 데이터를 trackJoint에 저장하는 코드
+            realRightHandJoint[r].x = LeftHandLandmarkList.Landmark[i].X * screenWidth - offsetX;
+            realRightHandJoint[r].y = -LeftHandLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+            realRightHandJoint[r].z = LeftHandLandmarkList.Landmark[i].Z;
+            r++;
+        }
+        
 
-        storeData.SetTrackJointData(realJoint);
+        storeData.SetTrackJointData(realJoint,realLeftHandJoint,realRightHandJoint);
        
         // 아바타의 팔다리, 몸통 관절데이터 저장
         storeData.Store();

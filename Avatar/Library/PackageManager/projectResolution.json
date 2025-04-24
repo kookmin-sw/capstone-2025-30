@@ -1,17 +1,17 @@
 {
   "context": {
-    "projectPath": "/Users/jeonghoyong/Avatar/Packages",
+    "projectPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Packages",
     "unityVersion": "6000.0.31f1"
   },
   "inputs": [
-    "/Users/jeonghoyong/Avatar/Packages/manifest.json",
-    "/Users/jeonghoyong/Avatar/Packages/packages-lock.json",
+    "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Packages/manifest.json",
+    "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Packages/packages-lock.json",
     "/Users/jeonghoyong/Downloads/com.github.homuler.mediapipe-0.16.1.tgz"
   ],
   "outputs": {
     "com.github.homuler.mediapipe@file:/Users/jeonghoyong/Downloads/com.github.homuler.mediapipe-0.16.1.tgz": {
       "name": "com.github.homuler.mediapipe",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.github.homuler.mediapipe",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.github.homuler.mediapipe",
       "fingerprint": "7f48457ae94b5f92d3f657c87ad3f806",
       "editorCompatibility": "2022.3.0a1",
       "version": "0.16.1",
@@ -19,7 +19,7 @@
     },
     "com.unity.ai.navigation@2.0.5": {
       "name": "com.unity.ai.navigation",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.ai.navigation",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.ai.navigation",
       "fingerprint": "9f76b145f0a8dd734ff2a4877f7f7edb83b7f62c",
       "editorCompatibility": "2023.2.0a18",
       "version": "2.0.5",
@@ -27,7 +27,7 @@
     },
     "com.unity.animation.rigging@1.3.0": {
       "name": "com.unity.animation.rigging",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.animation.rigging",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.animation.rigging",
       "fingerprint": "68167b505d2b550a35f5d5b6daef6193de3c7460",
       "editorCompatibility": "2022.2.0a9",
       "version": "1.3.0",
@@ -35,7 +35,7 @@
     },
     "com.unity.collab-proxy@2.7.1": {
       "name": "com.unity.collab-proxy",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.collab-proxy",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.collab-proxy",
       "fingerprint": "50ac96531b6358586ccfdf8cc845939bf50d9fab",
       "editorCompatibility": "2021.3.0f1",
       "version": "2.7.1",
@@ -43,7 +43,7 @@
     },
     "com.unity.ide.rider@3.0.31": {
       "name": "com.unity.ide.rider",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.ide.rider",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.ide.rider",
       "fingerprint": "7921be93db40ec070fcb01ed82d1c3df1bbdddcd",
       "editorCompatibility": "2019.2.6f1",
       "version": "3.0.31",
@@ -51,7 +51,7 @@
     },
     "com.unity.ide.visualstudio@2.0.22": {
       "name": "com.unity.ide.visualstudio",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.ide.visualstudio",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.ide.visualstudio",
       "fingerprint": "8140e851d83e922ca2021b04a89519de94ebe38c",
       "editorCompatibility": "2019.4.25f1",
       "version": "2.0.22",
@@ -59,7 +59,7 @@
     },
     "com.unity.inputsystem@1.11.2": {
       "name": "com.unity.inputsystem",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.inputsystem",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.inputsystem",
       "fingerprint": "3c4a97c3950fef77960981e0fe90613de6e512ee",
       "editorCompatibility": "2019.4.0a1",
       "version": "1.11.2",
@@ -67,7 +67,7 @@
     },
     "com.unity.multiplayer.center@1.0.0": {
       "name": "com.unity.multiplayer.center",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.multiplayer.center",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.multiplayer.center",
       "fingerprint": "f502d8ac613fa076192423e73892fbd89eb4049b",
       "editorCompatibility": "6000.0.0a1",
       "version": "1.0.0",
@@ -75,7 +75,7 @@
     },
     "com.unity.render-pipelines.universal@17.0.3": {
       "name": "com.unity.render-pipelines.universal",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.render-pipelines.universal",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.render-pipelines.universal",
       "fingerprint": "cc55c19ba4ca76b8261de82d99d97da9d1396e94",
       "editorCompatibility": "6000.0.0a1",
       "version": "17.0.3",
@@ -83,7 +83,7 @@
     },
     "com.unity.test-framework@1.4.5": {
       "name": "com.unity.test-framework",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.test-framework",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.test-framework",
       "fingerprint": "0a21eb82d95cd331643a1e0ce4e8e9a5f18954c8",
       "editorCompatibility": "2019.4.0a10",
       "version": "1.4.5",
@@ -91,7 +91,7 @@
     },
     "com.unity.timeline@1.8.7": {
       "name": "com.unity.timeline",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.timeline",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.timeline",
       "fingerprint": "c58b4ee65782ad38338e29f7ee67787cb6998f04",
       "editorCompatibility": "2019.3.0a1",
       "version": "1.8.7",
@@ -99,7 +99,7 @@
     },
     "com.unity.ugui@2.0.0": {
       "name": "com.unity.ugui",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.ugui",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.ugui",
       "fingerprint": "fd5da3b4bec8d043b01c30177bd62059c5fa36d0",
       "editorCompatibility": "2019.2.0a1",
       "version": "2.0.0",
@@ -107,7 +107,7 @@
     },
     "com.unity.visualscripting@1.9.5": {
       "name": "com.unity.visualscripting",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.visualscripting",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.visualscripting",
       "fingerprint": "1b53f46e931bea668e53f1feb0ac9138170c9455",
       "editorCompatibility": "2021.3.0a1",
       "version": "1.9.5",
@@ -115,211 +115,211 @@
     },
     "com.unity.modules.accessibility@1.0.0": {
       "name": "com.unity.modules.accessibility",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.accessibility",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.accessibility",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.ai@1.0.0": {
       "name": "com.unity.modules.ai",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.ai",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.ai",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.androidjni@1.0.0": {
       "name": "com.unity.modules.androidjni",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.androidjni",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.androidjni",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.animation@1.0.0": {
       "name": "com.unity.modules.animation",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.animation",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.animation",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.assetbundle@1.0.0": {
       "name": "com.unity.modules.assetbundle",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.assetbundle",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.assetbundle",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.audio@1.0.0": {
       "name": "com.unity.modules.audio",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.audio",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.audio",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.cloth@1.0.0": {
       "name": "com.unity.modules.cloth",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.cloth",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.cloth",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.director@1.0.0": {
       "name": "com.unity.modules.director",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.director",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.director",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.imageconversion@1.0.0": {
       "name": "com.unity.modules.imageconversion",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.imageconversion",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.imageconversion",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.imgui@1.0.0": {
       "name": "com.unity.modules.imgui",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.imgui",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.imgui",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.jsonserialize@1.0.0": {
       "name": "com.unity.modules.jsonserialize",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.jsonserialize",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.jsonserialize",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.particlesystem@1.0.0": {
       "name": "com.unity.modules.particlesystem",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.particlesystem",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.particlesystem",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.physics@1.0.0": {
       "name": "com.unity.modules.physics",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.physics",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.physics",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.physics2d@1.0.0": {
       "name": "com.unity.modules.physics2d",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.physics2d",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.physics2d",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.screencapture@1.0.0": {
       "name": "com.unity.modules.screencapture",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.screencapture",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.screencapture",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.terrain@1.0.0": {
       "name": "com.unity.modules.terrain",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.terrain",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.terrain",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.terrainphysics@1.0.0": {
       "name": "com.unity.modules.terrainphysics",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.terrainphysics",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.terrainphysics",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.tilemap@1.0.0": {
       "name": "com.unity.modules.tilemap",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.tilemap",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.tilemap",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.ui@1.0.0": {
       "name": "com.unity.modules.ui",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.ui",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.ui",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.uielements@1.0.0": {
       "name": "com.unity.modules.uielements",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.uielements",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.uielements",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.umbra@1.0.0": {
       "name": "com.unity.modules.umbra",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.umbra",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.umbra",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unityanalytics@1.0.0": {
       "name": "com.unity.modules.unityanalytics",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unityanalytics",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unityanalytics",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unitywebrequest@1.0.0": {
       "name": "com.unity.modules.unitywebrequest",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unitywebrequest",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unitywebrequest",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unitywebrequestassetbundle@1.0.0": {
       "name": "com.unity.modules.unitywebrequestassetbundle",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestassetbundle",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unitywebrequestaudio@1.0.0": {
       "name": "com.unity.modules.unitywebrequestaudio",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestaudio",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestaudio",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unitywebrequesttexture@1.0.0": {
       "name": "com.unity.modules.unitywebrequesttexture",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unitywebrequesttexture",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unitywebrequesttexture",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.unitywebrequestwww@1.0.0": {
       "name": "com.unity.modules.unitywebrequestwww",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestwww",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.unitywebrequestwww",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.vehicles@1.0.0": {
       "name": "com.unity.modules.vehicles",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.vehicles",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.vehicles",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.video@1.0.0": {
       "name": "com.unity.modules.video",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.video",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.video",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.vr@1.0.0": {
       "name": "com.unity.modules.vr",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.vr",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.vr",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.wind@1.0.0": {
       "name": "com.unity.modules.wind",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.wind",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.wind",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.xr@1.0.0": {
       "name": "com.unity.modules.xr",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.xr",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.xr",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.subsystems@1.0.0": {
       "name": "com.unity.modules.subsystems",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.subsystems",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.subsystems",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.modules.hierarchycore@1.0.0": {
       "name": "com.unity.modules.hierarchycore",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.modules.hierarchycore",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.modules.hierarchycore",
       "version": "1.0.0",
       "source": "builtin"
     },
     "com.unity.ext.nunit@2.0.5": {
       "name": "com.unity.ext.nunit",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.ext.nunit",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.ext.nunit",
       "fingerprint": "60ef35ffd3cd5e2f5c8887a4a4ca6148854cd092",
       "editorCompatibility": "2019.4.0a1",
       "version": "2.0.5",
@@ -327,7 +327,7 @@
     },
     "com.unity.render-pipelines.core@17.0.3": {
       "name": "com.unity.render-pipelines.core",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.render-pipelines.core",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.render-pipelines.core",
       "fingerprint": "747431a7561e3704b53884792fbab339cb7fb137",
       "editorCompatibility": "6000.0.0a1",
       "version": "17.0.3",
@@ -335,7 +335,7 @@
     },
     "com.unity.shadergraph@17.0.3": {
       "name": "com.unity.shadergraph",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.shadergraph",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.shadergraph",
       "fingerprint": "2fc0dc00c30e9f83f2ea34c9af678b9696924aef",
       "editorCompatibility": "6000.0.0a1",
       "version": "17.0.3",
@@ -343,7 +343,7 @@
     },
     "com.unity.render-pipelines.universal-config@17.0.3": {
       "name": "com.unity.render-pipelines.universal-config",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.render-pipelines.universal-config",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.render-pipelines.universal-config",
       "fingerprint": "fa63c96d3e1af317d84d171cd6c0e0658ab159df",
       "editorCompatibility": "6000.0.0a1",
       "version": "17.0.3",
@@ -351,7 +351,7 @@
     },
     "com.unity.burst@1.8.18": {
       "name": "com.unity.burst",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.burst",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.burst",
       "fingerprint": "616862665d8c8ffe643d505aebb5de2ee73b0ab0",
       "editorCompatibility": "2020.3.0a1",
       "version": "1.8.18",
@@ -359,7 +359,7 @@
     },
     "com.unity.searcher@4.9.2": {
       "name": "com.unity.searcher",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.searcher",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.searcher",
       "fingerprint": "90d011a70418fd5b0f4b8e86df39444d2af228dd",
       "editorCompatibility": "2019.1.0a1",
       "version": "4.9.2",
@@ -367,7 +367,7 @@
     },
     "com.unity.mathematics@1.3.2": {
       "name": "com.unity.mathematics",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.mathematics",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.mathematics",
       "fingerprint": "8017b507cc74bf0a1dd14b18aa860569f807314d",
       "editorCompatibility": "2021.3.0a1",
       "version": "1.3.2",
@@ -375,7 +375,7 @@
     },
     "com.unity.collections@2.5.1": {
       "name": "com.unity.collections",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.collections",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.collections",
       "fingerprint": "56bff8827a7ef6d44fcee4f36e558a74da89c1a0",
       "editorCompatibility": "2022.3.11f1",
       "version": "2.5.1",
@@ -383,7 +383,7 @@
     },
     "com.unity.rendering.light-transport@1.0.1": {
       "name": "com.unity.rendering.light-transport",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.rendering.light-transport",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.rendering.light-transport",
       "fingerprint": "307bc27a498fc9cd409bbd426c85d8dc7f140bc1",
       "editorCompatibility": "2023.3.0b1",
       "version": "1.0.1",
@@ -391,7 +391,7 @@
     },
     "com.unity.nuget.mono-cecil@1.11.4": {
       "name": "com.unity.nuget.mono-cecil",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.nuget.mono-cecil",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.nuget.mono-cecil",
       "fingerprint": "d6f9955a5d5f84d45442ff1ad0fb694cc6e2fd62",
       "editorCompatibility": "2018.4.0a1",
       "version": "1.11.4",
@@ -399,7 +399,7 @@
     },
     "com.unity.test-framework.performance@3.0.3": {
       "name": "com.unity.test-framework.performance",
-      "resolvedPath": "/Users/jeonghoyong/Avatar/Library/PackageCache/com.unity.test-framework.performance",
+      "resolvedPath": "/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/PackageCache/com.unity.test-framework.performance",
       "fingerprint": "fb0dc592af8b524f1a06c50d7caf95552f1bcd2f",
       "editorCompatibility": "2020.3.0a1",
       "version": "3.0.3",

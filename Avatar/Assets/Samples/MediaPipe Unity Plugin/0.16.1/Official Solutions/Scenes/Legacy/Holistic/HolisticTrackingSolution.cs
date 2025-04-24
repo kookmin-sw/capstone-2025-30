@@ -192,6 +192,7 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawFaceLandmarkListLater(value);
+      _poseToAvatarController.ApplyFaceToAvatar(value);
     }
 
     private void OnPoseLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
@@ -208,6 +209,7 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawLeftHandLandmarkListLater(value);
+      _poseToAvatarController.ApplyLHandToAvatar(value);
     }
 
     private void OnRightHandLandmarksOutput(object stream, OutputStream<NormalizedLandmarkList>.OutputEventArgs eventArgs)
@@ -215,6 +217,7 @@ namespace Mediapipe.Unity.Sample.Holistic
       var packet = eventArgs.packet;
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawRightHandLandmarkListLater(value);
+      _poseToAvatarController.ApplyRHandToAvatar(value);
     }
 
     private void OnPoseWorldLandmarksOutput(object stream, OutputStream<LandmarkList>.OutputEventArgs eventArgs)

@@ -5,6 +5,9 @@ using UnityEngine;
 public class StoreJointData : MonoBehaviour
 {
     private Vector3[] trackJoint = new Vector3[13];
+    private Vector3[] lhtrackJoint = new Vector3[21];
+    private Vector3[] rhtrackJoint = new Vector3[21];
+
     public List<AvatarData> limbsJointData;
     public Dictionary<string, AvatarData> torsoJointData;
     public Animator anim;
@@ -12,12 +15,19 @@ public class StoreJointData : MonoBehaviour
     private Vector3 virtualNeck;
     private Vector3 virtualHips;
     private Vector3 virtualUpperChest;
+    // private Vector3 virtualLeftThumb;
+    // private Vector3 virtualLeftIndex;
+    // private Vector3 virtualLeftMiddle;
+    // private Vector3 virtualLeftRing;
+    // private Vector3 virtualLeftPinky;
 
     private void Awake()
     {
         limbsJointData = new List<AvatarData>();
         torsoJointData = new Dictionary<string, AvatarData>();
         trackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
+        lhtrackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
+        rhtrackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
     }
     public void InitializeAnimator(Animator animator)
     {
@@ -45,6 +55,12 @@ public class StoreJointData : MonoBehaviour
         // 3. 상체(virtualUpperChest) 계산
         virtualUpperChest = (trackJoint[1] + trackJoint[2]) / 2.0f;
         virtualUpperChest.y -= 0.1f;
+
+        // virtualLeftThumb = lhtrackJoint[1];
+        // virtualLeftIndex = lhtrackJoint[5];
+        // virtualLeftMiddle = lhtrackJoint[9];
+        // virtualLeftRing = lhtrackJoint[13];
+        // virtualLeftPinky = lhtrackJoint[17];
     
         // 4. 엉덩이 위치 적용 (Null 체크 추가)
         Transform hipsBone = anim.GetBoneTransform(HumanBodyBones.Hips);
@@ -79,9 +95,11 @@ public class StoreJointData : MonoBehaviour
     //     anim.GetBoneTransform(HumanBodyBones.Hips).position = virtualHips;
     // }
 
-    public void SetTrackJointData(Vector3[] realJoint)
+    public void SetTrackJointData(Vector3[] realJoint, Vector3[] realRightHandJoint, Vector3[] realLeftHandJoint)
     {
         trackJoint = realJoint;
+        lhtrackJoint = realLeftHandJoint;
+        rhtrackJoint = realRightHandJoint;
     }
 
     public void AddLimbsJointData(HumanBodyBones parent, HumanBodyBones child, Vector3 trackParent, Vector3 trackChild)
@@ -119,6 +137,52 @@ public class StoreJointData : MonoBehaviour
 
         AddLimbsJointData(HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg, trackJoint[7], trackJoint[9]);
         AddLimbsJointData(HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot, trackJoint[9], trackJoint[11]);
+        
+        // LeftHand
+        // AddLimbsJointData(HumanBodyBones.LeftHand, virtualLeftThumb, lhtrackJoint[0], lhtrackJoint[2]);
+        AddLimbsJointData(HumanBodyBones.LeftHand, HumanBodyBones.LeftThumbProximal, lhtrackJoint[0], lhtrackJoint[2]);
+        AddLimbsJointData(HumanBodyBones.LeftThumbProximal, HumanBodyBones.LeftThumbIntermediate, lhtrackJoint[2], lhtrackJoint[3]);
+        AddLimbsJointData(HumanBodyBones.LeftThumbIntermediate, HumanBodyBones.LeftThumbDistal, lhtrackJoint[3], lhtrackJoint[4]);
+        
+        AddLimbsJointData(HumanBodyBones.LeftHand, HumanBodyBones.LeftIndexProximal, lhtrackJoint[0], lhtrackJoint[5]);
+        AddLimbsJointData(HumanBodyBones.LeftIndexProximal, HumanBodyBones.LeftIndexIntermediate, lhtrackJoint[5], lhtrackJoint[6]);
+        AddLimbsJointData(HumanBodyBones.LeftIndexIntermediate, HumanBodyBones.LeftIndexDistal, lhtrackJoint[6], lhtrackJoint[7]);
+        
+        AddLimbsJointData(HumanBodyBones.LeftHand, HumanBodyBones.LeftMiddleProximal, lhtrackJoint[0], lhtrackJoint[9]);
+        AddLimbsJointData(HumanBodyBones.LeftMiddleProximal, HumanBodyBones.LeftMiddleIntermediate, lhtrackJoint[9], lhtrackJoint[10]);
+        AddLimbsJointData(HumanBodyBones.LeftMiddleIntermediate, HumanBodyBones.LeftMiddleDistal, lhtrackJoint[10], lhtrackJoint[11]);
+
+        AddLimbsJointData(HumanBodyBones.LeftHand, HumanBodyBones.LeftRingProximal, lhtrackJoint[0], lhtrackJoint[13]);
+        AddLimbsJointData(HumanBodyBones.LeftRingProximal, HumanBodyBones.LeftRingIntermediate, lhtrackJoint[13], lhtrackJoint[14]);
+        AddLimbsJointData(HumanBodyBones.LeftRingIntermediate, HumanBodyBones.LeftRingDistal, lhtrackJoint[14], lhtrackJoint[15]);
+
+        AddLimbsJointData(HumanBodyBones.LeftHand, HumanBodyBones.LeftLittleProximal, lhtrackJoint[0], lhtrackJoint[17]);
+        AddLimbsJointData(HumanBodyBones.LeftLittleProximal, HumanBodyBones.LeftLittleIntermediate, lhtrackJoint[17], lhtrackJoint[18]);
+        AddLimbsJointData(HumanBodyBones.LeftLittleIntermediate, HumanBodyBones.LeftLittleDistal, lhtrackJoint[18], lhtrackJoint[19]);
+
+        
+        // RightHand
+        AddLimbsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightThumbProximal, lhtrackJoint[0], lhtrackJoint[2]);
+        AddLimbsJointData(HumanBodyBones.RightThumbProximal, HumanBodyBones.RightThumbIntermediate, lhtrackJoint[2], lhtrackJoint[3]);
+        AddLimbsJointData(HumanBodyBones.RightThumbIntermediate, HumanBodyBones.RightThumbDistal, lhtrackJoint[3], lhtrackJoint[4]);
+        
+        AddLimbsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightIndexProximal, rhtrackJoint[0], rhtrackJoint[5]);
+        AddLimbsJointData(HumanBodyBones.RightIndexProximal, HumanBodyBones.RightIndexIntermediate, rhtrackJoint[5], rhtrackJoint[6]);
+        AddLimbsJointData(HumanBodyBones.RightIndexIntermediate, HumanBodyBones.RightIndexDistal, rhtrackJoint[6], rhtrackJoint[7]);
+        
+        AddLimbsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightMiddleProximal, rhtrackJoint[0], rhtrackJoint[9]);
+        AddLimbsJointData(HumanBodyBones.RightMiddleProximal, HumanBodyBones.RightMiddleIntermediate, rhtrackJoint[9], rhtrackJoint[10]);
+        AddLimbsJointData(HumanBodyBones.RightMiddleIntermediate, HumanBodyBones.RightMiddleDistal, rhtrackJoint[10], rhtrackJoint[11]);
+
+        AddLimbsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightRingProximal, rhtrackJoint[0], rhtrackJoint[13]);
+        AddLimbsJointData(HumanBodyBones.RightRingProximal, HumanBodyBones.RightRingIntermediate, rhtrackJoint[13], rhtrackJoint[14]);
+        AddLimbsJointData(HumanBodyBones.RightRingIntermediate, HumanBodyBones.RightRingDistal, rhtrackJoint[14], rhtrackJoint[15]);
+
+        AddLimbsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightLittleProximal, rhtrackJoint[0], rhtrackJoint[17]);
+        AddLimbsJointData(HumanBodyBones.RightLittleProximal, HumanBodyBones.RightLittleIntermediate, rhtrackJoint[17], rhtrackJoint[18]);
+        AddLimbsJointData(HumanBodyBones.RightLittleIntermediate, HumanBodyBones.RightLittleDistal, rhtrackJoint[18], rhtrackJoint[19]);
+
+
 
 
         // 몸통 데이터 저장
