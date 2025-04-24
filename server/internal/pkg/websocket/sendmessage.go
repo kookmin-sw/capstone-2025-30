@@ -3,6 +3,7 @@ package websocketHandler
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -35,7 +36,7 @@ type NotificationData struct {
 }
 
 type MessageData struct {
-	Num       int    `json:"num"`
-	Message   string `json:"message"`
-	CreatedAt string `json:"created_at"`
+	Num       int32     `json:"num"`
+	Message   string    `json:"message"`
+	CreatedAt time.Time `json:"created_at"`
 }
