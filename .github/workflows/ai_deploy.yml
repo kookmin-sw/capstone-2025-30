@@ -42,8 +42,8 @@ jobs:
           host: ${{ secrets.AI_EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.AI_EC2_SSH_KEY }}
-          source: "ai/*"
-          target: "/home/ubuntu/ai"
+          source: "ai"
+          target: "/home/ubuntu"
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
