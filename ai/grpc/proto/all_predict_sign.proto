@@ -3,25 +3,25 @@ syntax = "proto3";
 package predict;
 
 message FrameSequenceInput {
-    repeated bytes frames = 1;
-    string client_id = 2;
-    float fps = 3;
-    float video_length = 4;
+    repeated float frames = 1;
+    string store_id = 2;
+    int32 fps = 3;
+    int32 video_length = 4;
 }
 
 message PredictResult {
-    string client_id = 1;
+    string store_id = 1;
     string predicted_sentence = 2;
     float confidence = 3; 
 }
 
 message KoreanInput {
     string message = 1;
-    string client_id = 2;
+    string store_id = 2;
 }
 
 message SignUrlResult {
-    string client_id = 1;
+    string store_id = 1;
     repeated string urls = 2;
 }
 
