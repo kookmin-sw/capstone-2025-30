@@ -174,6 +174,7 @@ def serve():
         
         # 배포용
         port_result = server.add_secure_port('[::]:50051', creds)
+        
         # 로컬용
         # port_result = server.add_insecure_port('[::]:50051')
         print(f"✅ 포트 바인딩 결과: {port_result}")
