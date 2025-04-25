@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/tls"
 	"crypto/x509"
+	"encoding/base64"
 	"fmt"
 	"net"
 	"os"
@@ -81,16 +82,25 @@ func Initialize() error {
 }
 
 func createTLSCredentialsFromEnv() (credentials.TransportCredentials, error) {
-	certPEM := os.Getenv("AI_TLS_CRT")
-	if certPEM == "" {
-		return nil, fmt.Errorf("AI_TLS_CRT is not set")
+	// Base64 인코딩된 인증서 가져오기
+	b64Cert := os.Getenv("AI_TLS_CRT_SERVER")
+	if b64Cert == "" {
+		return nil, fmt.Errorf("AI_TLS_CRT_SERVER is not set")
 	}
 
+	// Base64 디코딩
+	certPEM, err := base64.StdEncoding.DecodeString(b64Cert)
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode base64: %v", err)
+	}
+
+	// x509 Cert Pool에 추가
 	caCertPool := x509.NewCertPool()
-	if ok := caCertPool.AppendCertsFromPEM([]byte(certPEM)); !ok {
+	if ok := caCertPool.AppendCertsFromPEM(certPEM); !ok {
 		return nil, fmt.Errorf("failed to append CA certificate")
 	}
 
+	// TLS Credentials 생성
 	creds := credentials.NewTLS(&tls.Config{
 		RootCAs: caCertPool,
 	})
