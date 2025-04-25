@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.28.3
-// source: predict_sign.proto
+// source: all_predict_sign.proto
 
 package proto
 
@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	SignAI_Predict_FullMethodName = "/predict.SignAI/Predict"
+	SignAI_PredictFromFrames_FullMethodName         = "/predict.SignAI/PredictFromFrames"
+	SignAI_TranslateKoreanToSignUrls_FullMethodName = "/predict.SignAI/TranslateKoreanToSignUrls"
 )
 
 // SignAIClient is the client API for SignAI service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type SignAIClient interface {
-	Predict(ctx context.Context, in *SequenceInput, opts ...grpc.CallOption) (*PredictResult, error)
+	PredictFromFrames(ctx context.Context, in *FrameSequenceInput, opts ...grpc.CallOption) (*PredictResult, error)
+	TranslateKoreanToSignUrls(ctx context.Context, in *KoreanInput, opts ...grpc.CallOption) (*SignUrlResult, error)
 }
 
 type signAIClient struct {
@@ -37,10 +39,20 @@ func NewSignAIClient(cc grpc.ClientConnInterface) SignAIClient {
 	return &signAIClient{cc}
 }
 
-func (c *signAIClient) Predict(ctx context.Context, in *SequenceInput, opts ...grpc.CallOption) (*PredictResult, error) {
+func (c *signAIClient) PredictFromFrames(ctx context.Context, in *FrameSequenceInput, opts ...grpc.CallOption) (*PredictResult, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(PredictResult)
-	err := c.cc.Invoke(ctx, SignAI_Predict_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, SignAI_PredictFromFrames_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *signAIClient) TranslateKoreanToSignUrls(ctx context.Context, in *KoreanInput, opts ...grpc.CallOption) (*SignUrlResult, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SignUrlResult)
+	err := c.cc.Invoke(ctx, SignAI_TranslateKoreanToSignUrls_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +63,8 @@ func (c *signAIClient) Predict(ctx context.Context, in *SequenceInput, opts ...g
 // All implementations must embed UnimplementedSignAIServer
 // for forward compatibility.
 type SignAIServer interface {
-	Predict(context.Context, *SequenceInput) (*PredictResult, error)
+	PredictFromFrames(context.Context, *FrameSequenceInput) (*PredictResult, error)
+	TranslateKoreanToSignUrls(context.Context, *KoreanInput) (*SignUrlResult, error)
 	mustEmbedUnimplementedSignAIServer()
 }
 
@@ -62,8 +75,11 @@ type SignAIServer interface {
 // pointer dereference when methods are called.
 type UnimplementedSignAIServer struct{}
 
-func (UnimplementedSignAIServer) Predict(context.Context, *SequenceInput) (*PredictResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Predict not implemented")
+func (UnimplementedSignAIServer) PredictFromFrames(context.Context, *FrameSequenceInput) (*PredictResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PredictFromFrames not implemented")
+}
+func (UnimplementedSignAIServer) TranslateKoreanToSignUrls(context.Context, *KoreanInput) (*SignUrlResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method TranslateKoreanToSignUrls not implemented")
 }
 func (UnimplementedSignAIServer) mustEmbedUnimplementedSignAIServer() {}
 func (UnimplementedSignAIServer) testEmbeddedByValue()                {}
@@ -86,20 +102,38 @@ func RegisterSignAIServer(s grpc.ServiceRegistrar, srv SignAIServer) {
 	s.RegisterService(&SignAI_ServiceDesc, srv)
 }
 
-func _SignAI_Predict_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SequenceInput)
+func _SignAI_PredictFromFrames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FrameSequenceInput)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(SignAIServer).Predict(ctx, in)
+		return srv.(SignAIServer).PredictFromFrames(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: SignAI_Predict_FullMethodName,
+		FullMethod: SignAI_PredictFromFrames_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(SignAIServer).Predict(ctx, req.(*SequenceInput))
+		return srv.(SignAIServer).PredictFromFrames(ctx, req.(*FrameSequenceInput))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _SignAI_TranslateKoreanToSignUrls_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(KoreanInput)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(SignAIServer).TranslateKoreanToSignUrls(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: SignAI_TranslateKoreanToSignUrls_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(SignAIServer).TranslateKoreanToSignUrls(ctx, req.(*KoreanInput))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -112,10 +146,14 @@ var SignAI_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*SignAIServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Predict",
-			Handler:    _SignAI_Predict_Handler,
+			MethodName: "PredictFromFrames",
+			Handler:    _SignAI_PredictFromFrames_Handler,
+		},
+		{
+			MethodName: "TranslateKoreanToSignUrls",
+			Handler:    _SignAI_TranslateKoreanToSignUrls_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "predict_sign.proto",
+	Metadata: "all_predict_sign.proto",
 }
