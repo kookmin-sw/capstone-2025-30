@@ -77,6 +77,8 @@ jobs:
             REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}
             ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}
             WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}
+            AI_GRPC_HOST=${{ secrets.AI_GRPC_HOST }}
+            AI_TLS_CRT=${{ secrets.AI_TLS_CRT }}
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
