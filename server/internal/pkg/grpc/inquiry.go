@@ -137,15 +137,16 @@ loop:
 	}
 
 	mMessage := dbstructure.MMessage{
-		ID:        primitive.NewObjectID(),
-		StoreId:   *storeObjectID,
-		Title:     messageType,
-		Number:    num,
-		Accepted:  false,
-		Deleted:   false,
-		CreatedAt: createTime,
-		UpdatedAt: createTime,
-		Message:   predictResp.PredictedSentence,
+		ID:           primitive.NewObjectID(),
+		StoreId:      *storeObjectID,
+		Title:        messageType,
+		Number:       num,
+		Accepted:     false,
+		Deleted:      false,
+		CreatedAt:    createTime,
+		UpdatedAt:    createTime,
+		Message:      predictResp.PredictedSentence,
+		MessageOwner: false, // 카운터 앱 -> 가게
 	}
 	err = mmessage.CreateMMessage(&mMessage)
 	if err != nil {
