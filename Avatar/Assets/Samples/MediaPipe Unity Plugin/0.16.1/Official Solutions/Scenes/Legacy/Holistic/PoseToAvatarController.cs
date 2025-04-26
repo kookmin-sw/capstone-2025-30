@@ -17,7 +17,7 @@ public class PoseToAvatarController : MonoBehaviour
     Vector3[] realJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
     Vector3[] realLeftHandJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
     Vector3[] realRightHandJoint; // 텍스트 파일에서 읽어온 x,y,z로 캐릭터 실제 position값 저장
-
+    Vector3[] realFaceJoint;
     
     [Range(0f, 200f)]
     public float poseScale = 100f;
@@ -29,6 +29,8 @@ public class PoseToAvatarController : MonoBehaviour
     [Range(0f, 500f)]
     public float offsetY = 170.0f;
     
+    [Range(0f, 500f)]
+    public float offsetZ = 80.0f;
     public void ApplyPoseToAvatar(NormalizedLandmarkList poseLandmarkList)
     {
         this.PoseLandmarkList = poseLandmarkList;
@@ -55,6 +57,7 @@ public class PoseToAvatarController : MonoBehaviour
         realJoint = new Vector3[33];
         realLeftHandJoint = new Vector3[21];
         realRightHandJoint = new Vector3[21];
+        realFaceJoint = new Vector3[10];
         
     }
 
@@ -64,10 +67,11 @@ public class PoseToAvatarController : MonoBehaviour
         if (PoseLandmarkList == null || PoseLandmarkList.Landmark == null) return;
     
         int j = 0;
+        int p = 0;
         // position은 절대 좌표임
         for (int i = 0; i < 33; i++)
         {
-            if (i == 0 || (i >= 11 && i <= 16) || (i >= 23 && i <= 32))
+            if (i == 0 || (i >= 11 && i <= 12) || (i >= 23 && i <= 32))
             {
                 // Landmark 데이터를 trackJoint에 저장하는 코드
                 realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
@@ -75,6 +79,23 @@ public class PoseToAvatarController : MonoBehaviour
                 realJoint[j].z = PoseLandmarkList.Landmark[i].Z;
                 j++;
             }
+            if (i >= 13 && i <= 16)
+            {
+                // Landmark 데이터를 trackJoint에 저장하는 코드
+                realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
+                realJoint[j].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+                realJoint[j].z = PoseLandmarkList.Landmark[i].Z * offsetZ;
+                j++;
+            }
+
+            if (i >= 1 && i <= 10)
+            {
+                realFaceJoint[p].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
+                realFaceJoint[p].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+                realFaceJoint[p].z = PoseLandmarkList.Landmark[i].Z;
+                p++;
+            }
+            
         }
         
         int l = 0;
@@ -95,24 +116,35 @@ public class PoseToAvatarController : MonoBehaviour
         for (int i = 0; i < 21; i++)
         {
             // Landmark 데이터를 trackJoint에 저장하는 코드
-            realRightHandJoint[r].x = LeftHandLandmarkList.Landmark[i].X * screenWidth - offsetX;
-            realRightHandJoint[r].y = -LeftHandLandmarkList.Landmark[i].Y * screenHeight + offsetY;
-            realRightHandJoint[r].z = LeftHandLandmarkList.Landmark[i].Z;
+            realRightHandJoint[r].x = RightHandLandmarkList.Landmark[i].X * screenWidth - offsetX;
+            realRightHandJoint[r].y = -RightHandLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+            realRightHandJoint[r].z = RightHandLandmarkList.Landmark[i].Z;
             r++;
         }
-        
+        int f = 0;
+        // position은 절대 좌표임
+        // 얼굴
+        // for (int i = 0; i < 21; i++)
+        // {
+        //     // Landmark 데이터를 trackJoint에 저장하는 코드
+        //     realFaceJoint[f].x = FaceLandmarkList.Landmark[i].X * screenWidth - offsetX;
+        //     realFaceJoint[f].y = -FaceLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+        //     realFaceJoint[f].z = FaceLandmarkList.Landmark[i].Z;
+        //     f++;
+        // }
 
-        storeData.SetTrackJointData(realJoint,realLeftHandJoint,realRightHandJoint);
+        storeData.SetTrackJointData(realJoint,realLeftHandJoint,realRightHandJoint,realFaceJoint);
        
         // 아바타의 팔다리, 몸통 관절데이터 저장
         storeData.Store();
 
         //움직이기 위한 관절 데이터 전달
-        moveAvatar.SetRequiredData(storeData.limbsJointData, storeData.torsoJointData);
+        moveAvatar.SetRequiredData(storeData.limbsJointData, storeData.handsJointData, storeData.torsoJointData);
         
         //아바타 팔다리, 몸통 움직이는 함수
         moveAvatar.MoveLimbs();
         moveAvatar.MoveTorso();
+        moveAvatar.MoveHand();
   
         // 데이터 청소
         storeData.ClearAllData();

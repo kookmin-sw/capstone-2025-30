@@ -9,15 +9,17 @@ using UnityEngine;
 public class MoveAvatar : MonoBehaviour
 {
     private List<AvatarData> limbsJointData;
+    private List<AvatarData> handsJointData;
     private Dictionary<string, AvatarData> torsoJointData;
 
     const float LimbsAmount = 0.3f;
     const float Speed = 10f;
 
-    public void SetRequiredData(List<AvatarData> limbsJointData, Dictionary<string, AvatarData> torsoJointData)
+    public void SetRequiredData(List<AvatarData> limbsJointData, List<AvatarData> handsJointData, Dictionary<string, AvatarData> torsoJointData)
     {
         this.limbsJointData = limbsJointData;
         this.torsoJointData = torsoJointData;
+        this.handsJointData = handsJointData;
     }
 
     //모든 관절 데이터 지우는 함수
@@ -25,6 +27,7 @@ public class MoveAvatar : MonoBehaviour
     {
         limbsJointData.Clear();
         torsoJointData.Clear();
+        handsJointData.Clear();
     }
 
     //팔다리 관절 움직이는 함수
@@ -52,6 +55,15 @@ public class MoveAvatar : MonoBehaviour
         // }
         foreach (var i in limbsJointData)
         {
+            Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount));
+            i.parent.rotation = changeRot * i.initialRotation;
+        }
+    }
+    public void MoveHand()
+    {
+        foreach (var i in handsJointData)
+        {
+            
             Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount));
             i.parent.rotation = changeRot * i.initialRotation;
         }
