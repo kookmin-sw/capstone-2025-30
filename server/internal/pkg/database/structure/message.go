@@ -24,4 +24,5 @@ type MMessage struct {
 	Number    int32              `bson:"number"`     // 주문번호나 문의번호
 	CreatedAt time.Time          `bson:"created_at"` // 메세지 생성 시간
 	Message   string             `bson:"message"`    // 전송한 메세지
+	IsOwner   bool               `bson:"is_owner"`   // 관리자 웹에서 보여 질때 내가 보낸것인가 (true : 관리자 웹에서 보낸 메세지 / false : 그외 카운터 앱 or 주문 정보)
 }

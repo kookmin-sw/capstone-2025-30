@@ -143,6 +143,7 @@ loop:
 		Number:    num,
 		CreatedAt: createTime,
 		Message:   predictResp.PredictedSentence,
+		IsOwner:   false,
 	}
 	err = mmessage.CreateMMessage(&mMessage)
 	if err != nil {

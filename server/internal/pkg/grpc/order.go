@@ -85,6 +85,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		Title:     utils.WebSocketMessageTypeOrder,
 		CreatedAt: createTime,
 		Message:   itemsToString(&mOrder.Items),
+		IsOwner:   true,
 	}
 
 	err = morder.CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(&mOrder, &mNotificationMessage, &mMessage)
