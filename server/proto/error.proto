@@ -16,4 +16,7 @@ enum EError {
 
   // order
   EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED = 40000;
+
+  // menu
+  EE_MENU_ALREADY_EXISTS = 50000;
 }

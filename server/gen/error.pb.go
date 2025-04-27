@@ -33,6 +33,8 @@ const (
 	EError_EE_INQUIRY_STREAM_FAILED EError = 30000
 	// order
 	EError_EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED EError = 40000
+	// menu
+	EError_EE_MENU_ALREADY_EXISTS EError = 50000
 )
 
 // Enum value maps for EError.
@@ -44,6 +46,7 @@ var (
 		20001: "EE_STORE_NOT_FOUND",
 		30000: "EE_INQUIRY_STREAM_FAILED",
 		40000: "EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED",
+		50000: "EE_MENU_ALREADY_EXISTS",
 	}
 	EError_value = map[string]int32{
 		"EE_UNSPECIFIED":           0,
@@ -52,6 +55,7 @@ var (
 		"EE_STORE_NOT_FOUND":       20001,
 		"EE_INQUIRY_STREAM_FAILED": 30000,
 		"EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED": 40000,
+		"EE_MENU_ALREADY_EXISTS":                              50000,
 	}
 )
 
@@ -86,14 +90,15 @@ var File_error_proto protoreflect.FileDescriptor
 
 const file_error_proto_rawDesc = "" +
 	"\n" +
-	"\verror.proto*\xbe\x01\n" +
+	"\verror.proto*\xdc\x01\n" +
 	"\x06EError\x12\x12\n" +
 	"\x0eEE_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\rEE_API_FAILED\x10\x90N\x12\x17\n" +
 	"\x12EE_API_AUTH_FAILED\x10\x91N\x12\x18\n" +
 	"\x12EE_STORE_NOT_FOUND\x10\xa1\x9c\x01\x12\x1e\n" +
 	"\x18EE_INQUIRY_STREAM_FAILED\x10\xb0\xea\x01\x129\n" +
-	"3EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED\x10\xc0\xb8\x02B\x18Z\x16capstone-2025-30/protob\x06proto3"
+	"3EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED\x10\xc0\xb8\x02\x12\x1c\n" +
+	"\x16EE_MENU_ALREADY_EXISTS\x10І\x03B\x18Z\x16capstone-2025-30/protob\x06proto3"
 
 var (
 	file_error_proto_rawDescOnce sync.Once
