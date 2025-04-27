@@ -84,7 +84,12 @@ func (s *Server) GetStore(ctx context.Context, req *pb.GetStoreRequest) (respons
 		}
 	}()
 
-	mStore, err := mstore.GetMStore(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mStore, err := mstore.GetMStore(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to get mStore: %v", err))
 	}
@@ -113,13 +118,17 @@ func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (r
 		}
 	}()
 
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
 	mStore := dbstructure.MStore{
-		Name:      req.Name,
-		Location:  req.Location,
-		StoreCode: req.StoreCode,
+		ID:       storeID,
+		Name:     name,
+		Location: location,
 	}
 
-	err := mstore.UpdateMStore(&mStore)
+	err = mstore.UpdateMStore(&mStore)
 	if err != nil {
 		panic(fmt.Errorf("failed to update mStore: %v", err))
 	}
@@ -141,7 +150,12 @@ func (s *Server) DeleteStore(ctx context.Context, req *pb.DeleteStoreRequest) (r
 		}
 	}()
 
-	err := mstore.DeleteMStore(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	err = mstore.DeleteMStore(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to delete mStore: %v", err))
 	}
