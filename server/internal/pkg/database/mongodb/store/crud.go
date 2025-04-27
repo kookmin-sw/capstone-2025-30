@@ -115,10 +115,10 @@ func DeleteMStore(storeID primitive.ObjectID) error {
 		}
 
 		// 2. 관련 Menu 삭제
-		// _, err = mongodb.MenuColl.DeleteMany(sc, bson.M{"store_code": storeCode})
-		// if err != nil {
-		//     return nil, err
-		// }
+		_, err = mongodb.MenuColl.DeleteMany(sessionContext, bson.M{"store_id": storeID})
+		if err != nil {
+			return nil, err
+		}
 
 		return nil, nil
 	}
