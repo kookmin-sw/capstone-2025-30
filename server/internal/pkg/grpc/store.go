@@ -120,6 +120,22 @@ func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (r
 	if err != nil {
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
+
+	oldStore, err := mstore.GetMStore(storeID)
+	if err != nil {
+		panic(fmt.Errorf("failed to update mStore: %v", err))
+	}
+
+	name := req.Name
+	if name == "" {
+		name = oldStore.Name
+	}
+
+	location := req.Location
+	if location == "" {
+		location = oldStore.Location
+	}
+
 	mStore := dbstructure.MStore{
 		ID:       storeID,
 		Name:     name,
