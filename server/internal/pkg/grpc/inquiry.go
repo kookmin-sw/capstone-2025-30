@@ -141,11 +141,9 @@ loop:
 		StoreId:   *storeObjectID,
 		Title:     messageType,
 		Number:    num,
-		Accepted:  false,
-		Deleted:   false,
 		CreatedAt: createTime,
-		UpdatedAt: createTime,
 		Message:   predictResp.PredictedSentence,
+		IsOwner:   false,
 	}
 	err = mmessage.CreateMMessage(&mMessage)
 	if err != nil {
