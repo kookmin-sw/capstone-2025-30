@@ -5,7 +5,6 @@ import (
 	"fmt"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
-	mmessage "server/internal/pkg/database/mongodb/message"
 	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
@@ -79,11 +78,6 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		UpdatedAt:         createTime,
 	}
 
-	err = morder.CreateMOrderAndMNotificationMessageWithTransaction(&mOrder, &mNotificationMessage)
-	if err != nil {
-		panic(pb.EError_EE_ORDER_AND_NOTIFICATION_DB_ADD_FAILED)
-	}
-
 	//메세지 DB에 저장
 	mMessage := dbstructure.MMessage{
 		ID:        primitive.NewObjectID(),
@@ -94,9 +88,9 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		Message:   itemsToString(&mOrder.Items),
 	}
 
-	err = mmessage.CreateMMessage(&mMessage)
+	err = morder.CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(&mOrder, &mNotificationMessage, &mMessage)
 	if err != nil {
-		panic(pb.EError_EE_CREATE_ORDER_INFO_MESSAGE_FAILED)
+		panic(pb.EError_EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED)
 	}
 
 	go func() {

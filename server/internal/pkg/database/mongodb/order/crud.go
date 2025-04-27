@@ -2,14 +2,15 @@ package morder
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	pb "server/gen"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
 	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 func CreateMOrder(mOrder *dbstructure.MOrder) error {
@@ -39,7 +40,7 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	return err
 }
 
-func CreateMOrderAndMNotificationMessageWithTransaction(mOrder *dbstructure.MOrder, mNotificationMessage *dbstructure.MNotificationMessage) error {
+func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstructure.MOrder, mNotificationMessage *dbstructure.MNotificationMessage, mMessage *dbstructure.MMessage) error {
 	session, err := mongodb.Client.StartSession()
 	if err != nil {
 		return err
@@ -60,6 +61,11 @@ func CreateMOrderAndMNotificationMessageWithTransaction(mOrder *dbstructure.MOrd
 
 		mNotificationMessage.Number = int(orderNumber)
 		_, err = mongodb.NotificationColl.InsertOne(sc, mNotificationMessage)
+		if err != nil {
+			return nil, err
+		}
+
+		_, err = mongodb.MessageColl.InsertOne(sc, mMessage)
 		return nil, err
 	}
 
