@@ -141,10 +141,7 @@ loop:
 		StoreId:   *storeObjectID,
 		Title:     messageType,
 		Number:    num,
-		Accepted:  false,
-		Deleted:   false,
 		CreatedAt: createTime,
-		UpdatedAt: createTime,
 		Message:   predictResp.PredictedSentence,
 	}
 	err = mmessage.CreateMMessage(&mMessage)
