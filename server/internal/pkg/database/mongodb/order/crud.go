@@ -22,7 +22,7 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
@@ -48,7 +48,7 @@ func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstr
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
@@ -83,9 +83,6 @@ func GetMOrderStatus(storeID primitive.ObjectID, orderNumber int32) (*dbstructur
 	var order dbstructure.MOrder
 
 	err := mongodb.OrderColl.FindOne(context.Background(), filter).Decode(&order)
-	if err == mongo.ErrNoDocuments {
-		return nil, nil // 주문 없음
-	}
 	if err != nil {
 		return nil, err
 	}
