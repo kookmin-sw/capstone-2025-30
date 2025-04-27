@@ -83,7 +83,6 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		ID:        primitive.NewObjectID(),
 		StoreId:   storeID,
 		Title:     utils.WebSocketMessageTypeOrder,
-		Number:    mOrder.OrderNumber,
 		CreatedAt: createTime,
 		Message:   itemsToString(&mOrder.Items),
 	}

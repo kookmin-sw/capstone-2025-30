@@ -65,6 +65,7 @@ func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstr
 			return nil, err
 		}
 
+		mMessage.Number = orderNumber
 		_, err = mongodb.MessageColl.InsertOne(sc, mMessage)
 		return nil, err
 	}
