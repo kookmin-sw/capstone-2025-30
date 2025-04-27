@@ -33,8 +33,6 @@ func (s *Server) CreateStore(ctx context.Context, req *pb.CreateStoreRequest) (r
 		StoreCode: generateStoreCode(8),
 	}
 
-	// 인증 : 카페 정보 중복 검사
-
 	err := mstore.CreateMStore(&mStore)
 	if err != nil {
 		panic(fmt.Errorf("failed to create mStore: %v", err))

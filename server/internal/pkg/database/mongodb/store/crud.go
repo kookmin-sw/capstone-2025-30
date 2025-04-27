@@ -19,7 +19,21 @@ func CreateMStore(mStore *dbstructure.MStore) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sessionContext mongo.SessionContext) (interface{}, error) {
-		_, err := mongodb.StoreColl.InsertOne(sessionContext, mStore)
+		// 1. 중복 Store 존재하는지 확인
+		filter := bson.M{
+			"name":     mStore.Name,
+			"location": mStore.Location,
+		}
+		count, err := mongodb.StoreColl.CountDocuments(sessionContext, filter)
+		if err != nil {
+			return nil, err
+		}
+		if count > 0 {
+			return nil, errors.New("store already exists with same name and location")
+		}
+
+		// 2. 중복 없으면 새 Store 추가
+		_, err = mongodb.StoreColl.InsertOne(sessionContext, mStore)
 		return nil, err
 	}
 
