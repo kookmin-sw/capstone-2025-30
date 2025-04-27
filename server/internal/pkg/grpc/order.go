@@ -5,11 +5,13 @@ import (
 	"fmt"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
+	mmessage "server/internal/pkg/database/mongodb/message"
 	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
 	websocketHandler "server/internal/pkg/websocket"
+	"strings"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -68,18 +70,33 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 
 	// 알림 DB에 저장
 	mNotificationMessage := dbstructure.MNotificationMessage{
-		ID:        primitive.NewObjectID(),
-		StoreCode: storeID,
-		Title:     utils.NotificationTitleOrder,
-		Accepted:  false,
-		Deleted:   false,
-		CreatedAt: createTime,
-		UpdatedAt: createTime,
+		ID:                primitive.NewObjectID(),
+		StoreCode:         storeID,
+		NotificationTitle: utils.NotificationTitleOrder,
+		Accepted:          false,
+		Deleted:           false,
+		CreatedAt:         createTime,
+		UpdatedAt:         createTime,
 	}
 
 	err = morder.CreateMOrderAndMNotificationMessageWithTransaction(&mOrder, &mNotificationMessage)
 	if err != nil {
 		panic(pb.EError_EE_ORDER_AND_NOTIFICATION_DB_ADD_FAILED)
+	}
+
+	//메세지 DB에 저장
+	mMessage := dbstructure.MMessage{
+		ID:        primitive.NewObjectID(),
+		StoreId:   storeID,
+		Title:     utils.WebSocketMessageTypeOrder,
+		Number:    mOrder.OrderNumber,
+		CreatedAt: createTime,
+		Message:   itemsToString(&mOrder.Items),
+	}
+
+	err = mmessage.CreateMMessage(&mMessage)
+	if err != nil {
+		panic(pb.EError_EE_CREATE_ORDER_INFO_MESSAGE_FAILED)
 	}
 
 	go func() {
@@ -221,4 +238,17 @@ func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatu
 		Error:   nil,
 		Status:  req.Status,
 	}, nil
+}
+
+func itemsToString(items *[]dbstructure.MOrderItem) string {
+	var result strings.Builder
+	for _, item := range *items {
+		var opts []string
+		for _, v := range item.Options {
+			opts = append(opts, fmt.Sprintf("%s", v))
+		}
+		options := strings.Join(opts, " ")
+		result.WriteString(fmt.Sprintf("%s %s %d잔\n", item.Name, options, item.Quantity))
+	}
+	return result.String()
 }
