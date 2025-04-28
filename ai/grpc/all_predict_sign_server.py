@@ -11,9 +11,13 @@ import all_predict_sign_pb2_grpc
 import load_to_korean_rag
 import load_to_sign_rag
 
-model = tf.keras.models.load_model('models/90_masked_angles.h5')
+# 배포용
+model = tf.keras.models.load_model('models/90_v2_masked_angles.h5')
 
-with open('gesture_dict/pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+# 디버깅용
+# model = tf.keras.models.load_model('../models/90_v2_masked_angles.h5')
+
+with open('../gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
@@ -168,6 +172,7 @@ def serve():
                                       ('grpc.max_receive_message_length', 10 * 1024 * 1024)])
         all_predict_sign_pb2_grpc.add_SignAIServicer_to_server(SignAIService(), server)
         
+        # 배포용
         print("🔐 TLS 인증서 로드 시도 중...")
         creds = load_tls_credentials()
         print("✅ TLS 인증서 로드 성공")

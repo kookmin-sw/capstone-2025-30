@@ -1,21 +1,19 @@
 import mediapipe as mp
 import tensorflow as tf
-from tensorflow.keras.models import load_model
 import cv2
 import numpy as np
-import pandas as pd
 from PIL import ImageFont, ImageDraw, Image
 
 import json
 
-with open('pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
 seq_length = 90
 
-model = tf.keras.models.load_model('models/90_masked_angles.h5')
+model = tf.keras.models.load_model('../models/90_v2_masked_angles.h5')
 print(model.input_shape)
 
 
