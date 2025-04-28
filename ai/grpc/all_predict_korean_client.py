@@ -19,7 +19,7 @@ def run():
     stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
     request = all_predict_sign_pb2.KoreanInput(
-        message="포인트가 있어요?",
+        message="추가 문의가 있으시다면 버튼을 눌러주시고 없으시다면 버튼을 눌러주세요",
         store_id="store_01"
     )
 

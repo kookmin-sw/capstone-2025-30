@@ -6,14 +6,14 @@ from PIL import ImageFont, ImageDraw, Image
 
 import json
 
-with open('v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
 seq_length = 90
 
-model = tf.keras.models.load_model('../models/90_v2_masked_angles.h5')
+model = tf.keras.models.load_model('../models/90_v6_masked_angles.h5')
 print(model.input_shape)
 
 

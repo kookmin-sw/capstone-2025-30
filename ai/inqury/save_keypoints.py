@@ -132,10 +132,11 @@ for action, url in name_url_dict.items():
 - 생크림, 휘핑크림
 """
 # url = "https://drive.google.com/uc?export=download&id=1XVHkBiC7G5eH1ftbXx0vNMsOuxdadfEe"
+# action = "생크림, 휘핑크림"
 
 # seq_length = 90
 # url = "https://sldict.korean.go.kr/multimedia/multimedia_files/convert/20191018/628678/MOV000255952_700X466.mp4"
-# action = "조금"
+# action = "안녕하세요,안녕히 가십시오"
 # cap = cv2.VideoCapture(url)
 # if not cap.isOpened():
 #     print(f"비디오 열기 오류: {url}")

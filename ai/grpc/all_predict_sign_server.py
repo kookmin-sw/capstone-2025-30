@@ -6,18 +6,53 @@ import numpy as np
 import mediapipe as mp
 import cv2
 import os
+from tensorflow.keras.layers import Layer
+import tensorflow as tf
 import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
 import load_to_korean_rag
 import load_to_sign_rag
 
 # 배포용
-model = tf.keras.models.load_model('models/90_v2_masked_angles.h5')
+# model = tf.keras.models.load_model('models/90_v2_masked_angles.h5')
 
 # 디버깅용
-# model = tf.keras.models.load_model('../models/90_v2_masked_angles.h5')
+# model = tf.keras.models.load_model('../models/90_v5_masked_angles.h5')
 
-with open('gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+class Attention(Layer):
+    def __init__(self, **kwargs): 
+        super(Attention, self).__init__(**kwargs)
+
+    def build(self, input_shape):
+        self.W = self.add_weight(name="attention_weight", shape=(input_shape[-1], 1),
+                                 initializer="normal")
+        self.b = self.add_weight(name="attention_bias", shape=(input_shape[1], 1),
+                                 initializer="zeros")
+        super(Attention, self).build(input_shape)
+
+    def call(self, x):
+        e = tf.keras.backend.tanh(tf.keras.backend.dot(x, self.W) + self.b)
+        a = tf.keras.backend.softmax(e, axis=1)
+        output = x * a
+        return tf.keras.backend.sum(output, axis=1)
+
+# 배포용
+model = tf.keras.models.load_model(
+    'models/90_v6_masked_angles.keras',
+    custom_objects={'Attention': Attention}
+)
+
+# # 로컬용
+# model = tf.keras.models.load_model(
+#     '../models/90_v6_masked_angles.keras',
+#     custom_objects={'Attention': Attention}
+# )
+
+# 배포용
+with open('gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+
+# # 로컬용
+# with open('../gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
@@ -42,7 +77,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
         seq_length = 90
         feature_dim = 78
-        segment_duration = 3.5
+        segment_duration = 3.0
         segment_offset_start = 0.5
         segment_interval = segment_duration + 0.5
 
@@ -180,7 +215,7 @@ def serve():
         # 배포용
         port_result = server.add_secure_port('[::]:50051', creds)
 
-        # 로컬용
+        # # 로컬용
         # port_result = server.add_insecure_port('[::]:50051')
         
         print(f"✅ 포트 바인딩 결과: {port_result}")
