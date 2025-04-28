@@ -22,6 +22,7 @@ service APIService {
   
   // inquiry api
   rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
+  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
 
   // menu api
   rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
