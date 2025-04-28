@@ -25,9 +25,11 @@ message GetMessagesRequest{
 }
 
 message GetMessagesResponse{
-  string title = 1; // orderMessage(주문, 주문 추가 문의사항), inquiryMessage(일반 문의사항)
-  int32 number = 2; // 주문번호나 문의번호
-  repeated Message messages = 3;
+  bool success = 1;
+  string title = 2; // orderMessage(주문, 주문 추가 문의사항), inquiryMessage(일반 문의사항)
+  int32 number = 3; // 주문번호나 문의번호
+  repeated Message messages = 4;
+  optional EError error = 5;
 }
 
 message Message{
