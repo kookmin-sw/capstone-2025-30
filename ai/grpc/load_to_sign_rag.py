@@ -36,7 +36,7 @@ for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
 
-with open('../gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
