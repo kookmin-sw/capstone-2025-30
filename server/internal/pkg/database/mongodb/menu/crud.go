@@ -103,3 +103,17 @@ func FindMenuImage(storeID primitive.ObjectID, name string) (string, error) {
 
 	return result.Image, nil
 }
+
+func IsMenuExists(storeID primitive.ObjectID, menuName string) (bool, error) {
+	filter := bson.M{
+		"store_id": storeID,
+		"name":     menuName,
+	}
+
+	count, err := mongodb.MenuColl.CountDocuments(context.Background(), filter)
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}

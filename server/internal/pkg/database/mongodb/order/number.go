@@ -8,6 +8,11 @@ import (
 	"server/internal/pkg/database/mongodb"
 )
 
+const (
+	OrderNumberMin = 101
+	OrderNumberMax = 999
+)
+
 // 매장별 주문 번호 초기화
 func ensureCounterInitialized(storeCode string) error {
 	filter := bson.M{"_id": "order_" + storeCode} // 컬렉션에서 해당 매장의 _id = "order_<store_code>"
@@ -23,25 +28,38 @@ func ensureCounterInitialized(storeCode string) error {
 	return nil
 }
 
-func GetNextOrderNumber(ctx mongo.SessionContext, storeCode string) (int32, error) {
+func GetNextOrderNumber(storeCode string) (int32, error) {
 	// 초기화
 	if err := ensureCounterInitialized(storeCode); err != nil {
 		return 0, err
 	}
+
+	collection := mongodb.CounterColl
+
 	// seq 1 증가
 	filter := bson.M{"_id": "order_" + storeCode}
 	update := bson.M{"$inc": bson.M{"seq": 1}} // $inc : 해당 document 의 seq 값을 1 증가시킴
 	opts := options.FindOneAndUpdate().
 		SetReturnDocument(options.After)
 
-	var result struct {
+	var counter struct {
 		Seq int32 `bson:"seq"`
 	}
 
-	err := mongodb.CounterColl.FindOneAndUpdate(ctx, filter, update, opts).Decode(&result)
+	err := collection.FindOneAndUpdate(context.Background(), filter, update, opts).Decode(&counter)
 	if err != nil {
 		return 0, err
 	}
 
-	return result.Seq, nil
+	if counter.Seq > OrderNumberMax {
+		resetUpdate := bson.M{
+			"$set": bson.M{"seq": OrderNumberMin},
+		}
+		err := collection.FindOneAndUpdate(context.Background(), filter, resetUpdate, opts).Decode(&counter)
+		if err != nil {
+			return 0, err
+		}
+	}
+
+	return counter.Seq, nil
 }

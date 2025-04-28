@@ -33,8 +33,6 @@ func (s *Server) CreateStore(ctx context.Context, req *pb.CreateStoreRequest) (r
 		StoreCode: generateStoreCode(8),
 	}
 
-	// 인증 : 카페 정보 중복 검사
-
 	err := mstore.CreateMStore(&mStore)
 	if err != nil {
 		panic(fmt.Errorf("failed to create mStore: %v", err))
@@ -84,7 +82,12 @@ func (s *Server) GetStore(ctx context.Context, req *pb.GetStoreRequest) (respons
 		}
 	}()
 
-	mStore, err := mstore.GetMStore(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mStore, err := mstore.GetMStore(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to get mStore: %v", err))
 	}
@@ -113,13 +116,33 @@ func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (r
 		}
 	}()
 
-	mStore := dbstructure.MStore{
-		Name:      req.Name,
-		Location:  req.Location,
-		StoreCode: req.StoreCode,
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
-	err := mstore.UpdateMStore(&mStore)
+	oldStore, err := mstore.GetMStore(storeID)
+	if err != nil {
+		panic(fmt.Errorf("failed to update mStore: %v", err))
+	}
+
+	name := req.Name
+	if name == "" {
+		name = oldStore.Name
+	}
+
+	location := req.Location
+	if location == "" {
+		location = oldStore.Location
+	}
+
+	mStore := dbstructure.MStore{
+		ID:       storeID,
+		Name:     name,
+		Location: location,
+	}
+
+	err = mstore.UpdateMStore(&mStore)
 	if err != nil {
 		panic(fmt.Errorf("failed to update mStore: %v", err))
 	}
@@ -141,7 +164,12 @@ func (s *Server) DeleteStore(ctx context.Context, req *pb.DeleteStoreRequest) (r
 		}
 	}()
 
-	err := mstore.DeleteMStore(req.StoreCode)
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	err = mstore.DeleteMStore(storeID)
 	if err != nil {
 		panic(fmt.Errorf("failed to delete mStore: %v", err))
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	pb "server/gen"
@@ -28,7 +29,16 @@ func (s *Server) CreateMenu(ctx context.Context, req *pb.CreateMenuRequest) (res
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
+	exists, err := mmenu.IsMenuExists(storeID, req.Name)
+	if err != nil {
+		panic(fmt.Errorf("failed to check menu existence: %v", err))
+	}
+	if exists {
+		panic(pb.EError_EE_MENU_ALREADY_EXISTS)
+	}
+
 	mMenu := dbstructure.MMenu{
+		ID:               primitive.NewObjectID(),
 		StoreID:          storeID,
 		StoreCode:        req.StoreCode,
 		Category:         req.Category,

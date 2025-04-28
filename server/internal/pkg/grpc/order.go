@@ -145,7 +145,7 @@ func (s *Server) GetOrderStatus(ctx context.Context, req *pb.GetOrderStatusReque
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
-	mOrder, err := morder.GetMOrderStatus(storeID, req.OrderNumber)
+	mOrder, err := morder.GetMOrder(storeID, req.OrderNumber)
 	if err != nil {
 		panic(fmt.Errorf("failed to get mOrder status: %v", err))
 	}
@@ -220,6 +220,17 @@ func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatu
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
 		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mOrder, err := morder.GetMOrder(storeID, req.OrderNumber)
+	if err != nil {
+		panic(fmt.Errorf("failed to get order: %v", err))
+	}
+	if mOrder == nil {
+		return &pb.UpdateOrderStatusResponse{
+			Success: false,
+			Error:   pb.EError_EE_ORDER_NOT_FOUND.Enum(),
+		}, status.Errorf(codes.NotFound, "order not found: orderNumber=%d", req.OrderNumber)
 	}
 
 	err = morder.UpdateMOrderStatus(storeID, req.OrderNumber, req.Status)

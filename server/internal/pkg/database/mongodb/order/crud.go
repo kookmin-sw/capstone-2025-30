@@ -22,7 +22,7 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
@@ -48,7 +48,7 @@ func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstr
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(sc, mOrder.StoreCode)
+		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
@@ -74,7 +74,7 @@ func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstr
 	return err
 }
 
-func GetMOrderStatus(storeID primitive.ObjectID, orderNumber int32) (*dbstructure.MOrder, error) {
+func GetMOrder(storeID primitive.ObjectID, orderNumber int32) (*dbstructure.MOrder, error) {
 	filter := bson.M{
 		"store_id":     storeID,
 		"order_number": orderNumber,
@@ -83,10 +83,10 @@ func GetMOrderStatus(storeID primitive.ObjectID, orderNumber int32) (*dbstructur
 	var order dbstructure.MOrder
 
 	err := mongodb.OrderColl.FindOne(context.Background(), filter).Decode(&order)
-	if err == mongo.ErrNoDocuments {
-		return nil, nil // 주문 없음
-	}
 	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
 		return nil, err
 	}
 
