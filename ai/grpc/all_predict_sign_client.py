@@ -11,26 +11,27 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-# 배포용
-host = os.getenv("AI_EC2_HOST")
-trusted_certs = os.environ['AI_TLS_CRT'].encode('utf-8')
-credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
+# # 배포용
+# host = os.getenv("AI_EC2_HOST")
+# trusted_certs = os.environ['AI_TLS_CRT'].encode('utf-8')
+# credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
-# 배포용
-channel = grpc.secure_channel(f"{host}:50051",
-                              credentials,
-                                  options=[('grpc.max_send_message_length', 10 * 1024 * 1024),
-                                           ('grpc.max_receive_message_length', 10 * 1024 * 1024)]) 
+# # 배포용
+# channel = grpc.secure_channel(f"{host}:50051",
+#                               credentials,
+#                                   options=[('grpc.max_send_message_length', 10 * 1024 * 1024),
+#                                            ('grpc.max_receive_message_length', 10 * 1024 * 1024)]) 
 
 # 로컬용
-# channel = grpc.insecure_channel(f"localhost:50051",
-#                                 options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
-#                                          ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
+channel = grpc.insecure_channel(f"localhost:50051",
+                                options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
+                                         ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
 
 stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
 # --- 영상 열기 ---
-video_path = '화장실 비밀번호 있나요?.mp4'
+video_path = '아메리카노_수어통합본.mp4'
+# video_path = '화장실 비밀번호 있나요?.mp4'
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
     print("❌ 비디오를 열 수 없습니다.")

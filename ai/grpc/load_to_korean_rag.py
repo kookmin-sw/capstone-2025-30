@@ -14,21 +14,21 @@ from langchain_core.runnables import RunnablePassthrough
 load_dotenv()
 api_key = os.getenv("OPEN_AI_KEY")
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
-# 배포용
-loader = PyMuPDFLoader("docs/한국수어문법.pdf")
+# # 배포용
+# loader = PyMuPDFLoader("docs/한국수어문법.pdf")
 # 로컬용
-# loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
+loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
 data = loader.load()
 grammer = ""
 
 for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
-# 배포용
-with open('gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+# # 배포용
+# with open('gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
 
 # 로컬용
-# with open('../gesture_dict/v2_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('../gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
