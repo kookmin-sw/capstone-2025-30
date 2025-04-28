@@ -77,7 +77,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
         seq_length = 90
         feature_dim = 78
-        segment_duration = 3.0
+        segment_duration = 3.5
         segment_offset_start = 0.5
         segment_interval = segment_duration + 0.5
 

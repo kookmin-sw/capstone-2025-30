@@ -10,12 +10,12 @@ trusted_certs = os.environ['AI_TLS_CRT'].encode('utf-8')
 
 def run():
 
-    # 배포용
-    credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
-    channel = grpc.secure_channel(f"{host}:50051", credentials)
+    # # 배포용
+    # credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
+    # channel = grpc.secure_channel(f"{host}:50051", credentials)
     
     # 로컬용
-    # channel = grpc.insecure_channel(f"localhost:50051")
+    channel = grpc.insecure_channel(f"localhost:50051")
     stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
     request = all_predict_sign_pb2.KoreanInput(
