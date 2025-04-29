@@ -1,14 +1,15 @@
 package rest
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials/insecure"
 	"log"
 	"net/http"
 	"os"
 	pb "server/gen"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var (
@@ -57,6 +58,9 @@ func Initialize() {
 	r.GET("/rest/order/:store_code/:order_number", restHandler.GetOrderStatus)
 	r.GET("/rest/order/:store_code/orderList", restHandler.GetOrderList)
 	r.PUT("/rest/order/:store_code/:order_number/status", restHandler.UpdateOrderStatus)
+
+	// message api
+	r.GET("/rest/messages/:store_code", restHandler.GetMessages)
 
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
