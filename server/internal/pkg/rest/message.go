@@ -2,12 +2,14 @@ package rest
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
-	"google.golang.org/grpc/metadata"
 	"net/http"
 	"os"
 	pb "server/gen"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc/metadata"
 )
 
 func (h *RestHandler) GetMessages(c *gin.Context) {
@@ -42,11 +44,30 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 		return
 	}
 
+	restMessages := make([]RestMessage, len(grpcRes.Messages))
+	for i, msg := range grpcRes.Messages {
+		restMessages[i] = convertToRestMessage(msg)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"success":  grpcRes.GetSuccess(),
 		"error":    grpcRes.GetError(),
-		"messages": grpcRes.GetMessages(),
+		"messages": restMessages,
 		"title":    grpcRes.GetTitle(),
 		"number":   grpcRes.GetNumber(),
 	})
+}
+
+type RestMessage struct {
+	Message   string `json:"message"`
+	IsOwner   bool   `json:"is_owner"`
+	CreatedAt string `json:"created_at"`
+}
+
+func convertToRestMessage(grpcMessage *pb.Message) RestMessage {
+	return RestMessage{
+		Message:   grpcMessage.Message,
+		IsOwner:   grpcMessage.IsOwner,
+		CreatedAt: grpcMessage.CreatedAt.AsTime().Format(time.RFC3339),
+	}
 }
