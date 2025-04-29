@@ -15,7 +15,18 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau
 
+from keras.regularizers import l2
+
+
+from sklearn.metrics import f1_score, classification_report
+
 import random
+
+from keras.models import Model
+from keras.layers import Input, Masking, LSTM, Dense, Dropout, BatchNormalization, Layer
+import tensorflow as tf
+
+from tensorflow.keras.layers import MultiHeadAttention
 
 load_dotenv()
 mongo_db_url = os.getenv("MONGO_DB_URL")
@@ -63,15 +74,78 @@ x_train, x_val, y_train, y_val = train_test_split(
     x_data, y_data, test_size=0.1, random_state=2021
 )
 
-model = Sequential([
-    Input(shape=x_train.shape[1:]),              
-    Masking(mask_value=0.0),                     
-    LSTM(128, return_sequences=True), 
-    LSTM(64),
-    Dense(64, activation='relu'),
-    Dropout(0.5),
-    Dense(len(gesture), activation='softmax')
-])
+def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2.0):
+    augmented = seq.copy()
+
+    # 1. ⏱️ Temporal jitter: 순서를 약간 섞음
+    if random.random() < jitter_prob:
+        idx = np.arange(len(augmented))
+        jitter = np.clip(np.random.normal(0, 1, size=len(idx)), -2, 2).astype(int)
+        jittered_idx = np.clip(idx + jitter, 0, len(idx) - 1)
+        augmented = augmented[jittered_idx]
+
+    # 2. 🌫️ Joint 좌표에 noise 추가
+    joint_dim = 21 * 3  # 63
+    augmented[:, :joint_dim] += np.random.normal(0, noise_std, size=(augmented.shape[0], joint_dim))
+
+    # 3. 🔄 각도 값에 ±1~2도 perturbation
+    angle_dim = 15
+    angle_start = joint_dim
+    angle_end = joint_dim + angle_dim
+    perturb = np.random.uniform(-angle_perturb_range, angle_perturb_range, size=(augmented.shape[0], angle_dim))
+    augmented[:, angle_start:angle_end] += perturb
+
+    return augmented
+
+
+# 데이터 증강 적용
+augmented_train = []
+augmented_labels = []
+
+for i in range(len(x_train)):
+    augmented_train.append(x_train[i])
+    augmented_labels.append(y_train[i])
+
+    # 증강 샘플 추가 (예: 1개씩 증강 → 2배 데이터)
+    augmented_train.append(augment_sequence(x_train[i]))
+    augmented_labels.append(y_train[i])
+
+x_train = np.array(augmented_train)
+y_train = np.array(augmented_labels)
+
+print(f"📦 증강된 학습 데이터: {x_train.shape}, 라벨: {y_train.shape}")
+
+
+class Attention(Layer):
+    def __init__(self):
+        super(Attention, self).__init__()
+
+    def build(self, input_shape):
+        self.W = self.add_weight(name="attention_weight", shape=(input_shape[-1], 1),
+                                 initializer="normal")
+        self.b = self.add_weight(name="attention_bias", shape=(input_shape[1], 1),
+                                 initializer="zeros")
+        super(Attention, self).build(input_shape)
+
+    def call(self, x):
+        e = tf.keras.backend.tanh(tf.keras.backend.dot(x, self.W) + self.b)
+        a = tf.keras.backend.softmax(e, axis=1)
+        output = x * a
+        return tf.keras.backend.sum(output, axis=1)
+
+
+inputs = Input(shape=x_train.shape[1:])
+x = Masking(mask_value=0.0)(inputs)
+x = LSTM(128, return_sequences=True, kernel_regularizer=l2(0.001))(x)
+x = BatchNormalization()(x)
+x = LSTM(64, return_sequences=True)(x)  
+x = BatchNormalization()(x)
+x = Attention()(x)  
+x = Dense(64, activation='relu')(x)
+x = Dropout(0.5)(x)
+outputs = Dense(len(gesture), activation='softmax')(x)
+
+model = Model(inputs, outputs)
 
 model.compile(
     optimizer='adam',
@@ -89,11 +163,21 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('90_v2_masked_angles.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('90_v7_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
 )
+
+y_pred = model.predict(x_val)
+y_pred_classes = np.argmax(y_pred, axis=1)
+y_true = np.argmax(y_val, axis=1)
+
+f1 = f1_score(y_true, y_pred_classes, average='weighted')
+print(f"F1 Score (Weighted): {f1:.4f}")
+
+print("Classification Report:")
+print(classification_report(y_true, y_pred_classes))
 
 fig, loss_ax = plt.subplots(figsize=(16, 10))
 acc_ax = loss_ax.twinx()
@@ -113,11 +197,9 @@ plt.title('Model Training History')
 plt.grid(True)
 plt.show()
 
-# 모델 저장
-model.save('90_v2_masked_angles.h5')
-print("✅ 모델 저장 완료: 90_v2_masked_angles.h5")
+model.save('90_v7_masked_angles.keras')
+print("✅ 모델 저장 완료: 90_v7_masked_angles.keras")
 
-# 제스처 라벨 딕셔너리 저장
-with open('v2_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
+with open('v7_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
     json.dump(gesture, f, ensure_ascii=False, indent=2)
-print("✅ 제스처 라벨 딕셔너리 저장 완료: v2_pad_gesture_dict.json")
+print("✅ 제스처 라벨 딕셔너리 저장 완료: v7_pad_gesture_dict.json")
