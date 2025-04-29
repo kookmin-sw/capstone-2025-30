@@ -8,6 +8,7 @@ import "store.proto";
 import "inquiry.proto";
 import "menu.proto";
 import "order.proto";
+import "message.proto";
 
 service APIService {
   // test api
@@ -22,7 +23,6 @@ service APIService {
   
   // inquiry api
   rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
-  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
 
   // menu api
   rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
@@ -35,4 +35,7 @@ service APIService {
   rpc GetOrderStatus(GetOrderStatusRequest) returns (GetOrderStatusResponse);
   rpc GetOrderList(GetOrderListRequest) returns (GetOrderListResponse);
   rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (UpdateOrderStatusResponse);
+
+  // message api
+  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
 }

@@ -27,7 +27,6 @@ const (
 	APIService_UpdateStore_FullMethodName       = "/APIService/UpdateStore"
 	APIService_DeleteStore_FullMethodName       = "/APIService/DeleteStore"
 	APIService_StreamInquiries_FullMethodName   = "/APIService/StreamInquiries"
-	APIService_GetMessages_FullMethodName       = "/APIService/GetMessages"
 	APIService_CreateMenu_FullMethodName        = "/APIService/CreateMenu"
 	APIService_GetCategoryList_FullMethodName   = "/APIService/GetCategoryList"
 	APIService_GetMenuList_FullMethodName       = "/APIService/GetMenuList"
@@ -36,6 +35,7 @@ const (
 	APIService_GetOrderStatus_FullMethodName    = "/APIService/GetOrderStatus"
 	APIService_GetOrderList_FullMethodName      = "/APIService/GetOrderList"
 	APIService_UpdateOrderStatus_FullMethodName = "/APIService/UpdateOrderStatus"
+	APIService_GetMessages_FullMethodName       = "/APIService/GetMessages"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -52,7 +52,6 @@ type APIServiceClient interface {
 	DeleteStore(ctx context.Context, in *DeleteStoreRequest, opts ...grpc.CallOption) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error)
-	GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error)
 	// menu api
 	CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error)
 	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListResponse, error)
@@ -63,6 +62,8 @@ type APIServiceClient interface {
 	GetOrderStatus(ctx context.Context, in *GetOrderStatusRequest, opts ...grpc.CallOption) (*GetOrderStatusResponse, error)
 	GetOrderList(ctx context.Context, in *GetOrderListRequest, opts ...grpc.CallOption) (*GetOrderListResponse, error)
 	UpdateOrderStatus(ctx context.Context, in *UpdateOrderStatusRequest, opts ...grpc.CallOption) (*UpdateOrderStatusResponse, error)
+	// message api
+	GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error)
 }
 
 type aPIServiceClient struct {
@@ -146,16 +147,6 @@ func (c *aPIServiceClient) StreamInquiries(ctx context.Context, opts ...grpc.Cal
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesClient = grpc.ClientStreamingClient[InquiryRequest, InquiryResponse]
 
-func (c *aPIServiceClient) GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetMessagesResponse)
-	err := c.cc.Invoke(ctx, APIService_GetMessages_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *aPIServiceClient) CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(CreateMenuResponse)
@@ -236,6 +227,16 @@ func (c *aPIServiceClient) UpdateOrderStatus(ctx context.Context, in *UpdateOrde
 	return out, nil
 }
 
+func (c *aPIServiceClient) GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMessagesResponse)
+	err := c.cc.Invoke(ctx, APIService_GetMessages_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServiceServer is the server API for APIService service.
 // All implementations must embed UnimplementedAPIServiceServer
 // for forward compatibility.
@@ -250,7 +251,6 @@ type APIServiceServer interface {
 	DeleteStore(context.Context, *DeleteStoreRequest) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error
-	GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error)
 	// menu api
 	CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error)
 	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListResponse, error)
@@ -261,6 +261,8 @@ type APIServiceServer interface {
 	GetOrderStatus(context.Context, *GetOrderStatusRequest) (*GetOrderStatusResponse, error)
 	GetOrderList(context.Context, *GetOrderListRequest) (*GetOrderListResponse, error)
 	UpdateOrderStatus(context.Context, *UpdateOrderStatusRequest) (*UpdateOrderStatusResponse, error)
+	// message api
+	GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error)
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -292,9 +294,6 @@ func (UnimplementedAPIServiceServer) DeleteStore(context.Context, *DeleteStoreRe
 func (UnimplementedAPIServiceServer) StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamInquiries not implemented")
 }
-func (UnimplementedAPIServiceServer) GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMessages not implemented")
-}
 func (UnimplementedAPIServiceServer) CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMenu not implemented")
 }
@@ -318,6 +317,9 @@ func (UnimplementedAPIServiceServer) GetOrderList(context.Context, *GetOrderList
 }
 func (UnimplementedAPIServiceServer) UpdateOrderStatus(context.Context, *UpdateOrderStatusRequest) (*UpdateOrderStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateOrderStatus not implemented")
+}
+func (UnimplementedAPIServiceServer) GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMessages not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
 func (UnimplementedAPIServiceServer) testEmbeddedByValue()                    {}
@@ -454,24 +456,6 @@ func _APIService_StreamInquiries_Handler(srv interface{}, stream grpc.ServerStre
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesServer = grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]
-
-func _APIService_GetMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMessagesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(APIServiceServer).GetMessages(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: APIService_GetMessages_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(APIServiceServer).GetMessages(ctx, req.(*GetMessagesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
 
 func _APIService_CreateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateMenuRequest)
@@ -617,6 +601,24 @@ func _APIService_UpdateOrderStatus_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _APIService_GetMessages_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMessagesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetMessages(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetMessages_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetMessages(ctx, req.(*GetMessagesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -649,10 +651,6 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _APIService_DeleteStore_Handler,
 		},
 		{
-			MethodName: "GetMessages",
-			Handler:    _APIService_GetMessages_Handler,
-		},
-		{
 			MethodName: "CreateMenu",
 			Handler:    _APIService_CreateMenu_Handler,
 		},
@@ -683,6 +681,10 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateOrderStatus",
 			Handler:    _APIService_UpdateOrderStatus_Handler,
+		},
+		{
+			MethodName: "GetMessages",
+			Handler:    _APIService_GetMessages_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

@@ -3,7 +3,6 @@ syntax = "proto3";
 option go_package = "capstone-2025-30/proto";
 
 import "error.proto";
-import "google/protobuf/timestamp.proto";
 
 message InquiryRequest{
   string store_code = 1; // 가게 code
@@ -16,24 +15,4 @@ message InquiryRequest{
 message InquiryResponse{
   bool success = 1; // 성공 여부
   optional EError error = 2; // 에러 코드
-}
-
-message GetMessagesRequest{
-  string store_code = 1;
-  string notification_title = 2; // order, inquiry -> 일반 문의 알림 인지 주문 알림인지
-  int32 number = 3; // 주문 번호 나 문의 번호
-}
-
-message GetMessagesResponse{
-  bool success = 1;
-  string title = 2; // orderMessage(주문, 주문 추가 문의사항), inquiryMessage(일반 문의사항)
-  int32 number = 3; // 주문번호나 문의번호
-  repeated Message messages = 4;
-  optional EError error = 5;
-}
-
-message Message{
-  string message = 1; // 메세지
-  bool is_owner = 2;
-  google.protobuf.Timestamp created_at = 3; // 메세지 생성 시간
 }
