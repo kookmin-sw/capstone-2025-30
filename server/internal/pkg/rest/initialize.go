@@ -59,8 +59,8 @@ func Initialize() {
 	r.GET("/rest/order/:store_code/orderList", restHandler.GetOrderList)
 	r.PUT("/rest/order/:store_code/:order_number/status", restHandler.UpdateOrderStatus)
 
-	// inquiry api
-	r.GET("/rest/inquiry/:store_code", restHandler.GetMessages)
+	// message api
+	r.GET("/rest/messages/:store_code", restHandler.GetMessages)
 
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
