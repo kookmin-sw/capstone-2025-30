@@ -2,9 +2,12 @@ package grpcHandler
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"go.mongodb.org/mongo-driver/mongo"
 	pb "server/gen"
 	mmessage "server/internal/pkg/database/mongodb/message"
+	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	"server/internal/pkg/utils"
 
@@ -32,11 +35,17 @@ func (s *Server) GetMessages(
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
+	// 주문 번호 존재 하지 않으면 panic
+	_, err = morder.GetMOrder(storeId, req.Number)
+	if err != nil && errors.Is(err, mongo.ErrNoDocuments) {
+		panic(pb.EError_EE_ORDER_NOT_FOUND)
+	}
+
 	messageTitle := fmt.Sprintf("%sMessage", req.NotificationTitle)
 	// 메시지 조회
 	mMessages, err := mmessage.GetMMessage(&storeId, req.Number, messageTitle)
 	if err != nil {
-		panic(fmt.Errorf("failed to get messages: %v", err))
+		panic(err)
 	}
 
 	// 메세지 MMessage -> pb.Message 로 변환
@@ -52,8 +61,8 @@ func (s *Server) GetMessages(
 	return &pb.GetMessagesResponse{
 		Success:  true,
 		Error:    nil,
-		Title:    mMessages[0].Title,
-		Number:   req.Number,
+		Title:    &mMessages[0].Title,
+		Number:   &req.Number,
 		Messages: pbMessages,
 	}, nil
 }

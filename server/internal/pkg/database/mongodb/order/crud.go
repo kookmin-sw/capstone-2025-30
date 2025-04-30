@@ -84,9 +84,9 @@ func GetMOrder(storeID primitive.ObjectID, orderNumber int32) (*dbstructure.MOrd
 
 	err := mongodb.OrderColl.FindOne(context.Background(), filter).Decode(&order)
 	if err != nil {
-		if err == mongo.ErrNoDocuments {
-			return nil, nil
-		}
+		//if err == mongo.ErrNoDocuments {
+		//	return nil, nil
+		//}
 		return nil, err
 	}
 
