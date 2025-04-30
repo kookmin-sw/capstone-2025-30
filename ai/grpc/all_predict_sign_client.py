@@ -30,8 +30,13 @@ channel = grpc.secure_channel(f"{host}:50051",
 stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
 # --- 영상 열기 ---
-video_path = '아메리카노_수어통합본.mp4'
+# video_path = '아메리카노_수어통합본.mp4'
 # video_path = '화장실 비밀번호 있나요?.mp4'
+# video_path = '포인트가 있나요?.mp4'
+video_path = '키오스크 주문이 어려운데 도와주세요.mp4'
+# video_path = '시럽이 어디있나요?.mp4'
+# video_path = '영수증 주세요.mp4'
+# video_path = '긍정.mp4'
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
     print("❌ 비디오를 열 수 없습니다.")

@@ -38,21 +38,21 @@ class Attention(Layer):
 
 # 배포용
 model = tf.keras.models.load_model(
-    'models/90_v6_masked_angles.keras',
+    'models/60_v1_masked_angles.keras',
     custom_objects={'Attention': Attention}
 )
 
 # # 로컬용
 # model = tf.keras.models.load_model(
-#     '../models/90_v6_masked_angles.keras',
+#     '../models/60_v1_masked_angles.keras',
 #     custom_objects={'Attention': Attention}
 # )
 
 # 배포용
-with open('gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
 
 # # 로컬용
-# with open('../gesture_dict/v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+# with open('../gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
@@ -68,22 +68,17 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
         video_frames_length = request.video_length
         video_length = video_frames_length / fps
 
-        if len(joint_data_list) < 90 * 78:
+        if len(joint_data_list) < 60 * 78:
             return all_predict_sign_pb2.PredictResult(
                 store_id=store_id,
-                predicted_sentence="최소 90프레임은 필요합니다!",
+                predicted_sentence="최소 60프레임은 필요합니다!",
                 confidence=0.0
             )
-
-        seq_length = 90
-        feature_dim = 78
-        segment_duration = 3.5
-        segment_offset_start = 0.5
-        segment_interval = segment_duration + 0.5
-
-        available_time = video_length - segment_offset_start
-        num_segments = int(available_time // segment_interval)
+        
         confidence_threshold = 0.97
+        motion_threshold = 0.02
+        seq_length = 60
+        feature_dim = 78
 
         full_data = np.array(joint_data_list).reshape(-1, feature_dim)
         total_frames = full_data.shape[0]
@@ -91,73 +86,56 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
         sentences = []
         confidences = []
 
-        for i in range(num_segments):
-            start_time = segment_offset_start + i * (segment_duration + 0.5)
-            end_time = start_time + segment_duration
+        sentences = []
+        confidences = []
 
-            if end_time > video_length:
-                end_time = video_length
-                if start_time > video_length:
-                    break
+        motion_start_frames = []
+        prev_frame = None
 
-            start_frame = int(start_time * fps)
-            end_frame = int(end_time * fps)
+        for idx in range(total_frames):
+            current_frame = full_data[idx]
+            if prev_frame is not None:
+                diff = np.linalg.norm(current_frame - prev_frame)
+                if diff > motion_threshold:
+                    motion_start_frames.append(idx)
+            prev_frame = current_frame
 
-            start_frame = max(0, min(start_frame, total_frames - seq_length))
-            end_frame = min(total_frames, max(end_frame, seq_length))
+        # 중복 제거 (간격 좁은 건 스킵)
+        filtered_start_frames = []
+        min_gap = int(fps * 2.5)  # 최소 2.5초 간격
+        last_added = -min_gap
 
-            segment = full_data[start_frame:end_frame]
+        for f in motion_start_frames:
+            if f - last_added >= min_gap:
+                filtered_start_frames.append(f)
+                last_added = f
 
-            if len(segment) < seq_length:
-                print(f"Segment 스킵: {start_time:.2f} - {end_time:.2f} ({len(segment)} < {seq_length})")
+        # 추출된 시점부터 시퀀스 예측
+        for start_frame in filtered_start_frames:
+            end_frame = start_frame + seq_length
+            if end_frame > total_frames:
                 continue
 
-            input_data = segment[:seq_length] 
+            segment = full_data[start_frame:end_frame]
+            input_data = segment[:seq_length]
+
             pred = model.predict(np.expand_dims(input_data, axis=0))
             pred_label = np.argmax(pred[0])
             predicted_sentence = actions[pred_label]
+            confidence = float(pred[0][pred_label])
 
             if "," in predicted_sentence:
                 predicted_sentence = predicted_sentence.split(",")[0]
-            confidence = float(pred[0][pred_label])
 
             if confidence < confidence_threshold:
-                alt_sentences = []
-                alt_confidences = []
-
-                for offset in [-1, 1]:
-                    alt_start_time = start_time + offset / fps
-                    alt_start_frame = int(alt_start_time * fps)
-                    alt_start_frame = max(0, min(alt_start_frame, total_frames - seq_length))
-                    alt_end_frame = alt_start_frame + seq_length
-
-                    if alt_end_frame > total_frames:
-                        continue
-
-                    alt_segment = full_data[alt_start_frame:alt_end_frame]
-                    alt_pred = model.predict(np.expand_dims(alt_segment, axis=0))
-                    alt_pred_label = np.argmax(alt_pred[0])
-                    alt_predicted_sentence = actions[alt_pred_label]
-                    alt_confidence = float(alt_pred[0][alt_pred_label])
-
-                    alt_sentences.append(alt_predicted_sentence)
-                    alt_confidences.append(alt_confidence)
-
-                    print(f"Alternative Segment: {alt_start_time:.2f}, Sentence: {alt_predicted_sentence}, Confidence: {alt_confidence:.4f}")
-
-                if alt_confidences:
-                    best_index = np.argmax(alt_confidences)
-                    if alt_confidences[best_index] > 0.88:
-                        predicted_sentence = alt_sentences[best_index]
-                        confidence = alt_confidences[best_index]
-                        print(f"대체 Segment 선택: Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
-                    else:
-                        continue
-
+                continue 
+            
+            if predicted_sentence == "기계":
+                predicted_sentence = "키오스크"
+                
             sentences.append(predicted_sentence)
             confidences.append(confidence)
-            print(f"Segment {i+1}: {start_time:.2f} - {end_time:.2f}, Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
-
+            print(f"Motion Segment @ Frame {start_frame}: Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
         if not sentences:
             return all_predict_sign_pb2.PredictResult(
                 store_id=store_id,
