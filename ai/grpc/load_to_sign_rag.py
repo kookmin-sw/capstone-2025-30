@@ -36,7 +36,7 @@ for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
 # 배포용
-with open('gesture_dict/60_v1_pad_gesture_dict', 'r', encoding='utf-8') as f:
+with open('gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
 
 # # 로컬용
 # with open('../gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
