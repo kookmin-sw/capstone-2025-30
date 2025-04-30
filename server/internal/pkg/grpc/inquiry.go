@@ -70,7 +70,6 @@ loop:
 				<-timer.C
 			}
 			timer.Reset(timeoutSeconds)
-			fmt.Println("여기")
 			once.Do(func() {
 				var err error
 				objectID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)

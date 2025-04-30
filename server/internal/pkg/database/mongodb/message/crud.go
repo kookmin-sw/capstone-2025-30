@@ -39,8 +39,6 @@ func GetMMessage(storeID *primitive.ObjectID, num int32, notificationTitle strin
 		"title":    notificationTitle,
 	}
 
-	fmt.Println("filter : ", num)
-
 	// created_at 기준 오름차순 정렬 옵션 설정
 	opts := options.Find().SetSort(bson.D{{"created_at", 1}})
 
