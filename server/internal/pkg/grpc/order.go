@@ -9,7 +9,6 @@ import (
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
-	websocketHandler "server/internal/pkg/websocket"
 	"strings"
 	"time"
 
@@ -93,35 +92,35 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		panic(pb.EError_EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED)
 	}
 
-	go func() {
-		maxRetries := 3
-		backoff := time.Second // 초기 대기 시간 1초
-		// 웹소켓 전송 시도
-		notification := websocketHandler.WebSocketMessage{
-			Type: utils.WebSocketMessageTypeNotification,
-			Data: websocketHandler.NotificationData{
-				Title: utils.NotificationTitleOrder,
-				Num:   mNotificationMessage.Number,
-			},
-		}
+	// go func() {
+	// 	maxRetries := 3
+	// 	backoff := time.Second // 초기 대기 시간 1초
+	// 	// 웹소켓 전송 시도
+	// 	notification := websocketHandler.WebSocketMessage{
+	// 		Type: utils.WebSocketMessageTypeNotification,
+	// 		Data: websocketHandler.NotificationData{
+	// 			Title: utils.NotificationTitleOrder,
+	// 			Num:   mNotificationMessage.Number,
+	// 		},
+	// 	}
 
-		for attempt := 1; attempt <= maxRetries; attempt++ {
-			if err := websocketHandler.SendMessageToClient(req.StoreCode, notification); err != nil {
-				logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
+	// 	for attempt := 1; attempt <= maxRetries; attempt++ {
+	// 		if err := websocketHandler.SendMessageToClient(req.StoreCode, notification); err != nil {
+	// 			logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
 
-				if attempt == maxRetries {
-					logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
-					return // 모든 시도 실패 후 종료
-				}
+	// 			if attempt == maxRetries {
+	// 				logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
+	// 				return // 모든 시도 실패 후 종료
+	// 			}
 
-				// 다음 시도 전 대기
-				time.Sleep(backoff)
-				backoff *= 2 // 지수 백오프
-			} else {
-				return // 성공 시 종료
-			}
-		}
-	}()
+	// 			// 다음 시도 전 대기
+	// 			time.Sleep(backoff)
+	// 			backoff *= 2 // 지수 백오프
+	// 		} else {
+	// 			return // 성공 시 종료
+	// 		}
+	// 	}
+	// }()
 
 	return &pb.CreateOrderResponse{
 		Success:     true,
