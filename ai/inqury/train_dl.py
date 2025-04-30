@@ -163,7 +163,7 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('90_v7_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('60_v1_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
@@ -197,9 +197,9 @@ plt.title('Model Training History')
 plt.grid(True)
 plt.show()
 
-model.save('90_v7_masked_angles.keras')
-print("✅ 모델 저장 완료: 90_v7_masked_angles.keras")
+model.save('60_v1_masked_angles.keras')
+print("✅ 모델 저장 완료: 60_v1_masked_angles.keras")
 
-with open('v7_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
+with open('60_v1_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
     json.dump(gesture, f, ensure_ascii=False, indent=2)
-print("✅ 제스처 라벨 딕셔너리 저장 완료: v7_pad_gesture_dict.json")
+print("✅ 제스처 라벨 딕셔너리 저장 완료: 60_v1_pad_gesture_dict.json")
