@@ -24,3 +24,19 @@ message Message{
   bool is_owner = 2;
   google.protobuf.Timestamp created_at = 3; // 메세지 생성 시간
 }
+
+message GetChatRoomListRequest{
+  string store_code = 1;
+  string chat_room_status = 2; // complete(완료), before(이전)
+}
+
+message GetChatRoomListResponse{
+  bool success = 1;
+  optional EError error = 2;
+  repeated ChatRoomInfo chat_room_infos = 3;
+}
+
+message ChatRoomInfo{
+  string notification_title = 1; // order, inquiry -> 일반 문의 알림 인지 주문 알림인지
+  int32 number = 2; // 주문 번호 나 문의 번호
+}

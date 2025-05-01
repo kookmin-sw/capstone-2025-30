@@ -38,4 +38,5 @@ service APIService {
 
   // message api
   rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
+  rpc GetChatRoomList(GetChatRoomListRequest) returns (GetChatRoomListResponse);
 }

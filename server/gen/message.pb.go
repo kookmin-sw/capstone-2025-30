@@ -218,6 +218,170 @@ func (x *Message) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+type GetChatRoomListRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	StoreCode      string                 `protobuf:"bytes,1,opt,name=store_code,json=storeCode,proto3" json:"store_code,omitempty"`
+	ChatRoomStatus string                 `protobuf:"bytes,2,opt,name=chat_room_status,json=chatRoomStatus,proto3" json:"chat_room_status,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *GetChatRoomListRequest) Reset() {
+	*x = GetChatRoomListRequest{}
+	mi := &file_message_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatRoomListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatRoomListRequest) ProtoMessage() {}
+
+func (x *GetChatRoomListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatRoomListRequest.ProtoReflect.Descriptor instead.
+func (*GetChatRoomListRequest) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *GetChatRoomListRequest) GetStoreCode() string {
+	if x != nil {
+		return x.StoreCode
+	}
+	return ""
+}
+
+func (x *GetChatRoomListRequest) GetChatRoomStatus() string {
+	if x != nil {
+		return x.ChatRoomStatus
+	}
+	return ""
+}
+
+type GetChatRoomListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Error         *EError                `protobuf:"varint,2,opt,name=error,proto3,enum=EError,oneof" json:"error,omitempty"`
+	ChatRoomInfos []*ChatRoomInfo        `protobuf:"bytes,3,rep,name=chat_room_infos,json=chatRoomInfos,proto3" json:"chat_room_infos,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetChatRoomListResponse) Reset() {
+	*x = GetChatRoomListResponse{}
+	mi := &file_message_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetChatRoomListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetChatRoomListResponse) ProtoMessage() {}
+
+func (x *GetChatRoomListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetChatRoomListResponse.ProtoReflect.Descriptor instead.
+func (*GetChatRoomListResponse) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetChatRoomListResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+func (x *GetChatRoomListResponse) GetError() EError {
+	if x != nil && x.Error != nil {
+		return *x.Error
+	}
+	return EError_EE_UNSPECIFIED
+}
+
+func (x *GetChatRoomListResponse) GetChatRoomInfos() []*ChatRoomInfo {
+	if x != nil {
+		return x.ChatRoomInfos
+	}
+	return nil
+}
+
+type ChatRoomInfo struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	NotificationTitle string                 `protobuf:"bytes,1,opt,name=notification_title,json=notificationTitle,proto3" json:"notification_title,omitempty"` // order, inquiry -> 일반 문의 알림 인지 주문 알림인지
+	Number            int32                  `protobuf:"varint,2,opt,name=number,proto3" json:"number,omitempty"`                                               // 주문 번호 나 문의 번호
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *ChatRoomInfo) Reset() {
+	*x = ChatRoomInfo{}
+	mi := &file_message_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ChatRoomInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ChatRoomInfo) ProtoMessage() {}
+
+func (x *ChatRoomInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_message_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ChatRoomInfo.ProtoReflect.Descriptor instead.
+func (*ChatRoomInfo) Descriptor() ([]byte, []int) {
+	return file_message_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ChatRoomInfo) GetNotificationTitle() string {
+	if x != nil {
+		return x.NotificationTitle
+	}
+	return ""
+}
+
+func (x *ChatRoomInfo) GetNumber() int32 {
+	if x != nil {
+		return x.Number
+	}
+	return 0
+}
+
 var File_message_proto protoreflect.FileDescriptor
 
 var file_message_proto_rawDesc = string([]byte{
@@ -253,9 +417,30 @@ var file_message_proto_rawDesc = string([]byte{
 	0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62,
 	0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x09, 0x63, 0x72,
-	0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x42, 0x18, 0x5a, 0x16, 0x63, 0x61, 0x70, 0x73, 0x74,
-	0x6f, 0x6e, 0x65, 0x2d, 0x32, 0x30, 0x32, 0x35, 0x2d, 0x33, 0x30, 0x2f, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x61, 0x74, 0x65, 0x64, 0x41, 0x74, 0x22, 0x61, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x43, 0x68,
+	0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x1d, 0x0a, 0x0a, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x73, 0x74, 0x6f, 0x72, 0x65, 0x43, 0x6f, 0x64, 0x65,
+	0x12, 0x28, 0x0a, 0x10, 0x63, 0x68, 0x61, 0x74, 0x5f, 0x72, 0x6f, 0x6f, 0x6d, 0x5f, 0x73, 0x74,
+	0x61, 0x74, 0x75, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x63, 0x68, 0x61, 0x74,
+	0x52, 0x6f, 0x6f, 0x6d, 0x53, 0x74, 0x61, 0x74, 0x75, 0x73, 0x22, 0x98, 0x01, 0x0a, 0x17, 0x47,
+	0x65, 0x74, 0x43, 0x68, 0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65,
+	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73,
+	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73,
+	0x12, 0x22, 0x0a, 0x05, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0e, 0x32,
+	0x07, 0x2e, 0x45, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x48, 0x00, 0x52, 0x05, 0x65, 0x72, 0x72, 0x6f,
+	0x72, 0x88, 0x01, 0x01, 0x12, 0x35, 0x0a, 0x0f, 0x63, 0x68, 0x61, 0x74, 0x5f, 0x72, 0x6f, 0x6f,
+	0x6d, 0x5f, 0x69, 0x6e, 0x66, 0x6f, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e,
+	0x43, 0x68, 0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x0d, 0x63, 0x68,
+	0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x42, 0x08, 0x0a, 0x06, 0x5f,
+	0x65, 0x72, 0x72, 0x6f, 0x72, 0x22, 0x55, 0x0a, 0x0c, 0x43, 0x68, 0x61, 0x74, 0x52, 0x6f, 0x6f,
+	0x6d, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x2d, 0x0a, 0x12, 0x6e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x11, 0x6e, 0x6f, 0x74, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54,
+	0x69, 0x74, 0x6c, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x06, 0x6e, 0x75, 0x6d, 0x62, 0x65, 0x72, 0x42, 0x18, 0x5a, 0x16,
+	0x63, 0x61, 0x70, 0x73, 0x74, 0x6f, 0x6e, 0x65, 0x2d, 0x32, 0x30, 0x32, 0x35, 0x2d, 0x33, 0x30,
+	0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var (
@@ -270,23 +455,28 @@ func file_message_proto_rawDescGZIP() []byte {
 	return file_message_proto_rawDescData
 }
 
-var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_message_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_message_proto_goTypes = []any{
-	(*GetMessagesRequest)(nil),    // 0: GetMessagesRequest
-	(*GetMessagesResponse)(nil),   // 1: GetMessagesResponse
-	(*Message)(nil),               // 2: Message
-	(EError)(0),                   // 3: EError
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*GetMessagesRequest)(nil),      // 0: GetMessagesRequest
+	(*GetMessagesResponse)(nil),     // 1: GetMessagesResponse
+	(*Message)(nil),                 // 2: Message
+	(*GetChatRoomListRequest)(nil),  // 3: GetChatRoomListRequest
+	(*GetChatRoomListResponse)(nil), // 4: GetChatRoomListResponse
+	(*ChatRoomInfo)(nil),            // 5: ChatRoomInfo
+	(EError)(0),                     // 6: EError
+	(*timestamppb.Timestamp)(nil),   // 7: google.protobuf.Timestamp
 }
 var file_message_proto_depIdxs = []int32{
 	2, // 0: GetMessagesResponse.messages:type_name -> Message
-	3, // 1: GetMessagesResponse.error:type_name -> EError
-	4, // 2: Message.created_at:type_name -> google.protobuf.Timestamp
-	3, // [3:3] is the sub-list for method output_type
-	3, // [3:3] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	6, // 1: GetMessagesResponse.error:type_name -> EError
+	7, // 2: Message.created_at:type_name -> google.protobuf.Timestamp
+	6, // 3: GetChatRoomListResponse.error:type_name -> EError
+	5, // 4: GetChatRoomListResponse.chat_room_infos:type_name -> ChatRoomInfo
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_message_proto_init() }
@@ -296,13 +486,14 @@ func file_message_proto_init() {
 	}
 	file_error_proto_init()
 	file_message_proto_msgTypes[1].OneofWrappers = []any{}
+	file_message_proto_msgTypes[4].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_message_proto_rawDesc), len(file_message_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

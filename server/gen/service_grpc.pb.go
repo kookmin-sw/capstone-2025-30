@@ -36,6 +36,7 @@ const (
 	APIService_GetOrderList_FullMethodName      = "/APIService/GetOrderList"
 	APIService_UpdateOrderStatus_FullMethodName = "/APIService/UpdateOrderStatus"
 	APIService_GetMessages_FullMethodName       = "/APIService/GetMessages"
+	APIService_GetChatRoomList_FullMethodName   = "/APIService/GetChatRoomList"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -64,6 +65,7 @@ type APIServiceClient interface {
 	UpdateOrderStatus(ctx context.Context, in *UpdateOrderStatusRequest, opts ...grpc.CallOption) (*UpdateOrderStatusResponse, error)
 	// message api
 	GetMessages(ctx context.Context, in *GetMessagesRequest, opts ...grpc.CallOption) (*GetMessagesResponse, error)
+	GetChatRoomList(ctx context.Context, in *GetChatRoomListRequest, opts ...grpc.CallOption) (*GetChatRoomListResponse, error)
 }
 
 type aPIServiceClient struct {
@@ -237,6 +239,16 @@ func (c *aPIServiceClient) GetMessages(ctx context.Context, in *GetMessagesReque
 	return out, nil
 }
 
+func (c *aPIServiceClient) GetChatRoomList(ctx context.Context, in *GetChatRoomListRequest, opts ...grpc.CallOption) (*GetChatRoomListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChatRoomListResponse)
+	err := c.cc.Invoke(ctx, APIService_GetChatRoomList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // APIServiceServer is the server API for APIService service.
 // All implementations must embed UnimplementedAPIServiceServer
 // for forward compatibility.
@@ -263,6 +275,7 @@ type APIServiceServer interface {
 	UpdateOrderStatus(context.Context, *UpdateOrderStatusRequest) (*UpdateOrderStatusResponse, error)
 	// message api
 	GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error)
+	GetChatRoomList(context.Context, *GetChatRoomListRequest) (*GetChatRoomListResponse, error)
 	mustEmbedUnimplementedAPIServiceServer()
 }
 
@@ -320,6 +333,9 @@ func (UnimplementedAPIServiceServer) UpdateOrderStatus(context.Context, *UpdateO
 }
 func (UnimplementedAPIServiceServer) GetMessages(context.Context, *GetMessagesRequest) (*GetMessagesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMessages not implemented")
+}
+func (UnimplementedAPIServiceServer) GetChatRoomList(context.Context, *GetChatRoomListRequest) (*GetChatRoomListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatRoomList not implemented")
 }
 func (UnimplementedAPIServiceServer) mustEmbedUnimplementedAPIServiceServer() {}
 func (UnimplementedAPIServiceServer) testEmbeddedByValue()                    {}
@@ -619,6 +635,24 @@ func _APIService_GetMessages_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _APIService_GetChatRoomList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatRoomListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).GetChatRoomList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_GetChatRoomList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).GetChatRoomList(ctx, req.(*GetChatRoomListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // APIService_ServiceDesc is the grpc.ServiceDesc for APIService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -685,6 +719,10 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetMessages",
 			Handler:    _APIService_GetMessages_Handler,
+		},
+		{
+			MethodName: "GetChatRoomList",
+			Handler:    _APIService_GetChatRoomList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
