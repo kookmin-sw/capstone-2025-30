@@ -25,3 +25,8 @@ const (
 	StreamDataTypeOrder   = "order"
 	StreamDataTypeInquiry = "inquiry"
 )
+
+const (
+	ChatRoomStatusComplete = "complete"
+	ChatRoomStatusBefore   = "before"
+)
