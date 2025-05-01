@@ -25,9 +25,14 @@ message Message{
   google.protobuf.Timestamp created_at = 3; // 메세지 생성 시간
 }
 
+enum ChatRoomStatus {
+  CHATROOM_STATUS_COMPLETE = 0;
+  CHATROOM_STATUS_BEFORE  = 1;
+}
+
 message GetChatRoomListRequest{
   string store_code = 1;
-  string chat_room_status = 2; // complete(완료), before(이전)
+  ChatRoomStatus chat_room_status = 2;
 }
 
 message GetChatRoomListResponse{
