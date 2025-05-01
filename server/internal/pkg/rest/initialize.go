@@ -61,6 +61,7 @@ func Initialize() {
 
 	// message api
 	r.GET("/rest/messages/:store_code", restHandler.GetMessages)
+	r.GET("/rest/chat-room-list/:store_code", restHandler.GetMessageList)
 
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
