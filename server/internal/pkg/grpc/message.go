@@ -6,7 +6,6 @@ import (
 	"fmt"
 	pb "server/gen"
 	mmessage "server/internal/pkg/database/mongodb/message"
-	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
 	"server/internal/pkg/utils"
@@ -37,11 +36,9 @@ func (s *Server) GetMessages(
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
-	// 주문 번호 존재 하지 않으면 panic
-	// 여기 주문 DB 에서 검색하는게 아니라 메세지 DB 에서 검색
-	_, err = morder.GetMOrder(storeId, req.Number)
+	_, err = mmessage.GetNotificationMessage(&storeId, req.NotificationTitle, int(req.Number))
 	if err != nil && errors.Is(err, mongo.ErrNoDocuments) {
-		panic(pb.EError_EE_ORDER_NOT_FOUND)
+		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
 	}
 
 	messageTitle := fmt.Sprintf("%sMessage", req.NotificationTitle)
