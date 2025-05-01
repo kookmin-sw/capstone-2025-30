@@ -12,6 +12,32 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+type RestMessage struct {
+	Message   string `json:"message"`
+	IsOwner   bool   `json:"is_owner"`
+	CreatedAt string `json:"created_at"`
+}
+
+func convertToRestMessage(grpcMessage *pb.Message) RestMessage {
+	return RestMessage{
+		Message:   grpcMessage.Message,
+		IsOwner:   grpcMessage.IsOwner,
+		CreatedAt: grpcMessage.CreatedAt.AsTime().Format(time.RFC3339),
+	}
+}
+
+type RestChatRoomInfo struct {
+	NotificationTitle string `json:"notification_title"`
+	Number            int32  `json:"number"`
+}
+
+func convertToRestChatRoomInfo(grpcChatRoomInfo *pb.ChatRoomInfo) RestChatRoomInfo {
+	return RestChatRoomInfo{
+		NotificationTitle: grpcChatRoomInfo.NotificationTitle,
+		Number:            grpcChatRoomInfo.Number,
+	}
+}
+
 func (h *RestHandler) GetMessages(c *gin.Context) {
 	storeCode := c.Param("store_code")
 
@@ -58,16 +84,59 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 	})
 }
 
-type RestMessage struct {
-	Message   string `json:"message"`
-	IsOwner   bool   `json:"is_owner"`
-	CreatedAt string `json:"created_at"`
-}
+func (h *RestHandler) GetMessageList(c *gin.Context) {
+	storeCode := c.Param("store_code")
 
-func convertToRestMessage(grpcMessage *pb.Message) RestMessage {
-	return RestMessage{
-		Message:   grpcMessage.Message,
-		IsOwner:   grpcMessage.IsOwner,
-		CreatedAt: grpcMessage.CreatedAt.AsTime().Format(time.RFC3339),
+	var req struct {
+		ChatRoomStatus string `json:"chat_room_status"`
 	}
+	if !BindJSONOrError(c, &req) {
+		return
+	}
+
+	// 문자열을 enum으로 변환
+	status, ok := pb.ChatRoomStatus_value[req.ChatRoomStatus]
+	if !ok {
+		logrus.Errorf("Invalid chat room status: %s", req.ChatRoomStatus)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid chat room status"})
+		return
+	}
+
+	grpcReq := &pb.GetChatRoomListRequest{
+		StoreCode:      storeCode,
+		ChatRoomStatus: pb.ChatRoomStatus(status),
+	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			logrus.Error("defer in GetMessages rest api : ", r)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+		}
+	}()
+
+	authClient := pb.NewAPIServiceClient(GrpcClientConn)
+	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
+
+	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
+	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+	md := metadata.New(map[string]string{"api-key": grpcApiKey})
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	grpcRes, err := authClient.GetChatRoomList(ctx, grpcReq)
+	if err != nil {
+		logrus.Errorf("GetMessages failed: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	restChatRoomInfos := make([]RestChatRoomInfo, len(grpcRes.ChatRoomInfos))
+	for i, info := range grpcRes.ChatRoomInfos {
+		restChatRoomInfos[i] = convertToRestChatRoomInfo(info)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"success":        grpcRes.GetSuccess(),
+		"error":          grpcRes.GetError(),
+		"chat_room_info": restChatRoomInfos,
+	})
 }

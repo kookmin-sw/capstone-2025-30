@@ -31,7 +31,7 @@ var file_service_proto_rawDesc = string([]byte{
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0d, 0x69, 0x6e, 0x71, 0x75, 0x69, 0x72, 0x79, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0a, 0x6d, 0x65, 0x6e, 0x75, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
 	0x1a, 0x0b, 0x6f, 0x72, 0x64, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x0d, 0x6d,
-	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0xd9, 0x07, 0x0a,
+	0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x32, 0x9f, 0x08, 0x0a,
 	0x0a, 0x41, 0x50, 0x49, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x3e, 0x0a, 0x0d, 0x41,
 	0x64, 0x64, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x12, 0x15, 0x2e, 0x41,
 	0x64, 0x64, 0x54, 0x65, 0x73, 0x74, 0x53, 0x74, 0x72, 0x75, 0x63, 0x74, 0x52, 0x65, 0x71, 0x75,
@@ -93,9 +93,13 @@ var file_service_proto_rawDesc = string([]byte{
 	0x0a, 0x0b, 0x47, 0x65, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x12, 0x13, 0x2e,
 	0x47, 0x65, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x1a, 0x14, 0x2e, 0x47, 0x65, 0x74, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x73,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x18, 0x5a, 0x16, 0x63, 0x61, 0x70, 0x73,
-	0x74, 0x6f, 0x6e, 0x65, 0x2d, 0x32, 0x30, 0x32, 0x35, 0x2d, 0x33, 0x30, 0x2f, 0x70, 0x72, 0x6f,
-	0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x44, 0x0a, 0x0f, 0x47, 0x65, 0x74, 0x43,
+	0x68, 0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x12, 0x17, 0x2e, 0x47, 0x65,
+	0x74, 0x43, 0x68, 0x61, 0x74, 0x52, 0x6f, 0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x68, 0x61, 0x74, 0x52, 0x6f,
+	0x6f, 0x6d, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x18,
+	0x5a, 0x16, 0x63, 0x61, 0x70, 0x73, 0x74, 0x6f, 0x6e, 0x65, 0x2d, 0x32, 0x30, 0x32, 0x35, 0x2d,
+	0x33, 0x30, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 })
 
 var file_service_proto_goTypes = []any{
@@ -115,22 +119,24 @@ var file_service_proto_goTypes = []any{
 	(*GetOrderListRequest)(nil),       // 13: GetOrderListRequest
 	(*UpdateOrderStatusRequest)(nil),  // 14: UpdateOrderStatusRequest
 	(*GetMessagesRequest)(nil),        // 15: GetMessagesRequest
-	(*AddTestStructResponse)(nil),     // 16: AddTestStructResponse
-	(*CreateStoreResponse)(nil),       // 17: CreateStoreResponse
-	(*GetStoreListResponse)(nil),      // 18: GetStoreListResponse
-	(*GetStoreResponse)(nil),          // 19: GetStoreResponse
-	(*UpdateStoreResponse)(nil),       // 20: UpdateStoreResponse
-	(*DeleteStoreResponse)(nil),       // 21: DeleteStoreResponse
-	(*InquiryResponse)(nil),           // 22: InquiryResponse
-	(*CreateMenuResponse)(nil),        // 23: CreateMenuResponse
-	(*GetCategoryListResponse)(nil),   // 24: GetCategoryListResponse
-	(*GetMenuListResponse)(nil),       // 25: GetMenuListResponse
-	(*GetMenuDetailResponse)(nil),     // 26: GetMenuDetailResponse
-	(*CreateOrderResponse)(nil),       // 27: CreateOrderResponse
-	(*GetOrderStatusResponse)(nil),    // 28: GetOrderStatusResponse
-	(*GetOrderListResponse)(nil),      // 29: GetOrderListResponse
-	(*UpdateOrderStatusResponse)(nil), // 30: UpdateOrderStatusResponse
-	(*GetMessagesResponse)(nil),       // 31: GetMessagesResponse
+	(*GetChatRoomListRequest)(nil),    // 16: GetChatRoomListRequest
+	(*AddTestStructResponse)(nil),     // 17: AddTestStructResponse
+	(*CreateStoreResponse)(nil),       // 18: CreateStoreResponse
+	(*GetStoreListResponse)(nil),      // 19: GetStoreListResponse
+	(*GetStoreResponse)(nil),          // 20: GetStoreResponse
+	(*UpdateStoreResponse)(nil),       // 21: UpdateStoreResponse
+	(*DeleteStoreResponse)(nil),       // 22: DeleteStoreResponse
+	(*InquiryResponse)(nil),           // 23: InquiryResponse
+	(*CreateMenuResponse)(nil),        // 24: CreateMenuResponse
+	(*GetCategoryListResponse)(nil),   // 25: GetCategoryListResponse
+	(*GetMenuListResponse)(nil),       // 26: GetMenuListResponse
+	(*GetMenuDetailResponse)(nil),     // 27: GetMenuDetailResponse
+	(*CreateOrderResponse)(nil),       // 28: CreateOrderResponse
+	(*GetOrderStatusResponse)(nil),    // 29: GetOrderStatusResponse
+	(*GetOrderListResponse)(nil),      // 30: GetOrderListResponse
+	(*UpdateOrderStatusResponse)(nil), // 31: UpdateOrderStatusResponse
+	(*GetMessagesResponse)(nil),       // 32: GetMessagesResponse
+	(*GetChatRoomListResponse)(nil),   // 33: GetChatRoomListResponse
 }
 var file_service_proto_depIdxs = []int32{
 	0,  // 0: APIService.AddTestStruct:input_type -> AddTestStructRequest
@@ -149,24 +155,26 @@ var file_service_proto_depIdxs = []int32{
 	13, // 13: APIService.GetOrderList:input_type -> GetOrderListRequest
 	14, // 14: APIService.UpdateOrderStatus:input_type -> UpdateOrderStatusRequest
 	15, // 15: APIService.GetMessages:input_type -> GetMessagesRequest
-	16, // 16: APIService.AddTestStruct:output_type -> AddTestStructResponse
-	17, // 17: APIService.CreateStore:output_type -> CreateStoreResponse
-	18, // 18: APIService.GetStoreList:output_type -> GetStoreListResponse
-	19, // 19: APIService.GetStore:output_type -> GetStoreResponse
-	20, // 20: APIService.UpdateStore:output_type -> UpdateStoreResponse
-	21, // 21: APIService.DeleteStore:output_type -> DeleteStoreResponse
-	22, // 22: APIService.StreamInquiries:output_type -> InquiryResponse
-	23, // 23: APIService.CreateMenu:output_type -> CreateMenuResponse
-	24, // 24: APIService.GetCategoryList:output_type -> GetCategoryListResponse
-	25, // 25: APIService.GetMenuList:output_type -> GetMenuListResponse
-	26, // 26: APIService.GetMenuDetail:output_type -> GetMenuDetailResponse
-	27, // 27: APIService.CreateOrder:output_type -> CreateOrderResponse
-	28, // 28: APIService.GetOrderStatus:output_type -> GetOrderStatusResponse
-	29, // 29: APIService.GetOrderList:output_type -> GetOrderListResponse
-	30, // 30: APIService.UpdateOrderStatus:output_type -> UpdateOrderStatusResponse
-	31, // 31: APIService.GetMessages:output_type -> GetMessagesResponse
-	16, // [16:32] is the sub-list for method output_type
-	0,  // [0:16] is the sub-list for method input_type
+	16, // 16: APIService.GetChatRoomList:input_type -> GetChatRoomListRequest
+	17, // 17: APIService.AddTestStruct:output_type -> AddTestStructResponse
+	18, // 18: APIService.CreateStore:output_type -> CreateStoreResponse
+	19, // 19: APIService.GetStoreList:output_type -> GetStoreListResponse
+	20, // 20: APIService.GetStore:output_type -> GetStoreResponse
+	21, // 21: APIService.UpdateStore:output_type -> UpdateStoreResponse
+	22, // 22: APIService.DeleteStore:output_type -> DeleteStoreResponse
+	23, // 23: APIService.StreamInquiries:output_type -> InquiryResponse
+	24, // 24: APIService.CreateMenu:output_type -> CreateMenuResponse
+	25, // 25: APIService.GetCategoryList:output_type -> GetCategoryListResponse
+	26, // 26: APIService.GetMenuList:output_type -> GetMenuListResponse
+	27, // 27: APIService.GetMenuDetail:output_type -> GetMenuDetailResponse
+	28, // 28: APIService.CreateOrder:output_type -> CreateOrderResponse
+	29, // 29: APIService.GetOrderStatus:output_type -> GetOrderStatusResponse
+	30, // 30: APIService.GetOrderList:output_type -> GetOrderListResponse
+	31, // 31: APIService.UpdateOrderStatus:output_type -> UpdateOrderStatusResponse
+	32, // 32: APIService.GetMessages:output_type -> GetMessagesResponse
+	33, // 33: APIService.GetChatRoomList:output_type -> GetChatRoomListResponse
+	17, // [17:34] is the sub-list for method output_type
+	0,  // [0:17] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
