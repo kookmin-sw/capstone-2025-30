@@ -2,9 +2,10 @@ package mmessage
 
 import (
 	"context"
-	"go.mongodb.org/mongo-driver/mongo/options"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
+
+	"go.mongodb.org/mongo-driver/mongo/options"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -52,4 +53,20 @@ func GetFinishedMNotificationMessageList(storeID *primitive.ObjectID) ([]dbstruc
 	}
 
 	return notificationMessages, nil
+}
+
+func GetNotificationMessage(storeID *primitive.ObjectID, notificationTitle string, number int) (*dbstructure.MNotificationMessage, error) {
+	filter := bson.M{
+		"store_code": storeID,
+		"title":      notificationTitle,
+		"number":     number,
+	}
+
+	var notificationMessage dbstructure.MNotificationMessage
+	err := mongodb.NotificationColl.FindOne(context.Background(), filter).Decode(&notificationMessage)
+	if err != nil {
+		return nil, err
+	}
+
+	return &notificationMessage, nil
 }

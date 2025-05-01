@@ -20,4 +20,7 @@ enum EError {
 
   // menu
   EE_MENU_ALREADY_EXISTS = 50000;
+
+  // message
+  EE_NOTIFICATION_NOT_FOUND = 60000;
 }
