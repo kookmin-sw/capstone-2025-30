@@ -92,7 +92,7 @@ func (s *Server) GetChatRoomList(
 	}
 
 	var mNotificationMessages []dbstructure.MNotificationMessage
-	if req.ChatRoomStatus == utils.ChatRoomStatusComplete {
+	if req.ChatRoomStatus == pb.ChatRoomStatus_CHATROOM_STATUS_COMPLETE {
 		mNotificationMessages, err = mmessage.GetFinishedMNotificationMessageList(&storeId)
 		if err != nil {
 			logrus.Errorf("Failed to get finished messages: %v", err)
@@ -100,7 +100,7 @@ func (s *Server) GetChatRoomList(
 		}
 	}
 
-	if req.ChatRoomStatus == utils.ChatRoomStatusBefore {
+	if req.ChatRoomStatus == pb.ChatRoomStatus_CHATROOM_STATUS_BEFORE {
 		mNotificationMessages, err = mmessage.GetNotFinishedMNotificationMessageList(&storeId)
 		if err != nil {
 			logrus.Errorf("Failed to get unfinished messages: %v", err)

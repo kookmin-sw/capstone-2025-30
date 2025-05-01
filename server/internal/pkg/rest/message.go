@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"os"
 	pb "server/gen"
-	"server/internal/pkg/utils"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -88,12 +87,25 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 func (h *RestHandler) GetMessageList(c *gin.Context) {
 	storeCode := c.Param("store_code")
 
-	var req pb.GetChatRoomListRequest
+	var req struct {
+		ChatRoomStatus string `json:"chat_room_status"`
+	}
 	if !BindJSONOrError(c, &req) {
 		return
 	}
 
-	req.StoreCode = storeCode
+	// 문자열을 enum으로 변환
+	status, ok := pb.ChatRoomStatus_value[req.ChatRoomStatus]
+	if !ok {
+		logrus.Errorf("Invalid chat room status: %s", req.ChatRoomStatus)
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid chat room status"})
+		return
+	}
+
+	grpcReq := &pb.GetChatRoomListRequest{
+		StoreCode:      storeCode,
+		ChatRoomStatus: pb.ChatRoomStatus(status),
+	}
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -110,13 +122,7 @@ func (h *RestHandler) GetMessageList(c *gin.Context) {
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
-	//유효성 검사
-	if req.ChatRoomStatus != utils.ChatRoomStatusComplete && req.ChatRoomStatus != utils.ChatRoomStatusBefore {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid chat room status"})
-		return
-	}
-
-	grpcRes, err := authClient.GetChatRoomList(ctx, &req)
+	grpcRes, err := authClient.GetChatRoomList(ctx, grpcReq)
 	if err != nil {
 		logrus.Errorf("GetMessages failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
