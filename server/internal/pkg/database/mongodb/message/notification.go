@@ -5,7 +5,6 @@ import (
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
 
-	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -16,8 +15,6 @@ func GetNotFinishedMNotificationMessageList(storeID *primitive.ObjectID) ([]dbst
 		"accepted":   false,
 		"deleted":    false,
 	}
-
-	logrus.Infof("Filter: %+v", filter) // filter 내용을 로그로 출력
 
 	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter)
 	if err != nil {
@@ -38,8 +35,6 @@ func GetFinishedMNotificationMessageList(storeID *primitive.ObjectID) ([]dbstruc
 		"accepted":   true,
 		"deleted":    false,
 	}
-
-	logrus.Infof("Filter: %+v", filter) // filter 내용을 로그로 출력
 
 	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter)
 	if err != nil {

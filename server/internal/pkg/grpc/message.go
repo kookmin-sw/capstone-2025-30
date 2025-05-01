@@ -84,8 +84,6 @@ func (s *Server) GetChatRoomList(
 		}
 	}()
 
-	logrus.Infof("GetChatRoomList request - store_code: %s, chat_room_status: %s", req.StoreCode, req.ChatRoomStatus)
-
 	// store code -> store ID 로 변환 및 검증
 	storeId, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
@@ -93,11 +91,8 @@ func (s *Server) GetChatRoomList(
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
-	logrus.Infof("Store ID: %v", storeId)
-
 	var mNotificationMessages []dbstructure.MNotificationMessage
 	if req.ChatRoomStatus == utils.ChatRoomStatusComplete {
-		logrus.Info("Fetching completed chat rooms")
 		mNotificationMessages, err = mmessage.GetFinishedMNotificationMessageList(&storeId)
 		if err != nil {
 			logrus.Errorf("Failed to get finished messages: %v", err)
@@ -106,7 +101,6 @@ func (s *Server) GetChatRoomList(
 	}
 
 	if req.ChatRoomStatus == utils.ChatRoomStatusBefore {
-		logrus.Info("Fetching ongoing chat rooms")
 		mNotificationMessages, err = mmessage.GetNotFinishedMNotificationMessageList(&storeId)
 		if err != nil {
 			logrus.Errorf("Failed to get unfinished messages: %v", err)
@@ -122,7 +116,6 @@ func (s *Server) GetChatRoomList(
 			NotificationTitle: mNotificationMessage.NotificationTitle,
 			Number:            int32(mNotificationMessage.Number),
 		}
-		logrus.Infof("Chat room %d - Title: %s, Number: %d", i, mNotificationMessage.NotificationTitle, mNotificationMessage.Number)
 	}
 
 	return &pb.GetChatRoomListResponse{
