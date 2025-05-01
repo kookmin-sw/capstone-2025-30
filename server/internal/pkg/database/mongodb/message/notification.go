@@ -2,6 +2,7 @@ package mmessage
 
 import (
 	"context"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
 
@@ -16,7 +17,9 @@ func GetNotFinishedMNotificationMessageList(storeID *primitive.ObjectID) ([]dbst
 		"deleted":    false,
 	}
 
-	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter)
+	opts := options.Find().SetSort(bson.D{{"updated_at", -1}})
+
+	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter, opts)
 	if err != nil {
 		return nil, err
 	}
@@ -36,7 +39,9 @@ func GetFinishedMNotificationMessageList(storeID *primitive.ObjectID) ([]dbstruc
 		"deleted":    false,
 	}
 
-	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter)
+	opts := options.Find().SetSort(bson.D{{"updated_at", -1}})
+
+	cursor, err := mongodb.NotificationColl.Find(context.Background(), filter, opts)
 	if err != nil {
 		return nil, err
 	}
