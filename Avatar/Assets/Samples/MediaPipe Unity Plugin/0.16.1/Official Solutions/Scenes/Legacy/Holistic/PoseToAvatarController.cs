@@ -24,13 +24,16 @@ public class PoseToAvatarController : MonoBehaviour
     float screenWidth = Screen.width;
     float screenHeight = Screen.height;
     [Range(0f, 500f)]
-    public float offsetX = 375.0f;
+    public float offsetX = 475.0f;
+    
+    [Range(0f, 1000f)]
+    public float offsetY = 400.0f;
     
     [Range(0f, 500f)]
-    public float offsetY = 170.0f;
+    public float offsetZ = 100.0f;
     
-    [Range(0f, 500f)]
-    public float offsetZ = 80.0f;
+    // [Range(0f, 500f)]
+    // public float offsetZ = 200.0f;
     public void ApplyPoseToAvatar(NormalizedLandmarkList poseLandmarkList)
     {
         this.PoseLandmarkList = poseLandmarkList;
@@ -65,7 +68,6 @@ public class PoseToAvatarController : MonoBehaviour
     {
         // PoseLandmarkList가 null인지 체크
         if (PoseLandmarkList == null || PoseLandmarkList.Landmark == null) return;
-    
         int j = 0;
         int p = 0;
         // position은 절대 좌표임
@@ -74,20 +76,21 @@ public class PoseToAvatarController : MonoBehaviour
             if (i == 0 || (i >= 11 && i <= 12) || (i >= 23 && i <= 32))
             {
                 // Landmark 데이터를 trackJoint에 저장하는 코드
-                realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
-                realJoint[j].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+                realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - screenWidth + offsetX;
+                realJoint[j].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + screenHeight;
                 realJoint[j].z = PoseLandmarkList.Landmark[i].Z;
                 j++;
             }
+            
             if (i >= 13 && i <= 16)
             {
                 // Landmark 데이터를 trackJoint에 저장하는 코드
-                realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
-                realJoint[j].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + offsetY;
-                realJoint[j].z = PoseLandmarkList.Landmark[i].Z * offsetZ;
+                realJoint[j].x = PoseLandmarkList.Landmark[i].X * screenWidth - screenWidth + offsetX;
+                realJoint[j].y = -PoseLandmarkList.Landmark[i].Y * screenHeight + screenHeight;
+                realJoint[j].z = PoseLandmarkList.Landmark[i].Z * (screenWidth / 5);
                 j++;
             }
-
+            
             if (i >= 1 && i <= 10)
             {
                 realFaceJoint[p].x = PoseLandmarkList.Landmark[i].X * screenWidth - offsetX;
@@ -104,8 +107,8 @@ public class PoseToAvatarController : MonoBehaviour
         for (int i = 0; i < 21; i++)
         {
             // Landmark 데이터를 trackJoint에 저장하는 코드
-            realLeftHandJoint[l].x = LeftHandLandmarkList.Landmark[i].X * screenWidth - offsetX;
-            realLeftHandJoint[l].y = -LeftHandLandmarkList.Landmark[i].Y * screenHeight + offsetY;
+            realLeftHandJoint[l].x = LeftHandLandmarkList.Landmark[i].X * screenWidth - screenWidth + offsetX;
+            realLeftHandJoint[l].y = -LeftHandLandmarkList.Landmark[i].Y * screenHeight + screenHeight;
             realLeftHandJoint[l].z = LeftHandLandmarkList.Landmark[i].Z;
             l++;
         }

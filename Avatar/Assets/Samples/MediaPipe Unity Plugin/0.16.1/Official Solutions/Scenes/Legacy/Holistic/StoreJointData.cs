@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -26,7 +27,14 @@ public class StoreJointData : MonoBehaviour
     private Vector3 virtualLeftMiddle;
     private Vector3 virtualLeftRing;
     private Vector3 virtualLeftPinky;
-    
+
+    private Vector3 fixedHipsPosition;
+
+    private void Start()
+    {
+        fixedHipsPosition = anim.GetBoneTransform(HumanBodyBones.Hips).position;
+    }
+
 
     private void Awake()
     {
@@ -59,7 +67,7 @@ public class StoreJointData : MonoBehaviour
     
         // 2. 엉덩이(virtualHips) 계산 (기존 코드에 virtualHips 초기화 누락)
         virtualHips = (trackJoint[7] + trackJoint[8]) / 2.0f;
-        virtualHips.y += 0.075f;
+        virtualHips.y -= 0.05f;
     
         // 3. 상체(virtualUpperChest) 계산
         virtualUpperChest = (trackJoint[1] + trackJoint[2]) / 2.0f;
@@ -73,44 +81,20 @@ public class StoreJointData : MonoBehaviour
         virtualHead = (virtualNeck + virtualMouth) / 2.0f;
         virtualHead.y += 0.075f;
 
-        // virtualLeftThumb = (lhtrackJoint[1]);
-        // virtualLeftIndex = lhtrackJoint[5];
-        // virtualLeftMiddle = lhtrackJoint[9];
-        // virtualLeftRing = lhtrackJoint[13];
-        // virtualLeftPinky = lhtrackJoint[17];
-        //
         // 4. 엉덩이 위치 적용 (Null 체크 추가)
-        Transform hipsBone = anim.GetBoneTransform(HumanBodyBones.Hips);
-        if (hipsBone != null)
-            hipsBone.position = virtualHips;
+        //Transform hipsBone = anim.GetBoneTransform(HumanBodyBones.Hips);
+        //if (hipsBone != null)
+        //    hipsBone.position = virtualHips;
+        //for (int i = 0; i < 13; i++)
+        //    {
+        //    trackJoint[i].y *= -1f; // 트래킹한 조인트 값의 y좌표가 땅과 반대로 되어있음
+        //    trackJoint[i] += virtualHips; // pose_world_landmarks는 엉덩이 중간 포인트를 기준으로 상대좌표이므로 Hips의 위치를 더해 절대 좌표를 구해준다.
+        //    }
+            
+        anim.GetBoneTransform(HumanBodyBones.Hips).position = fixedHipsPosition;
     }
     
-    // 가상의 관절 만들기, 관절 위치 재조정
-    // public void MakeVirtualData()
-    // {
-    //     // 가상의 목 관절의 위치 구하기
-    //     virtualNeck = (trackJoint[1] + trackJoint[2]) / 2.0f;
-    //     virtualNeck.y += 0.05f;
-    //
-    //     // 가상의 힙 관절의 위치 구하기
-    //     virtualHips = (trackJoint[7] + trackJoint[8]) / 2.0f;
-    //     virtualHips.y += 0.95f;
-    //
-    //     //가상의 UpperChest 관절 위치 구하기
-    //     virtualUpperChest = (trackJoint[1] + trackJoint[2]) / 2.0f;
-    //     virtualUpperChest.y -= 0.1f;
-    //
-    //     virtualNeck += virtualHips;
-    //     virtualUpperChest += virtualHips;
-    //
-    //     // for (int i = 0; i < 13; i++)
-    //     // {
-    //     //     trackJoint[i].y *= -1f; // 트래킹한 조인트 값의 y좌표가 땅과 반대로 되어있음
-    //     //     trackJoint[i] += virtualHips; // pose_world_landmarks는 엉덩이 중간 포인트를 기준으로 상대좌표이므로 Hips의 위치를 더해 절대 좌표를 구해준다.
-    //     // }
-    //
-    //     anim.GetBoneTransform(HumanBodyBones.Hips).position = virtualHips;
-    // }
+
 
     public void SetTrackJointData(Vector3[] realJoint, Vector3[] realRightHandJoint, Vector3[] realLeftHandJoint, Vector3[] realFaceJoint)
     {

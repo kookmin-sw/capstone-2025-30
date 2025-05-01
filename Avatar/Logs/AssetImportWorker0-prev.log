@@ -22,7 +22,7 @@ AssetImportWorker0
 -logFile
 Logs/AssetImportWorker0.log
 -srvPort
-51997
+54951
 -job-worker-count
 5
 -background-job-worker-count
@@ -68,7 +68,7 @@ Successfully changed project path to: /Users/jeonghoyong/Documents/GitHub/capsto
     "memorysetup-temp-allocator-size-gfx=262144"
 Player connection [8328023168]  Target information:
 
-Player connection [8328023168]  * "[IP] 192.168.1.134 [Port] 0 [Flags] 2 [Guid] 2709963821 [EditorId] 2709963821 [Version] 1048832 [Id] OSXEditor(0,Jeongs-MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
+Player connection [8328023168]  * "[IP] 192.168.1.135 [Port] 0 [Flags] 2 [Guid] 2502551996 [EditorId] 2502551996 [Version] 1048832 [Id] OSXEditor(0,Jeongs-MacBook-Pro.local) [Debug] 1 [PackageName] OSXEditor [ProjectName] Editor" 
 
 Player connection [8328023168] Host joined multi-casting on [225.0.0.222:54997]...
 Player connection [8328023168] Host joined alternative multi-casting on [225.0.0.222:34997]...
@@ -82,7 +82,7 @@ Library Redirect Path: Library/
 [Physics::Module] SDK Version: 4.1.2
 [Physics::Module] Integration Version: 1.0.0
 [Physics::Module] Threading Mode: Multi-Threaded
-Refreshing native plugins compatible for Editor in 1.51 ms, found 3 plugins.
+Refreshing native plugins compatible for Editor in 2.72 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
 Initialize engine version: 6000.0.31f1 (a206c360e2a8)
 [Subsystems] Discovering subsystems at path /Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Resources/UnitySubsystems
@@ -97,15 +97,15 @@ Initialize mono
 Mono path[0] = '/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Managed'
 Mono path[1] = '/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/MonoBleedingEdge/lib/mono/unityjit-macos'
 Mono config path = '/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/MonoBleedingEdge/etc'
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56200
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56403
 Begin MonoManager ReloadAssembly
 Registering precompiled unity dll's ...
 Register platform support module: /Applications/Unity/Hub/Editor/6000.0.31f1/PlaybackEngines/WebGLSupport/UnityEditor.WebGL.Extensions.dll
 Register platform support module: /Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll
 Register platform support module: /Applications/Unity/Hub/Editor/6000.0.31f1/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
 Register platform support module: /Applications/Unity/Hub/Editor/6000.0.31f1/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
-Registered in 0.004593 seconds.
-- Loaded All Assemblies, in  0.234 seconds
+Registered in 0.004501 seconds.
+- Loaded All Assemblies, in  0.254 seconds
 [usbmuxd] Start listen thread
 [usbmuxd] Listen thread started
 [usbmuxd] Send listen message
@@ -115,9 +115,9 @@ Android Extension - Scanning For ADB Devices 61 ms
 Native extension for OSXStandalone target not found
 Native extension for WebGL target not found
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.333 seconds
-Domain Reload Profiling: 567ms
-	BeginReloadAssembly (64ms)
+- Finished resetting the current domain, in  0.329 seconds
+Domain Reload Profiling: 583ms
+	BeginReloadAssembly (82ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (0ms)
 		BackupInstance (0ms)
@@ -126,24 +126,24 @@ Domain Reload Profiling: 567ms
 	RebuildCommonClasses (24ms)
 	RebuildNativeTypeToScriptingClass (9ms)
 	initialDomainReloadingComplete (29ms)
-	LoadAllAssembliesAndSetupDomain (108ms)
-		LoadAssemblies (65ms)
+	LoadAllAssembliesAndSetupDomain (110ms)
+		LoadAssemblies (83ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (105ms)
-			TypeCache.Refresh (104ms)
-				TypeCache.ScanAssembly (95ms)
+		AnalyzeDomain (107ms)
+			TypeCache.Refresh (105ms)
+				TypeCache.ScanAssembly (96ms)
 			BuildScriptInfoCaches (0ms)
 			ResolveRequiredComponents (0ms)
-	FinalizeReload (334ms)
+	FinalizeReload (330ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
-		SetupLoadedEditorAssemblies (305ms)
+		SetupLoadedEditorAssemblies (300ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (160ms)
+			InitializePlatformSupportModulesInManaged (157ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (31ms)
 			ProcessInitializeOnLoadAttributes (71ms)
-			ProcessInitializeOnLoadMethodAttributes (39ms)
+			ProcessInitializeOnLoadMethodAttributes (38ms)
 			AfterProcessingInitializeOnLoad (0ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
@@ -152,7 +152,7 @@ Domain Reload Profiling: 567ms
 Worker process is ready to serve import requests
 Import Worker Mode flag is 0x00
 Begin MonoManager ReloadAssembly
-- Loaded All Assemblies, in  0.478 seconds
+- Loaded All Assemblies, in  0.484 seconds
 Refreshing native plugins compatible for Editor in 0.39 ms, found 3 plugins.
 Native extension for iOS target not found
 Native extension for Android target not found
@@ -164,8 +164,8 @@ Native extension for WebGL target not found
 Missing types referenced from component UniversalRenderPipelineGlobalSettings on game object UniversalRenderPipelineGlobalSettings:
 	UnityEngine.Rendering.Universal.UniversalRenderPipelineEditorAssets, Unity.RenderPipelines.Universal.Runtime (1 object)
 Mono: successfully reloaded assembly
-- Finished resetting the current domain, in  0.557 seconds
-Domain Reload Profiling: 1035ms
+- Finished resetting the current domain, in  0.558 seconds
+Domain Reload Profiling: 1042ms
 	BeginReloadAssembly (74ms)
 		ExecutionOrderSort (0ms)
 		DisableScriptedObjects (3ms)
@@ -174,107 +174,179 @@ Domain Reload Profiling: 1035ms
 		CreateAndSetChildDomain (24ms)
 	RebuildCommonClasses (24ms)
 	RebuildNativeTypeToScriptingClass (9ms)
-	initialDomainReloadingComplete (20ms)
-	LoadAllAssembliesAndSetupDomain (350ms)
-		LoadAssemblies (204ms)
+	initialDomainReloadingComplete (21ms)
+	LoadAllAssembliesAndSetupDomain (356ms)
+		LoadAssemblies (206ms)
 		RebuildTransferFunctionScriptingTraits (0ms)
-		AnalyzeDomain (176ms)
-			TypeCache.Refresh (135ms)
-				TypeCache.ScanAssembly (120ms)
-			BuildScriptInfoCaches (32ms)
+		AnalyzeDomain (180ms)
+			TypeCache.Refresh (138ms)
+				TypeCache.ScanAssembly (123ms)
+			BuildScriptInfoCaches (33ms)
 			ResolveRequiredComponents (7ms)
-	FinalizeReload (557ms)
+	FinalizeReload (558ms)
 		ReleaseScriptCaches (0ms)
 		RebuildScriptCaches (0ms)
 		SetupLoadedEditorAssemblies (454ms)
 			LogAssemblyErrors (0ms)
-			InitializePlatformSupportModulesInManaged (12ms)
+			InitializePlatformSupportModulesInManaged (11ms)
 			SetLoadedEditorAssemblies (3ms)
 			BeforeProcessingInitializeOnLoad (61ms)
 			ProcessInitializeOnLoadAttributes (310ms)
 			ProcessInitializeOnLoadMethodAttributes (67ms)
+			AfterProcessingInitializeOnLoad (2ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (2ms)
+Launching external process: /Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/UnityShaderCompiler
+Launched and connected shader compiler UnityShaderCompiler after 0.03 seconds
+Refreshing native plugins compatible for Editor in 0.91 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 203 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6570 unused Assets / (3.4 MB). Loaded Objects now: 7265.
+Memory consumption went from 173.9 MB to 170.5 MB.
+Total: 6.608416 ms (FindLiveObjects: 0.599375 ms CreateObjectMapping: 0.136292 ms MarkObjects: 4.769708 ms  DeleteObjects: 1.102792 ms)
+
+========================================================================
+Received Import Request.
+  Time since last request: 471266.457473 seconds.
+  path: Assets/ithappy/Creative_Characters_FREE/Prefabs
+  artifactKey: Guid(d1816ce03956ff146a06fa2c5dc5e01c) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ithappy/Creative_Characters_FREE/Prefabs using Guid(d1816ce03956ff146a06fa2c5dc5e01c) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '849fe4acd07a5073f10841d276e8d462') in 0.002837292 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.000047 seconds.
+  path: Assets/ithappy/Creative_Characters_FREE/Prefabs/Base_Mesh.prefab
+  artifactKey: Guid(5736e576bae68ca4393c5441179cace9) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ithappy/Creative_Characters_FREE/Prefabs/Base_Mesh.prefab using Guid(5736e576bae68ca4393c5441179cace9) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '5aa7162c433fd424fe0d6340a640feea') in 0.308266375 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 307
+
+========================================================================
+Received Import Request.
+  Time since last request: 3.142780 seconds.
+  path: Assets/ithappy/Creative_Characters_FREE/Meshes
+  artifactKey: Guid(d459294bf5ac45a4b94954671ca66d5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ithappy/Creative_Characters_FREE/Meshes using Guid(d459294bf5ac45a4b94954671ca66d5e) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '7f679895396f9b1874a90a4c434fe560') in 0.000461625 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+
+========================================================================
+Received Import Request.
+  Time since last request: 0.025291 seconds.
+  path: Assets/ithappy/Creative_Characters_FREE/Meshes/Base_Mesh.fbx
+  artifactKey: Guid(ad472b939cd48144e9521d873c2e3018) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
+Start importing Assets/ithappy/Creative_Characters_FREE/Meshes/Base_Mesh.fbx using Guid(ad472b939cd48144e9521d873c2e3018) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '6b4facde060c91668e23f7959b1dcc55') in 0.078582666 seconds
+Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 150
+
+========================================================================
+Received Prepare
+Begin MonoManager ReloadAssembly
+Thread 0x17fedf000 may have been prematurely finalized
+- Loaded All Assemblies, in  0.387 seconds
+Refreshing native plugins compatible for Editor in 0.45 ms, found 3 plugins.
+Missing types referenced from component UniversalRenderPipelineGlobalSettings on game object UniversalRenderPipelineGlobalSettings:
+	UnityEngine.Rendering.Universal.UniversalRenderPipelineEditorAssets, Unity.RenderPipelines.Universal.Runtime (1 object)
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.506 seconds
+Domain Reload Profiling: 895ms
+	BeginReloadAssembly (110ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (10ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (50ms)
+	RebuildCommonClasses (22ms)
+	RebuildNativeTypeToScriptingClass (8ms)
+	initialDomainReloadingComplete (12ms)
+	LoadAllAssembliesAndSetupDomain (236ms)
+		LoadAssemblies (144ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (117ms)
+			TypeCache.Refresh (5ms)
+				TypeCache.ScanAssembly (0ms)
+			BuildScriptInfoCaches (103ms)
+			ResolveRequiredComponents (7ms)
+	FinalizeReload (507ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (379ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (12ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (61ms)
+			ProcessInitializeOnLoadAttributes (276ms)
+			ProcessInitializeOnLoadMethodAttributes (28ms)
 			AfterProcessingInitializeOnLoad (1ms)
 			EditorAssembliesLoaded (0ms)
 		ExecutionOrderSort2 (0ms)
-		AwakeInstancesAfterBackupRestoration (3ms)
-Launching external process: /Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/UnityShaderCompiler
-Launched and connected shader compiler UnityShaderCompiler after 0.03 seconds
-Refreshing native plugins compatible for Editor in 0.37 ms, found 3 plugins.
+		AwakeInstancesAfterBackupRestoration (5ms)
+Refreshing native plugins compatible for Editor in 0.45 ms, found 3 plugins.
 Preloading 0 native plugins for Editor in 0.00 ms.
-Unloading 209 Unused Serialized files (Serialized files now loaded: 0)
-Unloading 6514 unused Assets / (3.8 MB). Loaded Objects now: 7215.
-Memory consumption went from 177.5 MB to 173.7 MB.
-Total: 5.806542 ms (FindLiveObjects: 0.461458 ms CreateObjectMapping: 0.157500 ms MarkObjects: 3.880542 ms  DeleteObjects: 1.306708 ms)
+Unloading 24 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6570 unused Assets / (2.7 MB). Loaded Objects now: 7318.
+Memory consumption went from 188.5 MB to 185.8 MB.
+Total: 6.589833 ms (FindLiveObjects: 0.376791 ms CreateObjectMapping: 0.147209 ms MarkObjects: 4.913250 ms  DeleteObjects: 1.152458 ms)
 
+Prepare: number of updated asset objects reloaded= 0
 ========================================================================
-Received Import Request.
-  Time since last request: 341141.828709 seconds.
-  path: Assets/Scenes
-  artifactKey: Guid(9c53962885c2c4f449125a979d6ad240) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Scenes using Guid(9c53962885c2c4f449125a979d6ad240) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'd65b75f456837a3494a5e6e744543932') in 0.002525791 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
+Received Prepare
+Begin MonoManager ReloadAssembly
+Thread 0x32bbbf000 may have been prematurely finalized
+- Loaded All Assemblies, in  0.409 seconds
+Refreshing native plugins compatible for Editor in 0.38 ms, found 3 plugins.
+Missing types referenced from component UniversalRenderPipelineGlobalSettings on game object UniversalRenderPipelineGlobalSettings:
+	UnityEngine.Rendering.Universal.UniversalRenderPipelineEditorAssets, Unity.RenderPipelines.Universal.Runtime (1 object)
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for OSXStandalone target not found
+Native extension for WebGL target not found
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.490 seconds
+Domain Reload Profiling: 901ms
+	BeginReloadAssembly (111ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (5ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (50ms)
+	RebuildCommonClasses (23ms)
+	RebuildNativeTypeToScriptingClass (9ms)
+	initialDomainReloadingComplete (11ms)
+	LoadAllAssembliesAndSetupDomain (257ms)
+		LoadAssemblies (159ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (125ms)
+			TypeCache.Refresh (7ms)
+				TypeCache.ScanAssembly (0ms)
+			BuildScriptInfoCaches (107ms)
+			ResolveRequiredComponents (7ms)
+	FinalizeReload (491ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (373ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (10ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (59ms)
+			ProcessInitializeOnLoadAttributes (274ms)
+			ProcessInitializeOnLoadMethodAttributes (26ms)
+			AfterProcessingInitializeOnLoad (1ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (6ms)
+Refreshing native plugins compatible for Editor in 0.53 ms, found 3 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Unloading 14 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 6569 unused Assets / (2.8 MB). Loaded Objects now: 7321.
+Memory consumption went from 182.0 MB to 179.1 MB.
+Total: 6.749792 ms (FindLiveObjects: 0.601334 ms CreateObjectMapping: 0.256583 ms MarkObjects: 4.714875 ms  DeleteObjects: 1.176542 ms)
 
-========================================================================
-Received Import Request.
-  Time since last request: 114.624364 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures
-  artifactKey: Guid(f07d815a4f5a14f39865471b84a7e3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures using Guid(f07d815a4f5a14f39865471b84a7e3dc) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '4148bd5637fe9f93dd248b857b57e152') in 0.000655875 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 0
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.005387 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Body.png
-  artifactKey: Guid(01daf7ccd19904fe7a936d47b80fc3e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Body.png using Guid(01daf7ccd19904fe7a936d47b80fc3e4) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '8715015762b2470a3724062523460c2e') in 0.082836458 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000049 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Tongue.png
-  artifactKey: Guid(5057c5bb95725418699a7d37110aebed) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Tongue.png using Guid(5057c5bb95725418699a7d37110aebed) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '6029ac19471216af5ea1e5d66c6aca5d') in 0.004830042 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000029 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Eyes.png
-  artifactKey: Guid(eb5748265d03a4c3bb0994b934b5f0c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Eyes.png using Guid(eb5748265d03a4c3bb0994b934b5f0c5) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '82c323dbd3e1b459073b96f48f6d17da') in 0.004727583 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000038 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Hair.png
-  artifactKey: Guid(ebfdc4bfc9aed463880a244ee1b757bd) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Hair.png using Guid(ebfdc4bfc9aed463880a244ee1b757bd) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'b2e1b00263f31b89e57f07001cd57c08') in 0.004397375 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000033 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Pants.png
-  artifactKey: Guid(07faa479c047949c8bae61796b60dc64) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Pants.png using Guid(07faa479c047949c8bae61796b60dc64) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: '3465c94e3a7948cacab2ffb337076cde') in 0.020999291 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 0.000028 seconds.
-  path: Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Teeth_Up.png
-  artifactKey: Guid(bef9e1c26a44f480cbb0d26451c10853) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/Samples/MediaPipe Unity Plugin/0.16.1/Official Solutions/Scenes/Legacy/Holistic/Avatar/Unity_Textures/Nina_Teeth_Up.png using Guid(bef9e1c26a44f480cbb0d26451c10853) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'fe30cc74d1219474ecfdb8467e6b0a04') in 0.004482375 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 2
-
-========================================================================
-Received Import Request.
-  Time since last request: 105.922770 seconds.
-  path: Assets/EYE ADVANCED/Textures/mat_reflections.mat
-  artifactKey: Guid(b9c12d420c27e934886c2a2316597362) Importer(815301076,1909f56bfc062723c751e8b465ee728b)
-Start importing Assets/EYE ADVANCED/Textures/mat_reflections.mat using Guid(b9c12d420c27e934886c2a2316597362) Importer(815301076,1909f56bfc062723c751e8b465ee728b) (PreviewImporter) -> (artifact id: 'ee08efe98b31d3951dd4cd580d2c23e6') in 0.284162084 seconds
-Number of updated asset objects reloaded before import = 0Number of asset objects unloaded after import = 3
-
+Prepare: number of updated asset objects reloaded= 0
