@@ -13,7 +13,9 @@ const LoginPage = () => {
       <InputBar
         placeholder="관리자 아이디를 입력해주세요."
         buttonText="완료"
-        onClick={() => navigate("/order-list")}
+        onClick={(value) =>
+          navigate("/order-list", { state: { adminId: value } })
+        }
       />
     </div>
   );

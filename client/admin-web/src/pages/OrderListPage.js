@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
 
+import { getChatRoomList } from "../config/api.js";
 import InputBar from "@/components/InputBar";
 import OrderList from "@/components/OrderList";
 
@@ -11,25 +12,30 @@ const TABS = ["이전", "완료"];
 
 const OrderListPage = () => {
   const navigate = useNavigate();
+  const { state } = useLocation();
   const [activeTab, setActiveTab] = useState(0);
+  const [chatRoomInfo, setChatRoomInfo] = useState([]);
 
-  const orders = [
-    {
-      isDone: false,
-      isOrder: true,
-      text: 1,
-    },
-    { isDone: false, isOrder: false, text: 2 },
-    { isDone: false, isOrder: true, text: 3 },
-    { isDone: false, isOrder: false, text: 4 },
-    { isDone: false, isOrder: true, text: 5 },
-    { isDone: true, isOrder: false, text: 6 },
-    { isDone: true, isOrder: true, text: 7 },
-  ];
-
-  const filteredOrders = orders.filter((item) =>
-    activeTab === 0 ? !item.isDone : item.isDone
-  );
+  useEffect(() => {
+    const fetchGetChatRoomList = async () => {
+      try {
+        const chatList = await getChatRoomList(
+          state?.adminId,
+          activeTab === 0
+            ? "CHATROOM_STATUS_BEFORE"
+            : "CHATROOM_STATUS_COMPLETE"
+        );
+        console.log(chatList.data.chat_room_info);
+        // setChatRoomInfo(chatList.data.chat_room_info);
+      } catch (error) {
+        console.error(
+          "관리자 채팅 리스트 조회 오류:",
+          error.response ? error.response.data : error.message
+        );
+      }
+    };
+    fetchGetChatRoomList();
+  }, [state?.adminId, activeTab]);
 
   return (
     <div style={OrderListStyles.container}>
@@ -67,18 +73,21 @@ const OrderListPage = () => {
       <div style={OrderListStyles.tabContent}>
         {activeTab === 0 && (
           <>
-            {filteredOrders.map((item, idx) => (
+            {chatRoomInfo.map((item, idx) => (
               <OrderList
                 key={idx}
-                isOrder={item.isOrder}
-                isDone={item.isDone}
-                text={item.text}
+                type={item.notification_title}
+                isDone={false}
+                text={item.number}
                 onClick={() =>
                   navigate("/chat-order", {
                     state: {
                       chatTitle: `${
                         item.isOrder ? "주문번호 : " : "일반문의 "
                       }${item.text}`,
+                      adminId: state?.adminId,
+                      type: item.notification_title,
+                      number: item.number,
                     },
                   })
                 }
@@ -88,18 +97,21 @@ const OrderListPage = () => {
         )}
         {activeTab === 1 && (
           <>
-            {filteredOrders.map((item, idx) => (
+            {chatRoomInfo.map((item, idx) => (
               <OrderList
                 key={idx}
-                isOrder={item.isOrder}
-                isDone={item.isDone}
-                text={item.text}
+                type={item.notification_title}
+                isDone={true}
+                text={item.number}
                 onClick={() =>
                   navigate("/chat-order", {
                     state: {
                       chatTitle: `${
                         item.isOrder ? "주문번호 : " : "일반문의 "
                       }${item.text}`,
+                      adminId: state?.adminId,
+                      type: item.notification_title,
+                      number: item.number,
                     },
                   })
                 }

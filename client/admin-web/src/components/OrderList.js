@@ -1,7 +1,7 @@
 import React from "react";
 import CustomStyles from "@/styles/CustomStyles";
 
-const OrderList = ({ isDone = false, isOrder = false, text, onClick }) => {
+const OrderList = ({ isDone = false, type, text, onClick }) => {
   const styles = {
     container: {
       ...CustomStyles.fontHead20,
@@ -23,7 +23,7 @@ const OrderList = ({ isDone = false, isOrder = false, text, onClick }) => {
 
   return (
     <button style={styles.container} onClick={onClick}>
-      {isOrder === true ? "주문번호 : " : "일반문의 "} {text}
+      {type === "order" ? "주문번호 : " : "일반문의 "} {text}
     </button>
   );
 };
