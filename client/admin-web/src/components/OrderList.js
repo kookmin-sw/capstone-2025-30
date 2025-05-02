@@ -5,7 +5,7 @@ const OrderList = ({ isDone = false, isOrder = false, text, onClick }) => {
   const styles = {
     container: {
       ...CustomStyles.fontHead20,
-      width: "90%",
+      width: "100%",
       height: 100,
       padding: "0 20px",
       display: "flex",
@@ -22,9 +22,9 @@ const OrderList = ({ isDone = false, isOrder = false, text, onClick }) => {
   };
 
   return (
-    <div style={styles.container} onClick={onClick}>
+    <button style={styles.container} onClick={onClick}>
       {isOrder === true ? "주문번호 : " : "일반문의 "} {text}
-    </div>
+    </button>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
@@ -9,16 +10,21 @@ import OrderList from "@/components/OrderList";
 const TABS = ["이전", "완료"];
 
 const OrderListPage = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState(0);
 
   const orders = [
-    { isDone: false, isOrder: true, text: 1, onClick: null },
-    { isDone: false, isOrder: false, text: 2, onClick: null },
-    { isDone: false, isOrder: true, text: 3, onClick: null },
-    { isDone: false, isOrder: false, text: 4, onClick: null },
-    { isDone: false, isOrder: true, text: 5, onClick: null },
-    { isDone: true, isOrder: false, text: 6, onClick: null },
-    { isDone: true, isOrder: true, text: 7, onClick: null },
+    {
+      isDone: false,
+      isOrder: true,
+      text: 1,
+    },
+    { isDone: false, isOrder: false, text: 2 },
+    { isDone: false, isOrder: true, text: 3 },
+    { isDone: false, isOrder: false, text: 4 },
+    { isDone: false, isOrder: true, text: 5 },
+    { isDone: true, isOrder: false, text: 6 },
+    { isDone: true, isOrder: true, text: 7 },
   ];
 
   const filteredOrders = orders.filter((item) =>
@@ -27,7 +33,7 @@ const OrderListPage = () => {
 
   return (
     <div style={OrderListStyles.container}>
-      <div style={{ padding: "30px 0 10px 30px" }}>
+      <div style={OrderListStyles.gradientInputBar}>
         <InputBar
           placeholder="주문번호를 입력해주세요."
           buttonText="등록"
@@ -35,7 +41,7 @@ const OrderListPage = () => {
         />
       </div>
 
-      <div style={{ display: "flex", width: "100%" }}>
+      <div style={{ display: "flex" }}>
         {TABS.map((label, idx) => (
           <button
             key={label}
@@ -58,7 +64,7 @@ const OrderListPage = () => {
         ))}
       </div>
 
-      <div style={{ padding: "20px 30px" }}>
+      <div style={OrderListStyles.tabContent}>
         {activeTab === 0 && (
           <>
             {filteredOrders.map((item, idx) => (
@@ -67,7 +73,15 @@ const OrderListPage = () => {
                 isOrder={item.isOrder}
                 isDone={item.isDone}
                 text={item.text}
-                onClick={item.onClick}
+                onClick={() =>
+                  navigate("/chat-order", {
+                    state: {
+                      chatTitle: `${
+                        item.isOrder ? "주문번호 : " : "일반문의 "
+                      }${item.text}`,
+                    },
+                  })
+                }
               />
             ))}
           </>
@@ -80,7 +94,15 @@ const OrderListPage = () => {
                 isOrder={item.isOrder}
                 isDone={item.isDone}
                 text={item.text}
-                onClick={item.onClick}
+                onClick={() =>
+                  navigate("/chat-order", {
+                    state: {
+                      chatTitle: `${
+                        item.isOrder ? "주문번호 : " : "일반문의 "
+                      }${item.text}`,
+                    },
+                  })
+                }
               />
             ))}
           </>
