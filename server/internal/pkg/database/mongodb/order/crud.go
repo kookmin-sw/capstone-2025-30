@@ -146,3 +146,52 @@ func UpdateMOrderStatus(storeID primitive.ObjectID, orderNumber int32, newStatus
 	_, err = session.WithTransaction(context.Background(), callback)
 	return err
 }
+
+func UpdateMOrderStatusAndMNotificationAccepted(storeID primitive.ObjectID, orderNumber int32, newStatus pb.OrderStatus, accepted bool) error {
+	session, err := mongodb.Client.StartSession()
+	if err != nil {
+		return err
+	}
+	defer session.EndSession(context.Background())
+
+	callback := func(sc mongo.SessionContext) (interface{}, error) {
+		update_at := time.Now()
+		orderFilter := bson.M{
+			"store_id":     storeID,
+			"order_number": orderNumber,
+		}
+		orderUpdate := bson.M{
+			"$set": bson.M{
+				"status":     newStatus,
+				"updated_at": update_at,
+			},
+		}
+
+		_, err := mongodb.OrderColl.UpdateOne(sc, orderFilter, orderUpdate)
+		if err != nil {
+			return nil, err
+		}
+
+		notificationFilter := bson.M{
+			"store_code": storeID,
+			"title":      "order",
+			"number":     orderNumber,
+		}
+		notificationUpdate := bson.M{
+			"$set": bson.M{
+				"accepted":   accepted,
+				"updated_at": update_at,
+			},
+		}
+
+		_, err = mongodb.NotificationColl.UpdateOne(sc, notificationFilter, notificationUpdate)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
+	}
+
+	_, err = session.WithTransaction(context.Background(), callback)
+	return err
+}
