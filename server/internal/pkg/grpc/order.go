@@ -5,6 +5,7 @@ import (
 	"fmt"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
+	mmessage "server/internal/pkg/database/mongodb/message"
 	morder "server/internal/pkg/database/mongodb/order"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
@@ -226,13 +227,18 @@ func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatu
 		panic(fmt.Errorf("failed to get order: %v", err))
 	}
 	if mOrder == nil {
-		return &pb.UpdateOrderStatusResponse{
-			Success: false,
-			Error:   pb.EError_EE_ORDER_NOT_FOUND.Enum(),
-		}, status.Errorf(codes.NotFound, "order not found: orderNumber=%d", req.OrderNumber)
+		panic(pb.EError_EE_ORDER_NOT_FOUND)
 	}
 
-	err = morder.UpdateMOrderStatus(storeID, req.OrderNumber, req.Status)
+	mNotification, err := mmessage.GetNotificationMessage(&storeID, "order", int(req.OrderNumber))
+	if err != nil {
+		panic(err)
+	}
+	if mNotification == nil {
+		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
+	}
+
+	err = morder.UpdateMOrderStatusAndMNotificationAccepted(storeID, req.OrderNumber, req.Status, true)
 	if err != nil {
 		panic(fmt.Errorf("failed to update order status: %v", err))
 	}
