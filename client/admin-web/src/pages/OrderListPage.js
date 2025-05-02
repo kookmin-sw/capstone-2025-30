@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
@@ -37,13 +38,25 @@ const OrderListPage = () => {
     fetchGetChatRoomList();
   }, [state?.adminId, activeTab]);
 
+  const handleOrderNumberError = () => {
+    toast.error("존재하지 않는 주문번호입니다.", {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: true,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      theme: "light",
+    });
+  };
+
   return (
     <div style={OrderListStyles.container}>
       <div style={OrderListStyles.gradientInputBar}>
         <InputBar
           placeholder="주문번호를 입력해주세요."
           buttonText="등록"
-          onClick={null}
+          onClick={handleOrderNumberError}
         />
       </div>
 
