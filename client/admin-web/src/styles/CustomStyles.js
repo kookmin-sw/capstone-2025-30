@@ -1,7 +1,6 @@
 const CustomStyles = {
   primaryBlack: "#373C42",
   primaryWhite: "#FFFFFF",
-  primaryBlue: "#458EFD",
   pointBlue: "#B6D0FF",
   backgroundBlue: "#F4F7FC",
   primaryGray: "#EFEFEF",
@@ -21,7 +20,7 @@ const CustomStyles = {
   },
   fontHead20: {
     fontSize: 20,
-    lineHeight: "328px",
+    lineHeight: "28px",
     fontFamily: "Pretendard",
     fontWeight: 700,
   },
