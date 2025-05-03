@@ -17,7 +17,11 @@ func (h *RestHandler) CreateOrder(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST CreateOrder] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -93,7 +97,11 @@ func (h *RestHandler) GetOrderStatus(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetOrderStatus] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -164,7 +172,11 @@ func (h *RestHandler) GetOrderList(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetOrderList] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -218,7 +230,11 @@ func (h *RestHandler) UpdateOrderStatus(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST UpdateOrderStatus] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -256,8 +272,8 @@ func (h *RestHandler) UpdateOrderStatus(c *gin.Context) {
 	// 문자열로 받은 status → gRPC enum으로 변환
 	status, ok := pb.OrderStatus_value[req.Status]
 	if !ok {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid order status"})
-		return
+		logrus.Errorf("REST UpdateOrderStatus] Invalid Order Status")
+		panic(pb.EError_EE_INVALID_ARGUMENT)
 	}
 
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)

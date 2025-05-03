@@ -16,7 +16,11 @@ func (h *RestHandler) CreateMenu(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST CreateMenu] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -96,7 +100,11 @@ func (h *RestHandler) GetCategoryList(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetCategoryList] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -150,7 +158,11 @@ func (h *RestHandler) GetMenuList(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetMenuList] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{"" +
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{"" +
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -212,7 +224,11 @@ func (h *RestHandler) GetMenuDetail(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetMenuDetail] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),

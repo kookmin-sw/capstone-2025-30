@@ -17,7 +17,11 @@ func (h *RestHandler) CreateStore(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST CreateStore] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -78,7 +82,11 @@ func (h *RestHandler) GetStoreList(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetStoreList] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -123,7 +131,11 @@ func (h *RestHandler) GetStore(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetStore] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -172,7 +184,11 @@ func (h *RestHandler) UpdateStore(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST UpdateStore] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
@@ -231,7 +247,11 @@ func (h *RestHandler) DeleteStore(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST DeleteStore] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			c.JSON(http.StatusInternalServerError, gin.H{
+			status := http.StatusInternalServerError
+			if e == pb.EError_EE_INVALID_ARGUMENT {
+				status = http.StatusBadRequest
+			}
+			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
 				"message": e.String(),
