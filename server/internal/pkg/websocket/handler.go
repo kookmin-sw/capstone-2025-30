@@ -1,12 +1,15 @@
 package websocketHandler
 
 import (
-	"github.com/gorilla/websocket"
-	"github.com/sirupsen/logrus"
+	"fmt"
 	"net/http"
 	"os"
 	mstore "server/internal/pkg/database/mongodb/store"
+	"server/internal/pkg/utils"
 	"sync"
+
+	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 )
 
 var upgrader = websocket.Upgrader{
@@ -43,6 +46,13 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	client_type := r.URL.Query().Get("client_type")
+	if client_type != utils.WebSocketClientTypeCounterApp && client_type != utils.WebSocketClientTypeManagerWeb {
+		http.Error(w, "Invalid client type", http.StatusBadRequest)
+		logrus.Errorln("Invalid client type")
+		return
+	}
+
 	// 1. Http -> WebSocket Upgrade
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
@@ -51,17 +61,20 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
+	// 2. make connection name
+	connectionName := fmt.Sprintf("%s_%s", store_code, client_type)
+
 	// 3. connection save
 	WebSocketClientsMutex.Lock()
-	WebSocketClients[store_code] = conn
+	WebSocketClients[connectionName] = conn
 	WebSocketClientsMutex.Unlock()
 	defer func() {
 		WebSocketClientsMutex.Lock()
-		delete(WebSocketClients, store_code)
+		delete(WebSocketClients, connectionName)
 		WebSocketClientsMutex.Unlock()
 	}()
 
-	logrus.Infof("Client connected save: %s (%s)", conn.RemoteAddr(), store_code)
+	logrus.Infof("Client connected save: %s (%s)", conn.RemoteAddr(), connectionName)
 
 	// 4. message read
 	for {
