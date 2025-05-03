@@ -1,14 +1,16 @@
 package main
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"os"
 	"server/internal/pkg/database/mongodb"
 	grpcHandler "server/internal/pkg/grpc"
 	"server/internal/pkg/rest"
-	"server/internal/pkg/websocket"
+	"server/internal/pkg/utils"
+	websocketHandler "server/internal/pkg/websocket"
+
+	"github.com/joho/godotenv"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -23,6 +25,11 @@ func initialize() {
 			logrus.Println("Recovered from panic during initialization:", r)
 		}
 	}()
+
+	// AI 클라이언트 초기화
+	if err := utils.InitializeAIClient(); err != nil {
+		logrus.Fatalf("Failed to initialize AI client: %v", err)
+	}
 
 	mongodb.Initialize()
 	go func() {
