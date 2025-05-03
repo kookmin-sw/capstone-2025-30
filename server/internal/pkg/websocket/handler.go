@@ -29,7 +29,7 @@ var (
 func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 	// 0. api key ckeck & Authorization
 	// 0.1 api key check
-	apiKey := r.Header.Get("api-key")
+	apiKey := r.URL.Query().Get("api-key")
 
 	if apiKey != os.Getenv("WEBSOCKET_API_KEY") {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
