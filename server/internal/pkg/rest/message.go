@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 	pb "server/gen"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,6 +41,14 @@ func convertToRestChatRoomInfo(grpcChatRoomInfo *pb.ChatRoomInfo) RestChatRoomIn
 
 func (h *RestHandler) GetMessages(c *gin.Context) {
 	storeCode := c.Param("store_code")
+	notificationTitle := c.Query("notification_title")
+	number := c.Query("number")
+
+	numberInt, err := strconv.ParseInt(number, 10, 32)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid number format"})
+		return
+	}
 
 	var req pb.GetMessagesRequest
 	if !BindJSONOrError(c, &req) {
@@ -63,7 +72,13 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
-	grpcRes, err := authClient.GetMessages(ctx, &req)
+	grpcReq := &pb.GetMessagesRequest{
+		StoreCode:         storeCode,
+		NotificationTitle: notificationTitle,
+		Number:            int32(numberInt),
+	}
+
+	grpcRes, err := authClient.GetMessages(ctx, grpcReq)
 	if err != nil {
 		logrus.Errorf("GetMessages failed: %v", err)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -86,18 +101,12 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 
 func (h *RestHandler) GetMessageList(c *gin.Context) {
 	storeCode := c.Param("store_code")
-
-	var req struct {
-		ChatRoomStatus string `json:"chat_room_status"`
-	}
-	if !BindJSONOrError(c, &req) {
-		return
-	}
+	chatRoomStatus := c.Query("chat_room_status")
 
 	// 문자열을 enum으로 변환
-	status, ok := pb.ChatRoomStatus_value[req.ChatRoomStatus]
+	status, ok := pb.ChatRoomStatus_value[chatRoomStatus]
 	if !ok {
-		logrus.Errorf("Invalid chat room status: %s", req.ChatRoomStatus)
+		logrus.Errorf("Invalid chat room status: %s", chatRoomStatus)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid chat room status"})
 		return
 	}
