@@ -2,6 +2,7 @@ package websocketHandler
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	pb "server/gen"
@@ -34,10 +35,66 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 	}
 
 	// title & number notification coll 에 조회
-	_, err = mmessage.GetNotificationMessage(&storeObjectID, msg.Title, msg.Number)
+	notificationTitle := ""
+	if msg.Title == "orderMessage" {
+		notificationTitle = "order"
+	} else if msg.Title == "inquiryMessage" {
+		notificationTitle = "inquiry"
+	}
+
+	_, err = mmessage.GetNotificationMessage(&storeObjectID, notificationTitle, msg.Number)
 	if err != nil {
 		logrus.Errorf("Failed to get notification: %v", err)
 		return err
+	}
+
+	// 메시지에 "문의사항" 포함 여부 확인
+	if strings.Contains(msg.Message, "문의사항") {
+		// 문의사항 메시지 저장
+		mMessage := dbstructure.MMessage{
+			ID:        primitive.NewObjectID(),
+			StoreId:   storeObjectID,
+			Title:     msg.Title,
+			Number:    int32(msg.Number),
+			CreatedAt: time.Now(),
+			Message:   msg.Message,
+			IsOwner:   true,
+		}
+
+		err = mmessage.CreateMMessage(&mMessage)
+		if err != nil {
+			logrus.Errorf("Failed to save message: %v", err)
+			return err
+		}
+
+		message := WebSocketMessage{
+			Type: "signMessage",
+		}
+
+		// 웹소켓으로 메시지 전송
+		go func() {
+			maxRetries := 3
+			backoff := time.Second
+
+			for attempt := 1; attempt <= maxRetries; attempt++ {
+				if err := SendMessageToClient(msg.StoreCode, message, utils.WebSocketClientTypeCounterApp); err != nil {
+					logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
+
+					if attempt == maxRetries {
+						logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
+						return
+					}
+
+					time.Sleep(backoff)
+					backoff *= 2
+				} else {
+					return
+				}
+			}
+		}()
+
+		logrus.Infof("Message saved and sign URLs sent successfully: %s (Order #%d)", msg.Title, msg.Number)
+		return nil
 	}
 
 	// AI 서버에 요청
