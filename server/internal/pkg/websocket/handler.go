@@ -1,6 +1,7 @@
 package websocketHandler
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"os"
@@ -89,5 +90,26 @@ func WebSocketHandler(w http.ResponseWriter, r *http.Request) {
 		// 메세지 처리
 		// go func 으로 메세지 db에 저장하는 로직 넣기
 		// 테스트 커밋
+		// 메시지 파싱
+		var wsMsg WebSocketReceiveMessage
+		if err := json.Unmarshal(msg, &wsMsg); err != nil {
+			logrus.Errorf("Message unmarshal error: %v", err)
+			continue
+		}
+
+		// 메시지 저장
+		if err := ReceiveKoreanMessage(&wsMsg); err != nil {
+			logrus.Errorf("Failed to process message: %v", err)
+			// 에러 응답을 클라이언트에게 전송
+			conn.WriteJSON(map[string]string{
+				"error": err.Error(),
+			})
+			continue
+		}
+
+		// 성공 응답
+		conn.WriteJSON(map[string]string{
+			"status": "success",
+		})
 	}
 }
