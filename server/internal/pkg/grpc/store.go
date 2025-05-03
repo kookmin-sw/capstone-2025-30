@@ -2,11 +2,8 @@ package grpcHandler
 
 import (
 	"context"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"math/rand"
 	pb "server/gen"
@@ -19,12 +16,21 @@ import (
 func (s *Server) CreateStore(ctx context.Context, req *pb.CreateStoreRequest) (response *pb.CreateStoreResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in CreateStore grpc api : ", r)
+			logrus.Error("[gRPC CreateStore] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			response = &pb.CreateStoreResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
+
+	exists, err := mstore.IsStoreExists(req.Name, req.Location)
+	if err != nil {
+		panic(err)
+	}
+	if exists {
+		logrus.Errorf("[gRPC CreateStore] Store already exists")
+		panic(pb.EError_EE_MENU_ALREADY_EXISTS)
+	}
 
 	mStore := dbstructure.MStore{
 		ID:        primitive.NewObjectID(),
@@ -33,9 +39,11 @@ func (s *Server) CreateStore(ctx context.Context, req *pb.CreateStoreRequest) (r
 		StoreCode: generateStoreCode(8),
 	}
 
-	err := mstore.CreateMStore(&mStore)
+	err = mstore.CreateMStore(&mStore)
+
 	if err != nil {
-		panic(fmt.Errorf("failed to create mStore: %v", err))
+		logrus.Errorf("[gRPC CreateStore] Failed to create store")
+		panic(err)
 	}
 
 	return &pb.CreateStoreResponse{
@@ -48,16 +56,17 @@ func (s *Server) CreateStore(ctx context.Context, req *pb.CreateStoreRequest) (r
 func (s *Server) GetStoreList(ctx context.Context, req *emptypb.Empty) (response *pb.GetStoreListResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetStoreList grpc api : ", r)
+			logrus.Error("[gRPC GetStoreList] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			response = &pb.GetStoreListResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	mStores, err := mstore.GetMStoreList()
 	if err != nil {
-		panic(fmt.Errorf("failed to get store list from mStore: %v", err))
+		logrus.Errorf("[gRPC GetStoreList] Failed to get store list: %v", err)
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	var viewStores []*pb.ViewStore
@@ -75,28 +84,23 @@ func (s *Server) GetStoreList(ctx context.Context, req *emptypb.Empty) (response
 func (s *Server) GetStore(ctx context.Context, req *pb.GetStoreRequest) (response *pb.GetStoreResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetStore grpc api : ", r)
+			logrus.Error("[gRPC GetStore] panic:: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			response = &pb.GetStoreResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC GetStore] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
 	mStore, err := mstore.GetMStore(storeID)
 	if err != nil {
-		panic(fmt.Errorf("failed to get mStore: %v", err))
-	}
-
-	if mStore == nil {
-		return &pb.GetStoreResponse{
-			Success: false,
-			Error:   pb.EError_EE_API_FAILED.Enum(),
-		}, status.Errorf(codes.NotFound, "store not found: %s", req.StoreCode)
+		logrus.Errorf("[gRPC GetStore] Failed to get store by ID(%s): %v", storeID.Hex(), err)
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	return &pb.GetStoreResponse{
@@ -109,29 +113,32 @@ func (s *Server) GetStore(ctx context.Context, req *pb.GetStoreRequest) (respons
 func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (response *pb.UpdateStoreResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in UpdateStore grpc api : ", r)
+			logrus.Error("[gRPC UpdateStore] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			response = &pb.UpdateStoreResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC UpdateStore] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
 	oldStore, err := mstore.GetMStore(storeID)
 	if err != nil {
-		panic(fmt.Errorf("failed to update mStore: %v", err))
+		logrus.Error("[gRPC UpdateStore] Failed to get store")
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	name := req.Name
+	location := req.Location
+
 	if name == "" {
 		name = oldStore.Name
 	}
 
-	location := req.Location
 	if location == "" {
 		location = oldStore.Location
 	}
@@ -144,7 +151,8 @@ func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (r
 
 	err = mstore.UpdateMStore(&mStore)
 	if err != nil {
-		panic(fmt.Errorf("failed to update mStore: %v", err))
+		logrus.Errorf("[gRPC UpdateStore] Failed to update store %s: %v", req.StoreCode, err)
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	return &pb.UpdateStoreResponse{
@@ -157,21 +165,23 @@ func (s *Server) UpdateStore(ctx context.Context, req *pb.UpdateStoreRequest) (r
 func (s *Server) DeleteStore(ctx context.Context, req *pb.DeleteStoreRequest) (response *pb.DeleteStoreResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in DeleteStore grpc api : ", r)
+			logrus.Error("[gRPC DeleteStore] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			response = &pb.DeleteStoreResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC DeleteStore] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
 	err = mstore.DeleteMStore(storeID)
 	if err != nil {
-		panic(fmt.Errorf("failed to delete mStore: %v", err))
+		logrus.Errorf("[gRPC DeleteStore] Failed to delete store %s: %v", storeID.Hex(), err)
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	return &pb.DeleteStoreResponse{

@@ -9,27 +9,39 @@ import (
 	"net/http"
 	"os"
 	pb "server/gen"
+	"server/internal/pkg/utils"
 )
 
 func (h *RestHandler) CreateStore(c *gin.Context) {
-	var req pb.CreateStoreRequest
-
-	if !BindJSONOrError(c, &req) {
-		return
-	}
-
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in CreateStore rest api : ", r)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+			logrus.Error("[REST CreateStore] panic: ", r)
+			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   e,
+				"message": e.String(),
+			})
 		}
 	}()
+
+	type CreateStoreBody struct {
+		Name     string `json:"name" binding:"required"`
+		Location string `json:"location" binding:"required"`
+	}
+
+	var req CreateStoreBody
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logrus.Errorf("[REST CreateStore] Failed to JSON Binding: %v", err)
+		panic(pb.EError_EE_INVALID_ARGUMENT)
+	}
 
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)
 	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
 
 	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
 	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
@@ -40,16 +52,23 @@ func (h *RestHandler) CreateStore(c *gin.Context) {
 
 	grpcRes, err := authClient.CreateStore(ctx, grpcReq)
 	if err != nil {
-		logrus.Error("CreateStore failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		logrus.Errorf("[REST CreateStore] Failed to Call CreateStore grpc: %v", err)
+		panic(err)
+	}
+
+	if !grpcRes.GetSuccess() {
+		logrus.Errorf("[REST CreateStore] Failed by CreateStore grpc: %v", grpcRes.GetError())
+		c.JSON(utils.HTTPStatusFromEError(grpcRes.GetError()), gin.H{
+			"success": grpcRes.GetSuccess(),
+			"error":   grpcRes.GetError(),
+			"message": grpcRes.GetError().String(),
+		})
 		return
 	}
 
-	//grpc func 호출
-	//grpcRes, err := authClient.
 	c.JSON(http.StatusOK, gin.H{
-		"success": grpcRes.GetSuccess(),
-		"error":   grpcRes.GetError(),
+		"success": true,
+		"error":   nil,
 		"store":   grpcRes.GetStore(),
 	})
 }
@@ -57,42 +76,69 @@ func (h *RestHandler) CreateStore(c *gin.Context) {
 func (h *RestHandler) GetStoreList(c *gin.Context) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetStoreList rest api : ", r)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+			logrus.Error("[REST GetStoreList] panic: ", r)
+			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   e,
+				"message": e.String(),
+			})
 		}
 	}()
 
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)
+	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
+
 	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
+	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	grpcRes, err := authClient.GetStoreList(ctx, &emptypb.Empty{})
 	if err != nil {
-		logrus.Errorf("GetStoreList failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		logrus.Errorf("[REST GetStoreList] Failed to Call GetStoreList grpc: %v", err)
+		panic(err)
+	}
+
+	if !grpcRes.GetSuccess() {
+		logrus.Errorf("[REST GetStoreList] Failed by GetStoreList grpc: %v", grpcRes.GetError())
+		c.JSON(utils.HTTPStatusFromEError(grpcRes.GetError()), gin.H{
+			"success": grpcRes.GetSuccess(),
+			"error":   grpcRes.GetError(),
+			"message": grpcRes.GetError().String(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": grpcRes.GetSuccess(),
-		"error":   grpcRes.GetError(),
-		"stores":  grpcRes.GetStores(), // []*ViewStore 그대로 반환
+		"success": true,
+		"error":   nil,
+		"store":   grpcRes.GetStores(),
 	})
 }
 
 func (h *RestHandler) GetStore(c *gin.Context) {
-	storeCode := c.Param("store_code")
-
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetStore rest api : ", r)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+			logrus.Error("[REST GetStore] panic: ", r)
+			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   e,
+				"message": e.String(),
+			})
 		}
 	}()
 
+	storeCode := c.Param("store_code")
+
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)
+	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
+
 	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
+	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
@@ -100,78 +146,134 @@ func (h *RestHandler) GetStore(c *gin.Context) {
 
 	grpcRes, err := authClient.GetStore(ctx, grpcReq)
 	if err != nil {
-		logrus.Errorf("GetStore failed: %v", err)
-		c.JSON(http.StatusNotFound, gin.H{"error": "store not found"})
+		logrus.Errorf("[REST GetStore] Failed to Call GetStore grpc: %v", err)
+		panic(err)
+	}
+
+	if !grpcRes.GetSuccess() {
+		logrus.Errorf("[REST GetStore] Failed by GetStore grpc: %v", grpcRes.GetError())
+		c.JSON(utils.HTTPStatusFromEError(grpcRes.GetError()), gin.H{
+			"success": grpcRes.GetSuccess(),
+			"error":   grpcRes.GetError(),
+			"message": grpcRes.GetError().String(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": grpcRes.GetSuccess(),
-		"error":   grpcRes.GetError(),
+		"success": true,
+		"error":   nil,
 		"store":   grpcRes.GetStore(),
 	})
 }
 
 func (h *RestHandler) UpdateStore(c *gin.Context) {
-	storeCode := c.Param("store_code")
-
-	var req pb.UpdateStoreRequest
-	if !BindJSONOrError(c, &req) {
-		return
-	}
-	req.StoreCode = storeCode
-
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in UpdateStore rest api : ", r)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+			logrus.Error("[REST UpdateStore] panic: ", r)
+			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   e,
+				"message": e.String(),
+			})
 		}
 	}()
 
+	storeCode := c.Param("store_code")
+
+	var req pb.UpdateStoreRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		logrus.Errorf("[REST UpdateStore] Failed to bind JSON: %v", err)
+		panic(pb.EError_EE_INVALID_ARGUMENT)
+	}
+
+	if req.Name == "" && req.Location == "" {
+		logrus.Error("[REST UpdateStore] StoreCode or Location is required")
+		panic(pb.EError_EE_INVALID_ARGUMENT)
+	}
+
+	req.StoreCode = storeCode
+
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)
+	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
+
 	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
+	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	grpcRes, err := authClient.UpdateStore(ctx, &req)
 	if err != nil {
-		logrus.Errorf("UpdateStore failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		logrus.Errorf("[REST UpdateStore] Failed to Call UpdateStore: %v", err)
+		panic(err)
+	}
+	if !grpcRes.GetSuccess() {
+		logrus.Errorf("[REST UpdateStore] Failed by UpdateStore grpc: %v", grpcRes.GetError())
+		c.JSON(utils.HTTPStatusFromEError(grpcRes.GetError()), gin.H{
+			"success": grpcRes.GetSuccess(),
+			"error":   grpcRes.GetError(),
+			"message": grpcRes.GetError().String(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": grpcRes.GetSuccess(),
-		"error":   grpcRes.GetError(),
+		"success": true,
+		"error":   nil,
 		"store":   grpcRes.GetStore(),
 	})
 }
 
 func (h *RestHandler) DeleteStore(c *gin.Context) {
-	storeCode := c.Param("store_code")
-
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in DeleteStore rest api : ", r)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": r})
+			logrus.Error("[REST DeleteStore] panic: ", r)
+			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"success": false,
+				"error":   e,
+				"message": e.String(),
+			})
 		}
 	}()
 
+	storeCode := c.Param("store_code")
+	if storeCode == "" {
+		logrus.Error("[REST DeleteStore] StoreCode is required")
+		panic(pb.EError_EE_INVALID_ARGUMENT)
+	}
+
 	authClient := pb.NewAPIServiceClient(GrpcClientConn)
+	logrus.Infof("GrpcClientConn is nil? %v", GrpcClientConn == nil)
+
 	grpcApiKey := os.Getenv("ALLOWED_AUTH_KEY")
+	logrus.Infof("GrpcApiKey: %s", grpcApiKey)
+
 	md := metadata.New(map[string]string{"api-key": grpcApiKey})
 	ctx := metadata.NewOutgoingContext(context.Background(), md)
 
 	grpcReq := &pb.DeleteStoreRequest{StoreCode: storeCode}
+
 	grpcRes, err := authClient.DeleteStore(ctx, grpcReq)
 	if err != nil {
-		logrus.Errorf("DeleteStore failed: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		logrus.Errorf("[REST DeleteStore] Failed to Call DeleteStore grpc: %v", err)
+		panic(err)
+	}
+
+	if !grpcRes.GetSuccess() {
+		logrus.Errorf("[REST DeleteStore] Failed by DeleteStore grpc: %v", grpcRes.GetError())
+		c.JSON(utils.HTTPStatusFromEError(grpcRes.GetError()), gin.H{
+			"success": grpcRes.GetSuccess(),
+			"error":   grpcRes.GetError(),
+			"message": grpcRes.GetError().String(),
+		})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"success": grpcRes.GetSuccess(),
-		"error":   grpcRes.GetError(),
+		"success": true,
+		"error":   nil,
 	})
 }
