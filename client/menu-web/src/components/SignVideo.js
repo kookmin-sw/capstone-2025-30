@@ -3,14 +3,22 @@ import React, { useRef, useState } from "react";
 import CustomStyles from "@/styles/CustomStyles";
 import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 
-const SignVideo = ({ src }) => {
+const SignVideo = ({ srcList = [] }) => {
   const videoRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
 
   const handleReplay = () => {
     setIsEnded(false);
-    videoRef.current.currentTime = 0;
-    videoRef.current.play();
+    setCurrentIndex(0);
+  };
+
+  const handleEnded = () => {
+    if (currentIndex < srcList.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setIsEnded(true);
+    }
   };
 
   return (
@@ -25,7 +33,7 @@ const SignVideo = ({ src }) => {
     >
       <video
         ref={videoRef}
-        src={src}
+        src={srcList[currentIndex]}
         style={{
           position: "absolute",
           top: 0,
@@ -37,7 +45,7 @@ const SignVideo = ({ src }) => {
         }}
         autoPlay
         muted
-        onEnded={() => setIsEnded(true)}
+        onEnded={handleEnded}
       />
       {isEnded && (
         <>

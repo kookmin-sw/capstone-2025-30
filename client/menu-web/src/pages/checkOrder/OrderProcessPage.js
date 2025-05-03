@@ -58,7 +58,7 @@ const OrderList = ({ menu, isLast }) => {
         </div>
       </div>
       {!isLast ? (
-        <div style={{ ...OrderProcessStyles.line }} />
+        <div style={OrderProcessStyles.line} />
       ) : (
         <div style={{ height: 70 }} />
       )}
@@ -70,6 +70,11 @@ const OrderProcessPage = () => {
   const { state } = useLocation();
   const [orderInformation, setOrderInformation] = useState([]);
   const [menu, setMenu] = useState([]);
+
+  const videos = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+  ];
 
   useEffect(() => {
     const fetchGetOrderNumber = async () => {
@@ -98,11 +103,12 @@ const OrderProcessPage = () => {
       <Header centerIcon="✅" cartIcon={null} />
 
       {orderInformation?.dine_in ? (
-        <div style={{ ...OrderProcessStyles.container }}>
-          <div style={{ ...OrderProcessStyles.textProcess }}>메뉴 준비중</div>
+        <div style={OrderProcessStyles.container}>
+          <div style={OrderProcessStyles.textProcess}>메뉴 준비중</div>
 
           <div style={{ margin: "0 0 70px 0" }}>
-            <SignVideo src="/assets/video/메뉴준비중입니다.mp4" />
+            {/* 메뉴준비중입니다 */}
+            <SignVideo srcList={videos} />
           </div>
 
           {menu.map((item, idx) => (
@@ -110,9 +116,10 @@ const OrderProcessPage = () => {
           ))}
         </div>
       ) : (
-        <div style={{ ...OrderProcessStyles.container }}>
-          <div style={{ ...OrderProcessStyles.textProcess }}>제조 완료</div>
-          <SignVideo src="/assets/video/제조완료.mp4" />
+        <div style={OrderProcessStyles.container}>
+          <div style={OrderProcessStyles.textProcess}>제조 완료</div>
+          {/* 제조완료 */}
+          <SignVideo srcList={videos} />
         </div>
       )}
     </>
