@@ -3,19 +3,41 @@ import { useNavigate } from "react-router-dom";
 
 import CheckOrderNumberStyles from "@/pages/checkOrder/CheckOrderNumberStyles";
 
+import { getOrderNumber } from "../../config/api";
 import Header from "@/components/Header";
 import { ReactComponent as IconCheck } from "@/assets/icons/check.svg";
 import Button from "@/components/Button";
 import SignVideo from "@/components/SignVideo";
+import BottomSheet from "@/components/BottomSheet";
 
 const CheckOrderNumberPage = () => {
   const navigate = useNavigate();
   const [value, setValue] = useState("");
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const videos = [
     "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
     "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
   ];
+
+  const fetchGetOrderNumber = async () => {
+    try {
+      const category = await getOrderNumber(value);
+      if (category) {
+        navigate("/order-process", {
+          state: {
+            checkOrderNumber: value,
+          },
+        });
+      }
+    } catch (error) {
+      console.error(
+        "주문 과정 조회 오류:",
+        error.response ? error.response.data : error.message
+      );
+      setIsBottomSheetOpen(true);
+    }
+  };
 
   return (
     <>
@@ -42,14 +64,20 @@ const CheckOrderNumberPage = () => {
           icon={<IconCheck />}
           text="입력 완료"
           disabled={value.length === 0}
-          onClick={() => {
-            value.length !== 0 &&
-              navigate("/order-process", {
-                state: { checkOrderNumber: value },
-              });
-          }}
+          onClick={fetchGetOrderNumber}
         />
       </div>
+
+      {isBottomSheetOpen && (
+        <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
+          {/* 없는주문번호입니다 */}
+          <SignVideo
+            srcList={videos}
+            isOnce={true}
+            onVideoEnd={() => setIsBottomSheetOpen(false)}
+          />
+        </BottomSheet>
+      )}
     </>
   );
 };

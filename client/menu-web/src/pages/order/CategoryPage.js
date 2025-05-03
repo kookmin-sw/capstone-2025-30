@@ -6,6 +6,7 @@ import CategoryStyles from "@/pages/order/CategoryStyles";
 
 import { getCategory } from "../../config/api";
 import Header from "@/components/Header";
+import SignVideo from "@/components/SignVideo";
 
 const CategoryButton = ({ category }) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -36,9 +37,8 @@ const CategoryButton = ({ category }) => {
       <span
         style={{
           display: "block",
-          fontSize: 60,
-          lineHeight: "68px",
-          marginBottom: 10,
+          fontSize: 52,
+          lineHeight: "60px",
         }}
       >
         {category.icon}
@@ -75,13 +75,21 @@ const CategoryPage = () => {
     { icon: "🥗", text: "샐러드", to: "/menu/샐러드" },
   ];
 
+  const videos = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+  ];
+
   return (
     <div>
       <Header centerIcon="📋" />
-      <div style={{ ...CategoryStyles.container }}>
-        {category.map((item, idx) => (
-          <CategoryButton key={idx} category={item} />
-        ))}
+      <div style={CategoryStyles.container}>
+        <SignVideo srcList={videos} />
+        <div style={CategoryStyles.containerCategory}>
+          {category.map((item, idx) => (
+            <CategoryButton key={idx} category={item} />
+          ))}
+        </div>
       </div>
     </div>
   );

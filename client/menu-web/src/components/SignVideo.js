@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import CustomStyles from "@/styles/CustomStyles";
 import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 
-const SignVideo = ({ srcList = [] }) => {
+const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
   const videoRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
@@ -18,6 +18,9 @@ const SignVideo = ({ srcList = [] }) => {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsEnded(true);
+      if (isOnce && typeof onVideoEnd === "function") {
+        onVideoEnd();
+      }
     }
   };
 
@@ -47,7 +50,7 @@ const SignVideo = ({ srcList = [] }) => {
         muted
         onEnded={handleEnded}
       />
-      {isEnded && (
+      {isEnded && !isOnce && (
         <>
           <div
             style={{
