@@ -1,24 +1,18 @@
 package grpcHandler
 
 import (
-	"context"
-	"crypto/tls"
-	"crypto/x509"
-	"encoding/base64"
 	"fmt"
 	"net"
 	"os"
 	pb "server/gen"
-	"time"
+	"server/internal/pkg/utils"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 )
 
 type Server struct {
 	pb.UnimplementedAPIServiceServer
-	AiClient pb.SignAIClient
 }
 
 func Initialize() error {
@@ -31,34 +25,17 @@ func Initialize() error {
 		logrus.Errorln("failed to listen: %v", err)
 	}
 
-	aiHost := os.Getenv("AI_GRPC_HOST")
-	if aiHost == "" {
-		logrus.Errorln("AI_GRPC_HOST is not set")
-		return fmt.Errorf("AI_GRPC_HOST is not set")
+	// AI 클라이언트 초기화
+	if err := utils.InitializeAIClient(); err != nil {
+		return fmt.Errorf("failed to initialize AI client: %v", err)
 	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	creds, err := createTLSCredentialsFromEnv()
-	if err != nil {
-		logrus.Fatal(err)
-	}
-	conn, err := grpc.DialContext(ctx, aiHost, grpc.WithTransportCredentials(creds))
-	if err != nil {
-		logrus.Fatal("failed to connect to AI gRPC server: %v", err)
-	}
-	aiClient := pb.NewSignAIClient(conn)
-	logrus.Infof("AI Server Connet Success")
 
 	// 인증 인터셉터
 	s := grpc.NewServer(
 		grpc.UnaryInterceptor(KeyAuthInterceptor),
 	)
 
-	pb.RegisterAPIServiceServer(s, &Server{
-		AiClient: aiClient,
-	})
+	pb.RegisterAPIServiceServer(s, &Server{})
 
 	logrus.Println("server listening at %v", lis.Addr())
 
@@ -79,30 +56,4 @@ func Initialize() error {
 	}
 
 	select {}
-}
-
-func createTLSCredentialsFromEnv() (credentials.TransportCredentials, error) {
-	// Base64 인코딩된 인증서 가져오기
-	b64Cert := os.Getenv("AI_TLS_CRT_SERVER")
-	if b64Cert == "" {
-		return nil, fmt.Errorf("AI_TLS_CRT_SERVER is not set")
-	}
-
-	// Base64 디코딩
-	certPEM, err := base64.StdEncoding.DecodeString(b64Cert)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode base64: %v", err)
-	}
-
-	// x509 Cert Pool에 추가
-	caCertPool := x509.NewCertPool()
-	if ok := caCertPool.AppendCertsFromPEM(certPEM); !ok {
-		return nil, fmt.Errorf("failed to append CA certificate")
-	}
-
-	// TLS Credentials 생성
-	creds := credentials.NewTLS(&tls.Config{
-		RootCAs: caCertPool,
-	})
-	return creds, nil
 }

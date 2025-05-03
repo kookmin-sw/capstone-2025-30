@@ -25,3 +25,9 @@ const (
 	StreamDataTypeOrder   = "order"
 	StreamDataTypeInquiry = "inquiry"
 )
+
+// WebSocket Client Types
+const (
+	WebSocketClientTypeCounterApp = "counter_app"
+	WebSocketClientTypeManagerWeb = "manager_web"
+)

@@ -110,7 +110,7 @@ loop:
 	logrus.Infof("total received: %d", totalReceived)
 
 	// 축적한 데이터 ai 로 전송
-	predictResp, err := s.AiClient.PredictFromFrames(stream.Context(), &pb.FrameSequenceInput{
+	predictResp, err := utils.AiClient.PredictFromFrames(stream.Context(), &pb.FrameSequenceInput{
 		Frames:  sequence,
 		StoreId: storeObjectID.Hex(),
 		Fps:     30,
@@ -164,7 +164,7 @@ loop:
 		}
 
 		for attempt := 1; attempt <= maxRetries; attempt++ {
-			if err := websocketHandler.SendMessageToClient(storeCode, message); err != nil {
+			if err := websocketHandler.SendMessageToClient(storeCode, message, utils.WebSocketClientTypeManagerWeb); err != nil {
 				logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
 
 				if attempt == maxRetries {
