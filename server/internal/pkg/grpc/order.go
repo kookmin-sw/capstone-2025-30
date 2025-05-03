@@ -3,6 +3,7 @@ package grpcHandler
 import (
 	"context"
 	"fmt"
+	"go.mongodb.org/mongo-driver/mongo"
 	pb "server/gen"
 	mmenu "server/internal/pkg/database/mongodb/menu"
 	mmessage "server/internal/pkg/database/mongodb/message"
@@ -15,16 +16,14 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (res *pb.CreateOrderResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in CreateOrder grpc api : ", r)
+			logrus.Error("[gRPC CreateOrder] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			res = &pb.CreateOrderResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
@@ -133,21 +132,23 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 func (s *Server) GetOrderStatus(ctx context.Context, req *pb.GetOrderStatusRequest) (res *pb.GetOrderStatusResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetOrderStatus grpc api : ", r)
+			logrus.Error("[gRPC GetOrderStatus] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			res = &pb.GetOrderStatusResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC GetOrderStatus] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
 	mOrder, err := morder.GetMOrder(storeID, req.OrderNumber)
 	if err != nil {
-		panic(fmt.Errorf("failed to get mOrder status: %v", err))
+		logrus.Errorf("[gRPC GetOrderStatus] Failed to get OrderStatus from mOrder")
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	var orderItems []*pb.OrderItem
@@ -174,21 +175,23 @@ func (s *Server) GetOrderStatus(ctx context.Context, req *pb.GetOrderStatusReque
 func (s *Server) GetOrderList(ctx context.Context, req *pb.GetOrderListRequest) (res *pb.GetOrderListResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in GetOrderList grpc api : ", r)
+			logrus.Error("[gRPC GetOrderList] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			res = &pb.GetOrderListResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC GetOrderList] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
 	mOrders, err := morder.GetMOrderList(storeID)
 	if err != nil {
-		panic(fmt.Errorf("failed to get order list: %v", err))
+		logrus.Errorf("[gRPC GetOrderList] Failed to get order list from mOrder")
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	var summaries []*pb.ViewOrderSummary
@@ -210,37 +213,43 @@ func (s *Server) GetOrderList(ctx context.Context, req *pb.GetOrderListRequest) 
 func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatusRequest) (res *pb.UpdateOrderStatusResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
-			logrus.Error("defer in UpdateOrderStatus grpc api : ", r)
+			logrus.Error("[gRPC UpdateOrderStatus] panic: ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
+			errRes = nil
 			res = &pb.UpdateOrderStatusResponse{Success: false, Error: pbErr.Enum()}
 		}
 	}()
 
 	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
 	if err != nil {
+		logrus.Errorf("[gRPC UpdateOrderStatus] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
 		panic(pb.EError_EE_STORE_NOT_FOUND)
 	}
 
-	mOrder, err := morder.GetMOrder(storeID, req.OrderNumber)
-	if err != nil {
-		panic(fmt.Errorf("failed to get order: %v", err))
-	}
-	if mOrder == nil {
+	_, err = morder.GetMOrder(storeID, req.OrderNumber)
+	if err == mongo.ErrNoDocuments {
+		logrus.Errorf("[gRPC UpdateOrderStatus] Order is not founded")
 		panic(pb.EError_EE_ORDER_NOT_FOUND)
+	}
+	if err != nil {
+		logrus.Errorf("[gRPC UpdateOrderStatus] Failed to update order status from mOrder")
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	mNotification, err := mmessage.GetNotificationMessage(&storeID, "order", int(req.OrderNumber))
 	if err != nil {
+		logrus.Errorf("[gRPC UpdateOrderStatus] Failed to get notification")
 		panic(err)
 	}
 	if mNotification == nil {
+		logrus.Errorf("[gRPC UpdateOrderStatus] Notification is not founded")
 		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
 	}
 
 	err = morder.UpdateMOrderStatusAndMNotificationAccepted(storeID, req.OrderNumber, req.Status, true)
 	if err != nil {
-		panic(fmt.Errorf("failed to update order status: %v", err))
+		logrus.Errorf("[gRPC UpdateOrderStatus] Failed to update order status and notification accepted")
+		panic(pb.EError_EE_DB_OPERATION_FAILED)
 	}
 
 	return &pb.UpdateOrderStatusResponse{
