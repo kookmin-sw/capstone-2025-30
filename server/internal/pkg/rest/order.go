@@ -17,10 +17,7 @@ func (h *RestHandler) CreateOrder(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST CreateOrder] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			status := http.StatusInternalServerError
-			if e == pb.EError_EE_INVALID_ARGUMENT {
-				status = http.StatusBadRequest
-			}
+			status := utils.HTTPStatusFromEError(e)
 			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
@@ -97,10 +94,7 @@ func (h *RestHandler) GetOrderStatus(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetOrderStatus] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			status := http.StatusInternalServerError
-			if e == pb.EError_EE_INVALID_ARGUMENT {
-				status = http.StatusBadRequest
-			}
+			status := utils.HTTPStatusFromEError(e)
 			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
@@ -172,10 +166,7 @@ func (h *RestHandler) GetOrderList(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST GetOrderList] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			status := http.StatusInternalServerError
-			if e == pb.EError_EE_INVALID_ARGUMENT {
-				status = http.StatusBadRequest
-			}
+			status := utils.HTTPStatusFromEError(e)
 			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
@@ -230,10 +221,7 @@ func (h *RestHandler) UpdateOrderStatus(c *gin.Context) {
 		if r := recover(); r != nil {
 			logrus.Error("[REST UpdateOrderStatus] panic: ", r)
 			e := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			status := http.StatusInternalServerError
-			if e == pb.EError_EE_INVALID_ARGUMENT {
-				status = http.StatusBadRequest
-			}
+			status := utils.HTTPStatusFromEError(e)
 			c.JSON(status, gin.H{
 				"success": false,
 				"error":   e,
