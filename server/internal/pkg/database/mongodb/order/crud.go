@@ -2,6 +2,7 @@ package morder
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	pb "server/gen"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
@@ -84,9 +85,6 @@ func GetMOrder(storeID primitive.ObjectID, orderNumber int32) (*dbstructure.MOrd
 
 	err := mongodb.OrderColl.FindOne(context.Background(), filter).Decode(&order)
 	if err != nil {
-		//if err == mongo.ErrNoDocuments {
-		//	return nil, nil
-		//}
 		return nil, err
 	}
 
@@ -103,7 +101,11 @@ func GetMOrderList(storeID primitive.ObjectID) ([]dbstructure.MOrder, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(ctx)
+	defer func() {
+		if err := cursor.Close(context.Background()); err != nil {
+			logrus.Errorf("[mongoDB GetMMenuList] cursor close failed: %v", err)
+		}
+	}()
 
 	var orders []dbstructure.MOrder
 	for cursor.Next(context.Background()) {

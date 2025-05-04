@@ -42,7 +42,7 @@ func Initialize() {
 
 	// store api
 	r.POST("/rest/store", restHandler.CreateStore)
-	r.GET("/rest/store", restHandler.GetStoreList)
+	r.GET("/rest/store/list", restHandler.GetStoreList)
 	r.GET("/rest/store/:store_code", restHandler.GetStore)
 	r.PUT("/rest/store/:store_code", restHandler.UpdateStore)
 	r.DELETE("/rest/store/:store_code", restHandler.DeleteStore)

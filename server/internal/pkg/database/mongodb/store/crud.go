@@ -2,7 +2,7 @@ package mstore
 
 import (
 	"context"
-	"errors"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -19,20 +19,6 @@ func CreateMStore(mStore *dbstructure.MStore) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sessionContext mongo.SessionContext) (interface{}, error) {
-		// 1. 중복 Store 존재하는지 확인
-		filter := bson.M{
-			"name":     mStore.Name,
-			"location": mStore.Location,
-		}
-		count, err := mongodb.StoreColl.CountDocuments(sessionContext, filter)
-		if err != nil {
-			return nil, err
-		}
-		if count > 0 {
-			return nil, errors.New("store already exists with same name and location")
-		}
-
-		// 2. 중복 없으면 새 Store 추가
 		_, err = mongodb.StoreColl.InsertOne(sessionContext, mStore)
 		return nil, err
 	}
@@ -65,9 +51,7 @@ func GetMStore(storeID primitive.ObjectID) (*dbstructure.MStore, error) {
 	var result dbstructure.MStore
 
 	err := mongodb.StoreColl.FindOne(context.Background(), filter).Decode(&result)
-	if err == mongo.ErrNoDocuments {
-		return nil, nil
-	} else if err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -125,4 +109,17 @@ func DeleteMStore(storeID primitive.ObjectID) error {
 
 	_, err = session.WithTransaction(context.Background(), callback)
 	return err
+}
+
+func IsStoreExists(storeName string, location string) (bool, error) {
+	filter := bson.M{
+		"name":     storeName,
+		"location": location,
+	}
+	count, err := mongodb.StoreColl.CountDocuments(context.Background(), filter)
+	if err != nil {
+		logrus.Errorf("[mongoDB IsStoreExists] Failed to check store existence: %v", err)
+		return false, err
+	}
+	return count > 0, nil
 }

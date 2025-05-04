@@ -2,6 +2,7 @@ package menustore
 
 import (
 	"context"
+	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -54,7 +55,11 @@ func GetMMenuList(storeID primitive.ObjectID, category string) ([]dbstructure.MM
 	if err != nil {
 		return nil, err
 	}
-	defer cursor.Close(context.Background())
+	defer func() {
+		if err := cursor.Close(context.Background()); err != nil {
+			logrus.Errorf("[mongoDB GetMMenuList] cursor close failed: %v", err)
+		}
+	}()
 
 	var menus []dbstructure.MMenu
 	for cursor.Next(context.Background()) {
@@ -77,9 +82,7 @@ func GetMMenuDetail(storeID primitive.ObjectID, category, menu string) (*dbstruc
 
 	var result dbstructure.MMenu
 	err := mongodb.MenuColl.FindOne(context.Background(), filter).Decode(&result)
-	if err == mongo.ErrNoDocuments {
-		return nil, nil
-	} else if err != nil {
+	if err != nil {
 		return nil, err
 	}
 
@@ -112,6 +115,22 @@ func IsMenuExists(storeID primitive.ObjectID, menuName string) (bool, error) {
 
 	count, err := mongodb.MenuColl.CountDocuments(context.Background(), filter)
 	if err != nil {
+		logrus.Errorf("[mongoDB IsMenuExists] Failed to check menu existence: %v", err)
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
+func IsCategoryExists(storeID primitive.ObjectID, categoryName string) (bool, error) {
+	filter := bson.M{
+		"store_id": storeID,
+		"category": categoryName,
+	}
+
+	count, err := mongodb.MenuColl.CountDocuments(context.Background(), filter)
+	if err != nil {
+		logrus.Errorf("[mongoDB IsCategoryExists] Failed to check menu existence: %v", err)
 		return false, err
 	}
 
