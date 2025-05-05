@@ -177,7 +177,7 @@ def update_sign_language_description():
 # update_sign_language_description()
 
 def register_sign_language_words():
-    sign_language_collection = db["sign_language"]
+    sign_language_collection = db["org_sign_language"]
 
     creds = Credentials.from_service_account_file(json_key_file, scopes=[
         "https://www.googleapis.com/auth/spreadsheets",
@@ -185,9 +185,8 @@ def register_sign_language_words():
     ])
     gc = gspread.authorize(creds)
     spreadsheet_id = os.getenv("SPREADSHEET_ID")
-    spreadsheet = gc.open_by_key(spreadsheet_id)
-    sheet = spreadsheet.get_worksheet(2)
-
+    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    
     # 전체 행을 삽입하는 경우
     data = sheet.get_all_records()
     sign_language_collection.insert_many(data)
@@ -212,7 +211,7 @@ def register_sign_language_words():
     print("sign_language 데이터가 MongoDB에 삽입되었습니다.")
 
 
-# register_sign_language_words()
+register_sign_language_words()
 
 def download_sign_language_urls():
 
