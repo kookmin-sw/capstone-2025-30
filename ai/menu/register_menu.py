@@ -3,6 +3,11 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import gspread
 from google.oauth2.service_account import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+import requests
+import mimetypes
+
 from google.auth import default
 
 load_dotenv()
@@ -180,7 +185,8 @@ def register_sign_language_words():
     ])
     gc = gspread.authorize(creds)
     spreadsheet_id = os.getenv("SPREADSHEET_ID")
-    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    sheet = spreadsheet.get_worksheet(2)
 
     # 전체 행을 삽입하는 경우
     data = sheet.get_all_records()
@@ -207,6 +213,166 @@ def register_sign_language_words():
 
 
 # register_sign_language_words()
+
+def download_sign_language_urls():
+
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    folder_id = "1ChqG-GqfKEFwddkq5x3SeLqMNUIa-UYc"
+    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    records = sheet.get_all_records()
+
+    drive_service = build('drive', 'v3', credentials=creds)
+
+    for row in records:
+        name = row['name']
+        url = row['url']
+        download_and_upload_video(url, name, folder_id, drive_service)
+
+def download_and_upload_video(url, filename, folder_id, drive_service):
+    
+    response = requests.get(url)
+    if response.status_code == 200:
+        ext = mimetypes.guess_extension(response.headers['Content-Type'])
+        if not ext:
+            ext = ".mp4"  
+        local_path = f"{filename}{ext}"
+
+        with open(local_path, 'wb') as f:
+            f.write(response.content)
+
+        file_metadata = {
+            'name': os.path.basename(local_path),
+            'parents': [folder_id]
+        }
+        media = MediaFileUpload(local_path, resumable=True)
+        uploaded_file = drive_service.files().create(body=file_metadata, media_body=media, fields='id').execute()
+        print(f"Uploaded: {filename} (ID: {uploaded_file['id']})")
+
+        os.remove(local_path) 
+    else:
+        print(f"Failed to download: {url}")
+
+# download_sign_language_urls()
+
+def find_missing_uploaded_files():
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    folder_id = "1ChqG-GqfKEFwddkq5x3SeLqMNUIa-UYc"
+
+    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    records = sheet.get_all_records()
+    expected_names = set(row['name'] for row in records if row['name'])
+
+    drive_service = build('drive', 'v3', credentials=creds)
+
+    uploaded_files = []
+    page_token = None
+    while True:
+        response = drive_service.files().list(
+            q=f"'{folder_id}' in parents",
+            spaces='drive',
+            fields='nextPageToken, files(name)',
+            pageToken=page_token
+        ).execute()
+        uploaded_files.extend([file['name'].replace('.mp4', '') for file in response.get('files', [])])
+        page_token = response.get('nextPageToken', None)
+        if page_token is None:
+            break
+
+    uploaded_set = set(uploaded_files)
+
+    missing = expected_names - uploaded_set
+
+    print("\n🔍 누락된 업로드 파일 목록:")
+    for name in missing:
+        print(f" - {name}")
+
+    return missing
+
+# find_missing_uploaded_files()
+
+def reregister_sign_language_urls():
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    folder_id = "1ChqG-GqfKEFwddkq5x3SeLqMNUIa-UYc"
+
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    sheet = spreadsheet.get_worksheet_by_id(859465925)  
+
+    drive_service = build('drive', 'v3', credentials=creds)
+
+    query = f"'{folder_id}' in parents"
+    files = []
+    page_token = None
+    while True:
+        response = drive_service.files().list(
+            q=query,
+            fields="nextPageToken, files(id, name)",
+            pageToken=page_token
+        ).execute()
+        files.extend(response.get('files', []))
+        page_token = response.get('nextPageToken', None)
+        if page_token is None:
+            break
+
+    data = [['name', 'url']]
+    for file in files:
+        file_id = file['id']
+        name = os.path.splitext(file['name'])[0] 
+
+        drive_service.permissions().create(
+            fileId=file_id,
+            body={'type': 'anyone', 'role': 'reader'},
+            fields='id'
+        ).execute()
+
+        share_url = f"https://drive.google.com/file/d/{file_id}/view?usp=sharing"
+        data.append([name, share_url])
+        print(f"{name} → {share_url}")
+
+    sheet.clear()
+    sheet.update("A1", data)
+
+    print("✅ .mp4 제거 완료 후 시트에 공유 링크 저장됨")
+
+
+
+# reregister_sign_language_urls()
+
+
+def register_avatar_sign_language_words():
+    sign_language_collection = db["avatar_sign_language"]
+
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    sheet = spreadsheet.get_worksheet(1)
+
+    data = sheet.get_all_records()
+    sign_language_collection.insert_many(data)
+
+    print("avatar sign_language 데이터가 mongo DB에 삽입 되었습니다.")
+
+# register_avatar_sign_language_words()
+
 
 def get_sign_language_url_list(menu):
     menu_collection = db["menu"]
