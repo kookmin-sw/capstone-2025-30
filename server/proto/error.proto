@@ -30,4 +30,5 @@ enum EError {
 
   // message
   EE_NOTIFICATION_NOT_FOUND = 60000;
+  EE_MESSAGE_CREATE_FAILED = 60001;
 }
