@@ -20,23 +20,24 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	APIService_AddTestStruct_FullMethodName     = "/APIService/AddTestStruct"
-	APIService_CreateStore_FullMethodName       = "/APIService/CreateStore"
-	APIService_GetStoreList_FullMethodName      = "/APIService/GetStoreList"
-	APIService_GetStore_FullMethodName          = "/APIService/GetStore"
-	APIService_UpdateStore_FullMethodName       = "/APIService/UpdateStore"
-	APIService_DeleteStore_FullMethodName       = "/APIService/DeleteStore"
-	APIService_StreamInquiries_FullMethodName   = "/APIService/StreamInquiries"
-	APIService_CreateMenu_FullMethodName        = "/APIService/CreateMenu"
-	APIService_GetCategoryList_FullMethodName   = "/APIService/GetCategoryList"
-	APIService_GetMenuList_FullMethodName       = "/APIService/GetMenuList"
-	APIService_GetMenuDetail_FullMethodName     = "/APIService/GetMenuDetail"
-	APIService_CreateOrder_FullMethodName       = "/APIService/CreateOrder"
-	APIService_GetOrderStatus_FullMethodName    = "/APIService/GetOrderStatus"
-	APIService_GetOrderList_FullMethodName      = "/APIService/GetOrderList"
-	APIService_UpdateOrderStatus_FullMethodName = "/APIService/UpdateOrderStatus"
-	APIService_GetMessages_FullMethodName       = "/APIService/GetMessages"
-	APIService_GetChatRoomList_FullMethodName   = "/APIService/GetChatRoomList"
+	APIService_AddTestStruct_FullMethodName       = "/APIService/AddTestStruct"
+	APIService_CreateStore_FullMethodName         = "/APIService/CreateStore"
+	APIService_GetStoreList_FullMethodName        = "/APIService/GetStoreList"
+	APIService_GetStore_FullMethodName            = "/APIService/GetStore"
+	APIService_UpdateStore_FullMethodName         = "/APIService/UpdateStore"
+	APIService_DeleteStore_FullMethodName         = "/APIService/DeleteStore"
+	APIService_StreamInquiries_FullMethodName     = "/APIService/StreamInquiries"
+	APIService_FastInquiryRespIsNo_FullMethodName = "/APIService/FastInquiryRespIsNo"
+	APIService_CreateMenu_FullMethodName          = "/APIService/CreateMenu"
+	APIService_GetCategoryList_FullMethodName     = "/APIService/GetCategoryList"
+	APIService_GetMenuList_FullMethodName         = "/APIService/GetMenuList"
+	APIService_GetMenuDetail_FullMethodName       = "/APIService/GetMenuDetail"
+	APIService_CreateOrder_FullMethodName         = "/APIService/CreateOrder"
+	APIService_GetOrderStatus_FullMethodName      = "/APIService/GetOrderStatus"
+	APIService_GetOrderList_FullMethodName        = "/APIService/GetOrderList"
+	APIService_UpdateOrderStatus_FullMethodName   = "/APIService/UpdateOrderStatus"
+	APIService_GetMessages_FullMethodName         = "/APIService/GetMessages"
+	APIService_GetChatRoomList_FullMethodName     = "/APIService/GetChatRoomList"
 )
 
 // APIServiceClient is the client API for APIService service.
@@ -53,6 +54,7 @@ type APIServiceClient interface {
 	DeleteStore(ctx context.Context, in *DeleteStoreRequest, opts ...grpc.CallOption) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(ctx context.Context, opts ...grpc.CallOption) (grpc.ClientStreamingClient[InquiryRequest, InquiryResponse], error)
+	FastInquiryRespIsNo(ctx context.Context, in *FastInquiryRespIsNoRequest, opts ...grpc.CallOption) (*FastInquiryRespIsNoResponse, error)
 	// menu api
 	CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error)
 	GetCategoryList(ctx context.Context, in *GetCategoryListRequest, opts ...grpc.CallOption) (*GetCategoryListResponse, error)
@@ -148,6 +150,16 @@ func (c *aPIServiceClient) StreamInquiries(ctx context.Context, opts ...grpc.Cal
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesClient = grpc.ClientStreamingClient[InquiryRequest, InquiryResponse]
+
+func (c *aPIServiceClient) FastInquiryRespIsNo(ctx context.Context, in *FastInquiryRespIsNoRequest, opts ...grpc.CallOption) (*FastInquiryRespIsNoResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(FastInquiryRespIsNoResponse)
+	err := c.cc.Invoke(ctx, APIService_FastInquiryRespIsNo_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *aPIServiceClient) CreateMenu(ctx context.Context, in *CreateMenuRequest, opts ...grpc.CallOption) (*CreateMenuResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -263,6 +275,7 @@ type APIServiceServer interface {
 	DeleteStore(context.Context, *DeleteStoreRequest) (*DeleteStoreResponse, error)
 	// inquiry api
 	StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error
+	FastInquiryRespIsNo(context.Context, *FastInquiryRespIsNoRequest) (*FastInquiryRespIsNoResponse, error)
 	// menu api
 	CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error)
 	GetCategoryList(context.Context, *GetCategoryListRequest) (*GetCategoryListResponse, error)
@@ -306,6 +319,9 @@ func (UnimplementedAPIServiceServer) DeleteStore(context.Context, *DeleteStoreRe
 }
 func (UnimplementedAPIServiceServer) StreamInquiries(grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method StreamInquiries not implemented")
+}
+func (UnimplementedAPIServiceServer) FastInquiryRespIsNo(context.Context, *FastInquiryRespIsNoRequest) (*FastInquiryRespIsNoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FastInquiryRespIsNo not implemented")
 }
 func (UnimplementedAPIServiceServer) CreateMenu(context.Context, *CreateMenuRequest) (*CreateMenuResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMenu not implemented")
@@ -472,6 +488,24 @@ func _APIService_StreamInquiries_Handler(srv interface{}, stream grpc.ServerStre
 
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type APIService_StreamInquiriesServer = grpc.ClientStreamingServer[InquiryRequest, InquiryResponse]
+
+func _APIService_FastInquiryRespIsNo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FastInquiryRespIsNoRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(APIServiceServer).FastInquiryRespIsNo(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: APIService_FastInquiryRespIsNo_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(APIServiceServer).FastInquiryRespIsNo(ctx, req.(*FastInquiryRespIsNoRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 func _APIService_CreateMenu_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateMenuRequest)
@@ -683,6 +717,10 @@ var APIService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteStore",
 			Handler:    _APIService_DeleteStore_Handler,
+		},
+		{
+			MethodName: "FastInquiryRespIsNo",
+			Handler:    _APIService_FastInquiryRespIsNo_Handler,
 		},
 		{
 			MethodName: "CreateMenu",
