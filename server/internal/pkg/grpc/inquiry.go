@@ -145,9 +145,29 @@ loop:
 		Message:   predictResp.PredictedSentence,
 		IsOwner:   false,
 	}
-	err = mmessage.CreateMMessage(&mMessage)
-	if err != nil {
-		panic(fmt.Errorf("failed to create message: %v", err))
+
+	mNotification := dbstructure.MNotificationMessage{
+		ID:                primitive.NewObjectID(),
+		StoreCode:         *storeObjectID,
+		NotificationTitle: inquiryType,
+		CreatedAt:         createTime,
+		UpdatedAt:         createTime,
+		Accepted:          false,
+		Finished:          false,
+		Deleted:           false,
+	}
+
+	if inquiryType == utils.StreamDataTypeOrder {
+		err = mmessage.CreateMMessage(&mMessage)
+		if err != nil {
+			panic(fmt.Errorf("failed to create message: %v", err))
+		}
+	}
+	if inquiryType == utils.StreamDataTypeInquiry {
+		err = mmessage.CreateMMessageAndNotification(&mMessage, &mNotification, storeCode)
+		if err != nil {
+			panic(fmt.Errorf("failed to create message & notification: %v", err))
+		}
 	}
 
 	// 웹소켓으로 메세지 전송 & 전송한 메세지 저장
