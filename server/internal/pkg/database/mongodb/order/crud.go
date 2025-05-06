@@ -149,7 +149,7 @@ func UpdateMOrderStatus(storeID primitive.ObjectID, orderNumber int32, newStatus
 	return err
 }
 
-func UpdateMOrderStatusAndMNotificationAccepted(storeID primitive.ObjectID, orderNumber int32, newStatus pb.OrderStatus, accepted bool) error {
+func UpdateMOrderStatusAndMNotificationFinished(storeID primitive.ObjectID, orderNumber int32, newStatus pb.OrderStatus, finished bool) error {
 	session, err := mongodb.Client.StartSession()
 	if err != nil {
 		return err
@@ -181,7 +181,7 @@ func UpdateMOrderStatusAndMNotificationAccepted(storeID primitive.ObjectID, orde
 		}
 		notificationUpdate := bson.M{
 			"$set": bson.M{
-				"accepted":   accepted,
+				"finished":   finished,
 				"updated_at": update_at,
 			},
 		}

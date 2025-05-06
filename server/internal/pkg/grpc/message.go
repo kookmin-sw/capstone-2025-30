@@ -48,6 +48,12 @@ func (s *Server) GetMessages(
 		panic(err)
 	}
 
+	// notification accepted 변경
+	err = mmessage.UpdateMNotificationAccepted(&storeId, req.NotificationTitle, req.Number, true)
+	if err != nil {
+		panic(err)
+	}
+
 	// 메세지 MMessage -> pb.Message 로 변환
 	pbMessages := make([]*pb.Message, len(mMessages))
 	for i, mMessage := range mMessages {

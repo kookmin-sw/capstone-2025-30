@@ -72,6 +72,7 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 		StoreCode:         storeID,
 		NotificationTitle: utils.NotificationTitleOrder,
 		Accepted:          false,
+		Finished:          false,
 		Deleted:           false,
 		CreatedAt:         createTime,
 		UpdatedAt:         createTime,
@@ -246,7 +247,7 @@ func (s *Server) UpdateOrderStatus(ctx context.Context, req *pb.UpdateOrderStatu
 		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
 	}
 
-	err = morder.UpdateMOrderStatusAndMNotificationAccepted(storeID, req.OrderNumber, req.Status, true)
+	err = morder.UpdateMOrderStatusAndMNotificationFinished(storeID, req.OrderNumber, req.Status, true)
 	if err != nil {
 		logrus.Errorf("[gRPC UpdateOrderStatus] Failed to update order status and notification accepted")
 		panic(pb.EError_EE_DB_OPERATION_FAILED)

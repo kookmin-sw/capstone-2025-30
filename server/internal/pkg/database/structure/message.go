@@ -11,7 +11,8 @@ type MNotificationMessage struct {
 	StoreCode         primitive.ObjectID `bson:"store_code"` // 가게 obejct id
 	NotificationTitle string             `bson:"title"`      // order, inquiry
 	Number            int                `bson:"number"`     // 주문번호나 문의번호
-	Accepted          bool               `bson:"accepted"`   // 처리 여부, true : 처리 완료(완료), false : 처리 미완료(이전)
+	Accepted          bool               `bson:"accepted"`   // 확인 여부, true : 주문 번호 입력 , false : 주문 번호 입력 전, 주문 등록만 하고 번호 입력으로 가져오기 안함
+	Finished          bool               `bson:"finished"`   // 처리 여부, true : 주문 처리 완료 -> 완료, false : 주문 처리 이전 -> 이전
 	Deleted           bool               `bson:"deleted"`    // 삭제 여부, true : 삭제, false : 미삭제
 	CreatedAt         time.Time          `bson:"created_at"` // 메세지 생성 시간
 	UpdatedAt         time.Time          `bson:"updated_at"` // cron 으로 삭제하기 위한 updated_at -> deleted 로 바뀌면 시간 업데이트
