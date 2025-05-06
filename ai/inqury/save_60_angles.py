@@ -12,7 +12,7 @@ json_key_file = os.getenv("SPREADSHEET_JSON_KEY")
 
 client = MongoClient(mongo_db_url)
 db = client["dev"]
-sign_language_collection = db["org_sign_language"]
+sign_language_collection = db["sign_language"]
 
 
 name_url_dict = {
@@ -136,12 +136,17 @@ mp_hands=mp.solutions.hands
 # url = "https://drive.google.com/uc?export=download&id=1XVHkBiC7G5eH1ftbXx0vNMsOuxdadfEe"
 # action = "생크림, 휘핑크림"
 
-url = "포크.mp4"
-action = "포크"
+
+url = "http://sldict.korean.go.kr/multimedia/multimedia_files/convert/20160325/271008/MOV000273041_700X466.mp4"
+action = "인터넷"
+
+
+# url = "포크.mp4"
+# action = "포크"
 
 seq_length = 60
-# url = "https://sldict.korean.go.kr/multimedia/multimedia_files/convert/20191018/628678/MOV000255952_700X466.mp4"
-# action = "안녕하세요,안녕히 가십시오"
+# # # url = "https://sldict.korean.go.kr/multimedia/multimedia_files/convert/20191018/628678/MOV000255952_700X466.mp4"
+# # # action = "안녕하세요,안녕히 가십시오"
 cap = cv2.VideoCapture(url)
 if not cap.isOpened():
     print(f"비디오 열기 오류: {url}")

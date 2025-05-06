@@ -10,6 +10,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
 
 from tensorflow.keras.layers import Masking, LSTM, Dense, Input, Dropout
+from tensorflow.keras.layers import Add, LayerNormalization
+
 from tensorflow.keras.utils import to_categorical
 
 from tensorflow.keras.models import Sequential
@@ -26,7 +28,12 @@ from keras.models import Model
 from keras.layers import Input, Masking, LSTM, Dense, Dropout, BatchNormalization, Layer
 import tensorflow as tf
 
-from tensorflow.keras.layers import MultiHeadAttention
+
+from tensorflow.keras.layers import Input, Masking, Bidirectional, GRU, Dense, Dropout, LayerNormalization
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import MultiHeadAttention, GlobalAveragePooling1D
+
+
 
 load_dotenv()
 mongo_db_url = os.getenv("MONGO_DB_URL")
@@ -146,14 +153,32 @@ x = Dropout(0.5)(x)
 outputs = Dense(len(gesture), activation='softmax')(x)
 
 model = Model(inputs, outputs)
-
 model.compile(
     optimizer='adam',
     loss='categorical_crossentropy',
     metrics=['acc']
 )
-
 model.summary()
+
+# inputs = Input(shape=x_train.shape[1:])
+# x = Masking(mask_value=0.0)(inputs)
+# x = Bidirectional(GRU(128, return_sequences=True))(x)
+# x = LayerNormalization()(x)
+
+# # MultiHead Attention
+# attn_output = MultiHeadAttention(num_heads=4, key_dim=64)(x, x)
+# x = x + attn_output  # Residual Connection
+# x = LayerNormalization()(x)
+
+# # Global Pooling for classification
+# x = GlobalAveragePooling1D()(x)
+# x = Dense(128, activation='relu')(x)
+# x = Dropout(0.5)(x)
+# outputs = Dense(len(gesture), activation='softmax')(x)
+
+# model = Model(inputs, outputs)
+# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
+# model.summary()
 
 weights = compute_class_weight('balanced', classes=np.unique(labels), y=labels)
 class_weights = dict(enumerate(weights))
@@ -163,7 +188,7 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('60_v1_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('60_v6_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
@@ -197,9 +222,9 @@ plt.title('Model Training History')
 plt.grid(True)
 plt.show()
 
-model.save('60_v1_masked_angles.keras')
-print("✅ 모델 저장 완료: 60_v1_masked_angles.keras")
+model.save('60_v6_masked_angles.keras')
+print("✅ 모델 저장 완료: 60_v6_masked_angles.keras")
 
-with open('60_v1_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
+with open('60_v6_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
     json.dump(gesture, f, ensure_ascii=False, indent=2)
-print("✅ 제스처 라벨 딕셔너리 저장 완료: 60_v1_pad_gesture_dict.json")
+print("✅ 제스처 라벨 딕셔너리 저장 완료: 60_v6_pad_gesture_dict.json")

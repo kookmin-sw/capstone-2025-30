@@ -7,6 +7,8 @@ from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 import requests
 import mimetypes
+import boto3
+import urllib.parse
 
 from google.auth import default
 
@@ -177,7 +179,7 @@ def update_sign_language_description():
 # update_sign_language_description()
 
 def register_sign_language_words():
-    sign_language_collection = db["org_sign_language"]
+    sign_language_collection = db["sign_language"]
 
     creds = Credentials.from_service_account_file(json_key_file, scopes=[
         "https://www.googleapis.com/auth/spreadsheets",
@@ -185,8 +187,9 @@ def register_sign_language_words():
     ])
     gc = gspread.authorize(creds)
     spreadsheet_id = os.getenv("SPREADSHEET_ID")
-    sheet = gc.open_by_key(spreadsheet_id).sheet1
-    
+    spreadsheet = gc.open_by_key(spreadsheet_id)
+    sheet = spreadsheet.get_worksheet_by_id(859465925)  
+
     # 전체 행을 삽입하는 경우
     data = sheet.get_all_records()
     sign_language_collection.insert_many(data)
@@ -211,7 +214,7 @@ def register_sign_language_words():
     print("sign_language 데이터가 MongoDB에 삽입되었습니다.")
 
 
-register_sign_language_words()
+# register_sign_language_words()
 
 def download_sign_language_urls():
 
@@ -253,6 +256,45 @@ def download_and_upload_video(url, filename, folder_id, drive_service):
         print(f"Uploaded: {filename} (ID: {uploaded_file['id']})")
 
         os.remove(local_path) 
+    else:
+        print(f"Failed to download: {url}")
+
+
+def download_sign_language_urls():
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    sheet = gc.open_by_key(spreadsheet_id).sheet1
+    records = sheet.get_all_records()
+
+    s3_bucket_name = os.getenv("S3_BUCKET_NAME")
+
+    for row in records[174:]:
+        name = row['name']
+        url = row['url']
+        download_and_upload_video(url, name, s3_bucket_name)
+
+def download_and_upload_video(url, filename, bucket_name):
+    response = requests.get(url)
+    if response.status_code == 200:
+        ext = mimetypes.guess_extension(response.headers.get('Content-Type', 'video/mp4'))
+        if not ext:
+            ext = ".mp4"
+        local_path = f"{filename}{ext}"
+
+        with open(local_path, 'wb') as f:
+            f.write(response.content)
+
+        s3 = boto3.client('s3')
+        s3.upload_file(local_path, bucket_name, os.path.basename(local_path),ExtraArgs={
+        'ContentType': 'video/mp4',
+        'ContentDisposition': 'inline'
+    })
+        print(f"Uploaded to S3: {filename}")
+
+        os.remove(local_path)
     else:
         print(f"Failed to download: {url}")
 
@@ -347,7 +389,41 @@ def reregister_sign_language_urls():
 
     print("✅ .mp4 제거 완료 후 시트에 공유 링크 저장됨")
 
+def reregister_sign_language_urls():
+    creds = Credentials.from_service_account_file(json_key_file, scopes=[
+        "https://www.googleapis.com/auth/spreadsheets"
+    ])
+    gc = gspread.authorize(creds)
+    spreadsheet_id = os.getenv("SPREADSHEET_ID")
+    sheet = gc.open_by_key(spreadsheet_id).get_worksheet_by_id(859465925)
 
+    # S3 정보
+    s3_bucket = os.getenv("S3_BUCKET_NAME") 
+    s3_prefix = ""
+    s3 = boto3.client("s3", region_name="ap-northeast-2") 
+
+    base_url = f"https://{s3_bucket}.s3.ap-northeast-2.amazonaws.com"
+
+    response = s3.list_objects_v2(Bucket=s3_bucket, Prefix=s3_prefix)
+    objects = response.get("Contents", [])
+
+    data = [['name', 'url']]
+    for obj in objects:
+        key = obj["Key"]
+        if key.endswith("/"):
+            continue
+        filename = os.path.basename(key)
+        name = os.path.splitext(filename)[0]
+
+        encoded_key = urllib.parse.quote(key)
+        object_url = f"{base_url}/{encoded_key}"
+
+        data.append([name, object_url])
+        print(f"{name} → {object_url}")
+
+    sheet.clear()
+    sheet.update("A1", data)
+    print("✅ 서울 리전 기반 URL을 퍼센트 인코딩 후 시트에 저장 완료")
 
 # reregister_sign_language_urls()
 
