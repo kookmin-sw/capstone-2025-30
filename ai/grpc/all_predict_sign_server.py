@@ -38,21 +38,34 @@ class Attention(Layer):
 
 # 배포용
 model = tf.keras.models.load_model(
-    'models/60_v1_masked_angles.keras',
+    'models/60_v6_masked_angles.keras',
     custom_objects={'Attention': Attention}
 )
 
-# # 로컬용
+
+def focal_loss(gamma=2.0, alpha=0.25):
+    def loss(y_true, y_pred):
+        y_pred = tf.clip_by_value(y_pred, 1e-9, 1.0)  # log(0) 방지
+        cross_entropy = -y_true * tf.math.log(y_pred)
+        weight = alpha * tf.pow(1 - y_pred, gamma)
+        return tf.reduce_mean(tf.reduce_sum(weight * cross_entropy, axis=-1))
+    return loss
+
+# 로컬용
 # model = tf.keras.models.load_model(
-#     '../models/60_v1_masked_angles.keras',
-#     custom_objects={'Attention': Attention}
+#     '../models/60_v6_masked_angles.keras',
+#     custom_objects={
+#         'Attention': Attention,
+#         # 'loss': focal_loss(gamma=2., alpha=0.25)
+#     }
 # )
 
+
 # 배포용
-with open('gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open('gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
 
 # # 로컬용
-# with open('../gesture_dict/60_v1_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+# with open('../gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 

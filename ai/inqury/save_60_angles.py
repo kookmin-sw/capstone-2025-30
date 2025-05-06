@@ -131,106 +131,115 @@ mp_hands=mp.solutions.hands
 ❗누락된 동작이 있습니다:
 - 안녕하세요,안녕히 가십시오
 - 생크림, 휘핑크림
+- 포크
 """
 # url = "https://drive.google.com/uc?export=download&id=1XVHkBiC7G5eH1ftbXx0vNMsOuxdadfEe"
 # action = "생크림, 휘핑크림"
 
-# seq_length = 60
-# # url = "https://sldict.korean.go.kr/multimedia/multimedia_files/convert/20191018/628678/MOV000255952_700X466.mp4"
-# # action = "안녕하세요,안녕히 가십시오"
-# cap = cv2.VideoCapture(url)
-# if not cap.isOpened():
-#     print(f"비디오 열기 오류: {url}")
-#     exit()
 
-# fps = cap.get(cv2.CAP_PROP_FPS)
-# total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-# duration = total_frames / fps if fps > 0 else 0
+url = "http://sldict.korean.go.kr/multimedia/multimedia_files/convert/20160325/271008/MOV000273041_700X466.mp4"
+action = "인터넷"
 
-# print(f"\n[Action: {action}]")
-# print(f"FPS: {fps}")
-# print(f"총 프레임 수: {total_frames}")
-# print(f"총 재생 시간: {duration:.2f}초")
 
-# if total_frames < seq_length:
-#     print(f"⚠️ 비디오 프레임 수 부족 ({seq_length}프레임 미만): {url}")
-#     cap.release()
-#     exit()
+# url = "포크.mp4"
+# action = "포크"
 
-# start_frame = (total_frames - seq_length) // 2
-# selected_frames = np.arange(start_frame, start_frame + seq_length, dtype=int)
+seq_length = 60
+# # # url = "https://sldict.korean.go.kr/multimedia/multimedia_files/convert/20191018/628678/MOV000255952_700X466.mp4"
+# # # action = "안녕하세요,안녕히 가십시오"
+cap = cv2.VideoCapture(url)
+if not cap.isOpened():
+    print(f"비디오 열기 오류: {url}")
+    exit()
 
-# data = []
-# selected_idx = 0
-# frame_idx = 0
+fps = cap.get(cv2.CAP_PROP_FPS)
+total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+duration = total_frames / fps if fps > 0 else 0
 
-# with mp_hands.Hands(
-#     static_image_mode=False,
-#     max_num_hands=2,
-#     min_detection_confidence=0.5,
-#     min_tracking_confidence=0.5
-# ) as hands:
+print(f"\n[Action: {action}]")
+print(f"FPS: {fps}")
+print(f"총 프레임 수: {total_frames}")
+print(f"총 재생 시간: {duration:.2f}초")
 
-#     while True:
-#         ret, frame = cap.read()
-#         if not ret:
-#             break
+if total_frames < seq_length:
+    print(f"⚠️ 비디오 프레임 수 부족 ({seq_length}프레임 미만): {url}")
+    cap.release()
+    exit()
 
-#         if selected_idx < len(selected_frames) and frame_idx == selected_frames[selected_idx]:
-#             img = cv2.flip(frame, 1)
-#             img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-#             result = hands.process(img_rgb)
+start_frame = (total_frames - seq_length) // 2
+selected_frames = np.arange(start_frame, start_frame + seq_length, dtype=int)
 
-#             # print(f"프레임 {frame_idx} 검사 중...")
+data = []
+selected_idx = 0
+frame_idx = 0
 
-#             if result.multi_hand_landmarks:
-#                 # print(f"➡️ 손 검출됨! 프레임: {frame_idx}")
-#                 for res in result.multi_hand_landmarks:
-#                     joint = np.zeros((21, 3))
-#                     for j, lm in enumerate(res.landmark):
-#                         joint[j] = [lm.x, lm.y, lm.z]
+with mp_hands.Hands(
+    static_image_mode=False,
+    max_num_hands=2,
+    min_detection_confidence=0.5,
+    min_tracking_confidence=0.5
+) as hands:
 
-#                     v1 = joint[[0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19], :]
-#                     v2 = joint[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], :]
-#                     v = v2 - v1
-#                     v = v / np.linalg.norm(v, axis=1)[:, np.newaxis]
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
 
-#                     angle = np.arccos(np.einsum('nt,nt->n',
-#                                                 v[[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18], :],
-#                                                 v[[1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18, 19], :]))
-#                     angle = np.degrees(angle)
+        if selected_idx < len(selected_frames) and frame_idx == selected_frames[selected_idx]:
+            img = cv2.flip(frame, 1)
+            img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+            result = hands.process(img_rgb)
 
-#                     angle_label = np.array([angle], dtype=np.float32)
-#                     angle_label = np.append(angle_label, frame_idx)
-#                     d = np.concatenate([joint.flatten(), angle_label])
-#                     data.append(d)
+            # print(f"프레임 {frame_idx} 검사 중...")
 
-#             selected_idx += 1
-#             if selected_idx >= len(selected_frames):
-#                 break
+            if result.multi_hand_landmarks:
+                # print(f"➡️ 손 검출됨! 프레임: {frame_idx}")
+                for res in result.multi_hand_landmarks:
+                    joint = np.zeros((21, 3))
+                    for j, lm in enumerate(res.landmark):
+                        joint[j] = [lm.x, lm.y, lm.z]
 
-#         frame_idx += 1
+                    v1 = joint[[0, 1, 2, 3, 0, 5, 6, 7, 0, 9, 10, 11, 0, 13, 14, 15, 0, 17, 18, 19], :]
+                    v2 = joint[[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20], :]
+                    v = v2 - v1
+                    v = v / np.linalg.norm(v, axis=1)[:, np.newaxis]
 
-# cap.release()
-# cv2.destroyAllWindows()
+                    angle = np.arccos(np.einsum('nt,nt->n',
+                                                v[[0, 1, 2, 4, 5, 6, 8, 9, 10, 12, 13, 14, 16, 17, 18], :],
+                                                v[[1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15, 17, 18, 19], :]))
+                    angle = np.degrees(angle)
 
-# data = np.array(data)
+                    angle_label = np.array([angle], dtype=np.float32)
+                    angle_label = np.append(angle_label, frame_idx)
+                    d = np.concatenate([joint.flatten(), angle_label])
+                    data.append(d)
 
-# # ⚠️ 데이터 수가 부족한 경우, 제로 패딩 추가
-# if len(data) < seq_length:
-#     pad_len = seq_length - len(data)
-#     pad_data = np.zeros((pad_len, data.shape[1]))
-#     data = np.vstack([pad_data, data])
-#     print(f"📌 부족한 {pad_len}개의 프레임을 0으로 패딩 추가했습니다.")
+            selected_idx += 1
+            if selected_idx >= len(selected_frames):
+                break
 
-# # 시퀀스 생성
-# full_seq_data = []
-# for seq in range(len(data) - seq_length + 1):
-#     full_seq_data.append(data[seq:seq + seq_length])
-# full_seq_data = np.array(full_seq_data)
+        frame_idx += 1
 
-# print(f"[{action}] shape: {full_seq_data.shape}")
-# np.save(os.path.join('angles', f"{action}.npy"), full_seq_data)
+cap.release()
+cv2.destroyAllWindows()
+
+data = np.array(data)
+
+# ⚠️ 데이터 수가 부족한 경우, 제로 패딩 추가
+if len(data) < seq_length:
+    pad_len = seq_length - len(data)
+    pad_data = np.zeros((pad_len, data.shape[1]))
+    data = np.vstack([pad_data, data])
+    print(f"📌 부족한 {pad_len}개의 프레임을 0으로 패딩 추가했습니다.")
+
+# 시퀀스 생성
+full_seq_data = []
+for seq in range(len(data) - seq_length + 1):
+    full_seq_data.append(data[seq:seq + seq_length])
+full_seq_data = np.array(full_seq_data)
+
+print(f"[{action}] shape: {full_seq_data.shape}")
+np.save(os.path.join('angles', f"{action}.npy"), full_seq_data)
 
 
 """
@@ -238,6 +247,7 @@ mp_hands=mp.solutions.hands
 ❗누락된 동작이 있습니다:
 - 생크림, 휘핑크림
 - 안녕하세요,안녕히 가십시오
+- 포크
 """
 saved_actions = set([
     os.path.splitext(f)[0] for f in os.listdir(DATA_PATH)
