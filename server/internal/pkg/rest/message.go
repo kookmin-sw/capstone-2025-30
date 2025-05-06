@@ -51,9 +51,6 @@ func (h *RestHandler) GetMessages(c *gin.Context) {
 	}
 
 	var req pb.GetMessagesRequest
-	if !BindJSONOrError(c, &req) {
-		return
-	}
 
 	req.StoreCode = storeCode
 
