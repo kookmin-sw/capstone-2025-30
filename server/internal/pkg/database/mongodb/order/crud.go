@@ -6,6 +6,7 @@ import (
 	pb "server/gen"
 	"server/internal/pkg/database/mongodb"
 	dbstructure "server/internal/pkg/database/structure"
+	"server/internal/pkg/utils"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -23,7 +24,7 @@ func CreateMOrder(mOrder *dbstructure.MOrder) error {
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
+		orderNumber, err := GetNextCounterNumber(utils.NotificationTitleOrder, mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
@@ -49,7 +50,7 @@ func CreateMOrderAndMNotificationMessageAndMMessageWithTransaction(mOrder *dbstr
 	defer session.EndSession(context.Background())
 
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
-		orderNumber, err := GetNextOrderNumber(mOrder.StoreCode)
+		orderNumber, err := GetNextCounterNumber(utils.NotificationTitleOrder, mOrder.StoreCode)
 		if err != nil {
 			return nil, err
 		}
