@@ -23,6 +23,7 @@ service APIService {
   
   // inquiry api
   rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
+  rpc FastInquiryRespIsNo(FastInquiryRespIsNoRequest) returns (FastInquiryRespIsNoResponse);
 
   // menu api
   rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);

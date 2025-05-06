@@ -67,8 +67,14 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 			return err
 		}
 
+		notificationMessage := NotificationData{
+			Title: notificationTitle,
+			Num:   msg.Number,
+		}
+
 		message := WebSocketMessage{
 			Type: "signMessage",
+			Data: notificationMessage,
 		}
 
 		// 웹소켓으로 메시지 전송

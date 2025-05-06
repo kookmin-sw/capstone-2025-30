@@ -1,6 +1,7 @@
 package grpcHandler
 
 import (
+	"context"
 	"fmt"
 	pb "server/gen"
 	mmessage "server/internal/pkg/database/mongodb/message"
@@ -185,4 +186,90 @@ loop:
 		Success: true,
 		Error:   nil,
 	})
+}
+
+func (s *Server) FastInquiryRespIsNo(
+	ctx context.Context, req *pb.FastInquiryRespIsNoRequest,
+) (
+	res *pb.FastInquiryRespIsNoResponse, errRes error,
+) {
+	defer func() {
+		if r := recover(); r != nil {
+			logrus.Error("defer in FastInquiryRespIsNo : ", r)
+			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			errRes = nil
+			res = &pb.FastInquiryRespIsNoResponse{Success: false, Error: pbErr.Enum()}
+		}
+	}()
+
+	// store_code 검증
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		logrus.Errorf("[gRPC FastInquiryRespIsNo] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	// notification(채팅방, 대화창, 알림) 이 있는지 검증
+	_, err = mmessage.GetNotificationMessage(&storeID, req.Title, int(req.Num))
+	if err != nil {
+		logrus.Errorf("[gRPC FastInquiryRespIsNo] Notification is not founded by store code(%s), title(%s), num(%d): %v", req.StoreCode, req.Title, req.Num, err)
+		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
+	}
+
+	// 아니요 메세지 저장
+	title := ""
+	if req.Title == utils.NotificationTitleOrder {
+		title = utils.WebSocketMessageTypeOrder
+	} else if req.Title == utils.NotificationTitleInquiry {
+		title = utils.WebSocketMessageTypeInquiry
+	}
+
+	createTime := time.Now()
+	mMessage := dbstructure.MMessage{
+		ID:        primitive.NewObjectID(),
+		StoreId:   storeID,
+		Title:     title,
+		CreatedAt: createTime,
+		Message:   "아니요.",
+		IsOwner:   false,
+		Number:    req.Num,
+	}
+
+	err = mmessage.CreateMMessage(&mMessage)
+	if err != nil {
+		panic(pb.EError_EE_MESSAGE_CREATE_FAILED)
+	}
+	// 아니요 메세지 관리자 웹에 전송
+	go func() {
+		maxRetries := 3
+		backoff := time.Second // 초기 대기 시간 1초
+
+		message := websocketHandler.WebSocketMessage{
+			Type: title,
+			Data: websocketHandler.MessageData{
+				Num:       req.Num,
+				Message:   "아니요.",
+				CreatedAt: createTime,
+			},
+		}
+
+		for attempt := 1; attempt <= maxRetries; attempt++ {
+			if err := websocketHandler.SendMessageToClient(req.StoreCode, message, utils.WebSocketClientTypeManagerWeb); err != nil {
+				logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
+
+				if attempt == maxRetries {
+					logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
+					return // 모든 시도 실패 후 종료
+				}
+
+				time.Sleep(backoff)
+				backoff *= 2
+			} else {
+				return
+			}
+		}
+	}()
+
+	// 응답 반환
+	return &pb.FastInquiryRespIsNoResponse{Success: true, Error: nil}, nil
 }
