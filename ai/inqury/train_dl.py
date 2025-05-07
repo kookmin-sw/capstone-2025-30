@@ -25,7 +25,7 @@ from sklearn.metrics import f1_score, classification_report
 import random
 
 from keras.models import Model
-from keras.layers import Input, Masking, LSTM, Dense, Dropout, BatchNormalization, Layer
+from keras.layers import Input, Masking, LSTM, Dense, Dropout, BatchNormalization, Layer, Conv1D
 import tensorflow as tf
 
 
@@ -81,7 +81,31 @@ x_train, x_val, y_train, y_val = train_test_split(
     x_data, y_data, test_size=0.1, random_state=2021
 )
 
-def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2.0):
+# def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2.0):
+#     augmented = seq.copy()
+
+#     # 1. ⏱️ Temporal jitter: 순서를 약간 섞음
+#     if random.random() < jitter_prob:
+#         idx = np.arange(len(augmented))
+#         jitter = np.clip(np.random.normal(0, 1, size=len(idx)), -2, 2).astype(int)
+#         jittered_idx = np.clip(idx + jitter, 0, len(idx) - 1)
+#         augmented = augmented[jittered_idx]
+
+#     # 2. 🌫️ Joint 좌표에 noise 추가
+#     joint_dim = 21 * 3  # 63
+#     augmented[:, :joint_dim] += np.random.normal(0, noise_std, size=(augmented.shape[0], joint_dim))
+
+#     # 3. 🔄 각도 값에 ±1~2도 perturbation
+#     angle_dim = 15
+#     angle_start = joint_dim
+#     angle_end = joint_dim + angle_dim
+#     perturb = np.random.uniform(-angle_perturb_range, angle_perturb_range, size=(augmented.shape[0], angle_dim))
+#     augmented[:, angle_start:angle_end] += perturb
+
+#     return augmented
+
+def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2.0,
+                     stretch_prob=0.3, brightness_std=0.05):
     augmented = seq.copy()
 
     # 1. ⏱️ Temporal jitter: 순서를 약간 섞음
@@ -101,6 +125,27 @@ def augment_sequence(seq, jitter_prob=0.3, noise_std=0.01, angle_perturb_range=2
     angle_end = joint_dim + angle_dim
     perturb = np.random.uniform(-angle_perturb_range, angle_perturb_range, size=(augmented.shape[0], angle_dim))
     augmented[:, angle_start:angle_end] += perturb
+
+    # 4. 📏 Stretching: 시퀀스 길이를 늘리거나 줄임 (선형 보간)
+    if random.random() < stretch_prob:
+        factor = random.uniform(0.8, 1.2)  # 20% 늘리거나 줄이기
+        new_len = int(len(augmented) * factor)
+        x_old = np.linspace(0, 1, len(augmented))
+        x_new = np.linspace(0, 1, new_len)
+
+        # 각 열에 대해 보간 수행
+        augmented = np.array([np.interp(x_new, x_old, augmented[:, i]) for i in range(augmented.shape[1])]).T
+
+        # 다시 원래 길이로 pad or crop
+        if new_len > len(seq):
+            augmented = augmented[:len(seq)]
+        else:
+            pad = np.zeros((len(seq) - new_len, augmented.shape[1]), dtype=np.float32)
+            augmented = np.vstack([augmented, pad])
+
+    # 5. 💡 Brightness-like noise: 전체 값에 일정 offset
+    brightness_offset = np.random.normal(0, brightness_std)
+    augmented[:, :angle_end] += brightness_offset
 
     return augmented
 
@@ -144,41 +189,53 @@ class Attention(Layer):
 inputs = Input(shape=x_train.shape[1:])
 x = Masking(mask_value=0.0)(inputs)
 x = LSTM(128, return_sequences=True, kernel_regularizer=l2(0.001))(x)
-x = BatchNormalization()(x)
-x = LSTM(64, return_sequences=True)(x)  
-x = BatchNormalization()(x)
-x = Attention()(x)  
+x = LayerNormalization()(x) 
+x = LSTM(64, return_sequences=True)(x)
+x = LayerNormalization()(x)
+x = Attention()(x)
 x = Dense(64, activation='relu')(x)
 x = Dropout(0.5)(x)
 outputs = Dense(len(gesture), activation='softmax')(x)
 
+# inputs = Input(shape=x_train.shape[1:])
+# x = Masking(mask_value=0.0)(inputs)
+# x = LSTM(128, return_sequences=True, kernel_regularizer=l2(0.001))(x)
+# x = BatchNormalization()(x)
+# x = LSTM(64, return_sequences=True)(x)  
+# x = BatchNormalization()(x)
+# x = Attention()(x)  
+# x = Dense(64, activation='relu')(x)
+# x = Dropout(0.5)(x)
+# outputs = Dense(len(gesture), activation='softmax')(x)
+
 model = Model(inputs, outputs)
+
+# inputs = Input(shape=x_train.shape[1:])  # (seq_len, feature_dim)
+
+# # CNN block (1D convolution over time)
+# x = Conv1D(64, kernel_size=3, padding='same', activation='relu')(inputs)
+# x = BatchNormalization()(x)
+# x = Conv1D(128, kernel_size=3, padding='same', activation='relu')(x)
+# x = BatchNormalization()(x)
+
+# # LSTM block
+# x = LSTM(128, return_sequences=True)(x)
+# x = LSTM(64, return_sequences=True)(x)
+# x = Attention()(x)
+
+# # Dense layers
+# x = Dense(64, activation='relu')(x)
+# x = Dropout(0.5)(x)
+# outputs = Dense(len(gesture), activation='softmax')(x)
+
+# model = Model(inputs, outputs)
+
 model.compile(
     optimizer='adam',
     loss='categorical_crossentropy',
     metrics=['acc']
 )
 model.summary()
-
-# inputs = Input(shape=x_train.shape[1:])
-# x = Masking(mask_value=0.0)(inputs)
-# x = Bidirectional(GRU(128, return_sequences=True))(x)
-# x = LayerNormalization()(x)
-
-# # MultiHead Attention
-# attn_output = MultiHeadAttention(num_heads=4, key_dim=64)(x, x)
-# x = x + attn_output  # Residual Connection
-# x = LayerNormalization()(x)
-
-# # Global Pooling for classification
-# x = GlobalAveragePooling1D()(x)
-# x = Dense(128, activation='relu')(x)
-# x = Dropout(0.5)(x)
-# outputs = Dense(len(gesture), activation='softmax')(x)
-
-# model = Model(inputs, outputs)
-# model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['acc'])
-# model.summary()
 
 weights = compute_class_weight('balanced', classes=np.unique(labels), y=labels)
 class_weights = dict(enumerate(weights))
@@ -188,7 +245,7 @@ history = model.fit(
     validation_data=(x_val, y_val),
     epochs=200,
     callbacks=[
-        ModelCheckpoint('60_v6_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
+        ModelCheckpoint('60_v8_masked_angles.keras', monitor='val_acc', verbose=1, save_best_only=True, mode='auto'),
         ReduceLROnPlateau(monitor='val_acc', factor=0.5, patience=50, verbose=1, mode='auto')
     ],
     class_weight=class_weights
@@ -222,9 +279,9 @@ plt.title('Model Training History')
 plt.grid(True)
 plt.show()
 
-model.save('60_v6_masked_angles.keras')
-print("✅ 모델 저장 완료: 60_v6_masked_angles.keras")
+model.save('60_v8_masked_angles.keras')
+print("✅ 모델 저장 완료: 60_v8_masked_angles.keras")
 
-with open('60_v6_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
+with open('60_v8_pad_gesture_dict.json', 'w', encoding='utf-8') as f:
     json.dump(gesture, f, ensure_ascii=False, indent=2)
-print("✅ 제스처 라벨 딕셔너리 저장 완료: 60_v6_pad_gesture_dict.json")
+print("✅ 제스처 라벨 딕셔너리 저장 완료: 60_v8_pad_gesture_dict.json")
