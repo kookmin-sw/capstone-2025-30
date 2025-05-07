@@ -19,11 +19,14 @@ import load_sim
 
 load_dotenv()
 api_key = os.getenv("OPEN_AI_KEY")
+env = os.getenv('APP_ENV', 'local')
+
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
-# 배포용
-loader = PyMuPDFLoader("docs/한국수어문법.pdf")
-# # 로컬용
-# loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
+
+if env == 'production':
+    loader = PyMuPDFLoader("docs/한국수어문법.pdf")
+else:
+    loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
 mongo_db_url = os.getenv("MONGO_DB_URL")
 client = MongoClient(mongo_db_url)
 db = client["dev"]
@@ -35,11 +38,12 @@ grammer = ""
 for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
-# 배포용
-with open('gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+if env == 'production':
+    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+else:
+    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
 
-# # 로컬용
-# with open('../gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
@@ -61,6 +65,15 @@ to_sign_language_prompt = ChatPromptTemplate.from_messages([
      ⚠️ **Allowed Vocabulary Words** ⚠️  
      You must use only the following KSL signs when forming your answer:  
      [{gesture_vocab}]
+
+     When dealing with question forms, distinguish between:
+
+     1. **'무엇1'** (what): Use when replacing a noun with an unknown (e.g., "이것은 무엇입니까?" → ['이것', '무엇1']).
+     2. **'물음표'** (question mark): Use when the sentence ends with a yes/no or choice-based question. (e.g., "현금이세요?" → ['현금', '물음표'], "카드이세요?" → ['카드', '물음표']).
+     3. **'어디'** (where): Use only when location is being questioned. (e.g., "어디에 있어요?" → ['어디', '있다']).
+
+     ⚠️ Especially for **choice-based questions** (e.g., "현금이세요? 카드이세요?"), you must avoid using '무엇1'. Instead, append '물음표' after each item to indicate they are separate questions. For example:
+     "현금이세요? 카드이세요?" → ['현금', '물음표', '카드', '물음표']
 
      For compound words like [강원도], you should break it down into its components based on KSL grammar. For example, '강원도' is made up of two concepts: [산] (mountain) and [흐르다] (flow). Therefore, [강원도] is represented by simultaneously showing [산] and [흐르다] using both hands.
 
@@ -144,20 +157,24 @@ def get_sign_language_url_list(inqury):
     print(f"✨ 한국 수어 문법 문장 : {sign_language_inqury}")
     words = sign_language_inqury
 
-    url_list = []
-    for word in words:
-        sign_data = sign_language_collection.find_one({"name": {"$regex": word}})
+    sign_data_list = list(sign_language_collection.find({"name": {"$regex": "|".join(words), "$options": "i"}}))
 
-        if sign_data and "url" in sign_data:
-            url_list.append(sign_data["url"])
+    sign_data_map = {item['name']: item for item in sign_data_list} 
+
+    url_list = []
+
+    for word in words:
+        if word in sign_data_map:
+            url_list.append(sign_data_map[word]["url"])
         else:
             print(f"👮 데이터 셋에 없는 단어입니다! {word}")
             similar_word = load_sim.get_most_similar_word(word)
-            if (similar_word != ""):
-                print("유사한 단어는 찾았습니다!")
+            if similar_word != "":
+                print(f"유사한 단어는 찾았습니다: {similar_word}")
                 similar_data = sign_language_collection.find_one({"name": {"$regex": similar_word}})
-                url_list.append(similar_data["url"])
-    
+                if similar_data and "url" in similar_data:
+                    url_list.append(similar_data["url"])
+
     return url_list
 
 # urls = get_sign_language_url_list("감사합니다")

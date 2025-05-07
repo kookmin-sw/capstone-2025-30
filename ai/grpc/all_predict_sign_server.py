@@ -4,7 +4,6 @@ import tensorflow as tf
 import json
 import numpy as np
 import mediapipe as mp
-import cv2
 import os
 from tensorflow.keras.layers import Layer
 import tensorflow as tf
@@ -12,12 +11,6 @@ import all_predict_sign_pb2
 import all_predict_sign_pb2_grpc
 import load_to_korean_rag
 import load_to_sign_rag
-
-# 배포용
-# model = tf.keras.models.load_model('models/90_v2_masked_angles.h5')
-
-# 디버깅용
-# model = tf.keras.models.load_model('../models/90_v5_masked_angles.h5')
 
 class Attention(Layer):
     def __init__(self, **kwargs): 
@@ -36,11 +29,21 @@ class Attention(Layer):
         output = x * a
         return tf.keras.backend.sum(output, axis=1)
 
-# 배포용
-model = tf.keras.models.load_model(
-    'models/60_v6_masked_angles.keras',
-    custom_objects={'Attention': Attention}
-)
+env = os.getenv('APP_ENV', 'local')
+
+if env == "production":
+    model = tf.keras.models.load_model(
+        'models/60_v6_masked_angles.keras',
+        custom_objects={'Attention': Attention}
+    )
+else:
+    model = tf.keras.models.load_model(
+    '../models/60_v6_masked_angles.keras',
+    custom_objects={
+        'Attention': Attention,
+        # 'loss': focal_loss(gamma=2., alpha=0.25)
+    }
+    )
 
 
 def focal_loss(gamma=2.0, alpha=0.25):
@@ -51,22 +54,14 @@ def focal_loss(gamma=2.0, alpha=0.25):
         return tf.reduce_mean(tf.reduce_sum(weight * cross_entropy, axis=-1))
     return loss
 
-# 로컬용
-# model = tf.keras.models.load_model(
-#     '../models/60_v6_masked_angles.keras',
-#     custom_objects={
-#         'Attention': Attention,
-#         # 'loss': focal_loss(gamma=2., alpha=0.25)
-#     }
-# )
+if env == 'production':
+    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+else:
+    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
 
-
-# 배포용
-with open('gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
-
-# # 로컬용
-# with open('../gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
+
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 
 mp_hands = mp.solutions.hands
@@ -198,16 +193,12 @@ def serve():
                                       ('grpc.max_receive_message_length', 10 * 1024 * 1024)])
         all_predict_sign_pb2_grpc.add_SignAIServicer_to_server(SignAIService(), server)
         
-        # 배포용
-        print("🔐 TLS 인증서 로드 시도 중...")
-        creds = load_tls_credentials()
-        print("✅ TLS 인증서 로드 성공")
-        
-        # 배포용
-        port_result = server.add_secure_port('[::]:50051', creds)
-
-        # # 로컬용
-        # port_result = server.add_insecure_port('[::]:50051')
+        if env == "production":
+            creds = load_tls_credentials()
+            print("✅ TLS 인증서 로드 성공")
+            port_result = server.add_secure_port('[::]:50051', creds)
+        else:
+            port_result = server.add_insecure_port('[::]:50051')
         
         print(f"✅ 포트 바인딩 결과: {port_result}")
         
