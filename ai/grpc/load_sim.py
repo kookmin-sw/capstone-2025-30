@@ -1,17 +1,20 @@
-from sentence_transformers import SentenceTransformer, util
 import torch
-import json
+from sentence_transformers import SentenceTransformer, util
 import os
+import json
 from dotenv import load_dotenv
+from concurrent.futures import ThreadPoolExecutor
 
 load_dotenv()
 HF_TOKEN = os.getenv("HF_TOKEN")
+env = os.getenv('APP_ENV', 'local')
 
-# 배포용
-with open('gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+if env == 'production':
+    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+else:
+    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
 
-# # 로컬용
-# with open('../gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
@@ -19,41 +22,69 @@ actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = HF_TOKEN
 model = SentenceTransformer('jhgan/ko-sbert-nli')
 
-def get_sentence_embedding(sentence):
-    if not sentence:  
-        return torch.zeros(768) 
+def get_sentence_embedding(sentences):
+    if not sentences:  
+        return torch.zeros(len(sentences), 768)
 
-    sentence_embedding = model.encode([sentence], convert_to_tensor=True)
-    return sentence_embedding.squeeze()  
+    sentence_embeddings = model.encode(sentences, convert_to_tensor=True)
+    return sentence_embeddings
 
-def compute_similarity(emb1, emb2):
-    if emb1.dim() == 0:
-        emb1 = emb1.unsqueeze(0)
-    if emb2.dim() == 0:
-        emb2 = emb2.unsqueeze(0)
+def compute_similarity_batch(embeddings1, embeddings2):
+    similarity = util.pytorch_cos_sim(embeddings1, embeddings2)
+    return similarity
 
-    similarity = util.pytorch_cos_sim(emb1, emb2)
-    return similarity.item()
+# def get_most_similar_word(word):
+#     candidates = []
+#     input_embedding = get_sentence_embedding([word])
+
+#     actions_embeddings = get_sentence_embedding(actions)
+#     similarities = compute_similarity_batch(input_embedding, actions_embeddings)
+
+#     for i, similarity in enumerate(similarities[0]):
+#         if similarity > 0.6:
+#             candidates.append((actions[i], similarity.item()))
+
+#     candidates.sort(key=lambda x: x[1], reverse=True)
+
+#     if len(candidates) < 1:
+#         return ""
+    
+#     most_similar = candidates[0]
+#     print(f"유사한 단어 : {most_similar[0]}, 유사도 : {most_similar[1]}")
+#     return most_similar[0]
+
+def compute_similarity_batch(embeddings1, embeddings2):
+    if embeddings1.size(0) == 1 and embeddings2.size(0) == 1:
+        return util.pytorch_cos_sim(embeddings1, embeddings2).unsqueeze(0)
+
+    similarity = util.pytorch_cos_sim(embeddings1, embeddings2)
+    return similarity
 
 def get_most_similar_word(word):
     candidates = []
+    input_embedding = get_sentence_embedding([word])
 
-    input_embedding = get_sentence_embedding(word)
+    actions_embeddings = get_sentence_embedding(actions)
 
-    for action in actions:
-        action_embedding = get_sentence_embedding(action)
-        similarity = compute_similarity(input_embedding, action_embedding)
+    similarities = compute_similarity_batch(input_embedding, actions_embeddings)
 
+    if similarities.size(0) == 1: 
+        similarities = similarities.squeeze(0)
+
+    for i, similarity in enumerate(similarities):
         if similarity > 0.6:
-            # print(f"유사도 : {similarity}, 비교대상 : {word}, 유사한 단어: {action}")
-            candidates.append((action, similarity))
+            candidates.append((actions[i], similarity.item()))
 
     candidates.sort(key=lambda x: x[1], reverse=True)
+
     if len(candidates) < 1:
         return ""
+    
     most_similar = candidates[0]
     print(f"유사한 단어 : {most_similar[0]}, 유사도 : {most_similar[1]}")
     return most_similar[0]
+
+
 
 # similar_words = get_most_similar_from_actions("설탕")
 # print(similar_words)

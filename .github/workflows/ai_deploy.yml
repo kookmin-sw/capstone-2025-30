@@ -35,6 +35,7 @@ jobs:
           echo "AI_EC2_HOST=${{ secrets.AI_EC2_HOST }}" >> ai/.env
           echo "AI_TLS_CRT=\"${{ secrets.AI_TLS_CRT }}\"" >> ai/.env  # 줄바꿈 보존 주의
           echo "AI_TLS_KEY=\"${{ secrets.AI_TLS_KEY }}\"" >> ai/.env
+          echo "APP_ENV=production" >> ai/.env
 
       - name: Upload AI directory to EC2
         uses: appleboy/scp-action@v0.1.3

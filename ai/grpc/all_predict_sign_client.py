@@ -11,21 +11,20 @@ from dotenv import load_dotenv
 import os
 
 load_dotenv()
-# 배포용
 host = os.getenv("AI_EC2_HOST")
+env = os.getenv('APP_ENV', 'local')
 trusted_certs = os.environ['AI_TLS_CRT'].encode('utf-8')
 credentials = grpc.ssl_channel_credentials(root_certificates=trusted_certs)
 
-# 배포용
-channel = grpc.secure_channel(f"{host}:50051",
-                              credentials,
-                                  options=[('grpc.max_send_message_length', 10 * 1024 * 1024),
-                                           ('grpc.max_receive_message_length', 10 * 1024 * 1024)]) 
-
-# # 로컬용
-# channel = grpc.insecure_channel(f"localhost:50051",
-#                                 options=[('grpc.max_send_message_length', 10 * 1024 * 1024 * 10),  # 100MB
-#                                          ('grpc.max_receive_message_length', 10 * 1024 * 1024 * 10)])  # 100MB
+if env == 'production':
+    channel = grpc.secure_channel(f"{host}:50051",
+                                credentials,
+                                    options=[('grpc.max_send_message_length', 10 * 1024 * 1024),
+                                            ('grpc.max_receive_message_length', 10 * 1024 * 1024)]) 
+else :
+    channel = grpc.insecure_channel(f"localhost:50051",
+                                    options=[('grpc.max_send_message_length', 10 * 1024 * 1024), 
+                                             ('grpc.max_receive_message_length', 10 * 1024 * 1024)])
 
 stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
@@ -41,10 +40,13 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
 """
 약간의 손실 - 의미 유추 가능
+- 포크가 있어요는 CNN-LSTM모델에서만 가능함
 """
 # video_path = '아메리카노_수어통합본.mp4'
 # video_path = '화장실 비밀번호 있나요?.mp4'
 # video_path = '할인카드 사용하고 싶어요.mp4'
+# video_path = '휴지 있어요_.mp4'
+# video_path = '포크가 있어요_.mp4'
 
 """
 한 단어만 맞춤 - 의미 유추 불가능
@@ -58,8 +60,6 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 """
 전혀 안됨 - 의미 유추 불가능
 """
-# video_path = '휴지 있어요_.mp4'
-# video_path = '포크가 있어요_.mp4'
 # video_path = '포인트가 있나요?.mp4'
 
 cap = cv2.VideoCapture(video_path)

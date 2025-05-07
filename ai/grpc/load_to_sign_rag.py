@@ -19,11 +19,14 @@ import load_sim
 
 load_dotenv()
 api_key = os.getenv("OPEN_AI_KEY")
+env = os.getenv('APP_ENV', 'local')
+
 embeddings = OpenAIEmbeddings(model="text-embedding-ada-002", api_key=api_key)
-# 배포용
-loader = PyMuPDFLoader("docs/한국수어문법.pdf")
-# # 로컬용
-# loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
+
+if env == 'production':
+    loader = PyMuPDFLoader("docs/한국수어문법.pdf")
+else:
+    loader = PyMuPDFLoader("../docs/한국수어문법.pdf")
 mongo_db_url = os.getenv("MONGO_DB_URL")
 client = MongoClient(mongo_db_url)
 db = client["dev"]
@@ -35,11 +38,12 @@ grammer = ""
 for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
-# 배포용
-with open('gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+if env == 'production':
+    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+else:
+    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
 
-# # 로컬용
-# with open('../gesture_dict/60_v6_pad_gesture_dict.json', 'r', encoding='utf-8') as f:
+with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
 
 actions = [gesture_dict[str(i)] for i in range(len(gesture_dict))]
@@ -144,20 +148,24 @@ def get_sign_language_url_list(inqury):
     print(f"✨ 한국 수어 문법 문장 : {sign_language_inqury}")
     words = sign_language_inqury
 
-    url_list = []
-    for word in words:
-        sign_data = sign_language_collection.find_one({"name": {"$regex": word}})
+    sign_data_list = list(sign_language_collection.find({"name": {"$regex": "|".join(words), "$options": "i"}}))
 
-        if sign_data and "url" in sign_data:
-            url_list.append(sign_data["url"])
+    sign_data_map = {item['name']: item for item in sign_data_list} 
+
+    url_list = []
+
+    for word in words:
+        if word in sign_data_map:
+            url_list.append(sign_data_map[word]["url"])
         else:
             print(f"👮 데이터 셋에 없는 단어입니다! {word}")
             similar_word = load_sim.get_most_similar_word(word)
-            if (similar_word != ""):
-                print("유사한 단어는 찾았습니다!")
+            if similar_word != "":
+                print(f"유사한 단어는 찾았습니다: {similar_word}")
                 similar_data = sign_language_collection.find_one({"name": {"$regex": similar_word}})
-                url_list.append(similar_data["url"])
-    
+                if similar_data and "url" in similar_data:
+                    url_list.append(similar_data["url"])
+
     return url_list
 
 # urls = get_sign_language_url_list("감사합니다")
