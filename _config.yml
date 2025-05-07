@@ -1,10 +1,9 @@
-url: https://y7kim.github.io
-baseurl: /agency-jekyll-theme/
+url: "https://kookmin-sw.github.io"
+baseurl: "/capstone-2025-30"
 
 # Site settings
 title: My Capstone Project
 description: "2025 졸업 작품 - 팀 30"
-url: "https://kookmin-sw.github.io/capstone-2025-30"
 
 
 # Team names, titles and social links
