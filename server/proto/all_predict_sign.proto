@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package predict;
+
+option go_package = "capstone-2025-30/proto";
+
+message FrameSequenceInput {
+    repeated float frames = 1;
+    string store_id = 2;
+    int32 fps = 3;
+    int32 video_length = 4;
+}
+
+message PredictResult {
+    string store_id = 1;
+    string predicted_sentence = 2;
+    float confidence = 3;
+}
+
+message KoreanInput {
+    string message = 1;
+    string store_id = 2;
+}
+
+message SignUrlResult {
+    string store_id = 1;
+    repeated string urls = 2;
+}
+
+service SignAI {
+    rpc PredictFromFrames(FrameSequenceInput) returns (PredictResult);
+    rpc TranslateKoreanToSignUrls(KoreanInput) returns (SignUrlResult);
+}

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+
+message TestStruct{
+  string name = 1;
+  int32 age = 2;
+  bool is_student = 3;
+  repeated string friends = 4;
+}
+
+message AddTestStructRequest{
+  TestStruct test_struct = 1;
+}
+
+message AddTestStructResponse{
+  bool success = 1;
+}

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "error.proto";
+
+message ViewStore{
+  string store_code = 1;
+  string name = 2;
+  string location = 3;
+}
+
+message CreateStoreRequest{
+  string name = 1;
+  string location = 2;
+}
+
+message UpdateStoreRequest{
+  string store_code = 1;
+  string name = 2;
+  string location = 3;
+}
+message GetStoreRequest{
+  string store_code = 1;
+}
+
+message DeleteStoreRequest{
+  string store_code = 1;
+}
+
+message CreateStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewStore store = 3;
+}
+
+message GetStoreListResponse{
+  bool success = 1;
+  optional EError error = 2;
+  repeated ViewStore stores = 3;
+}
+
+message GetStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewStore store = 3;
+}
+
+message UpdateStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+  ViewStore store = 3;
+}
+
+message DeleteStoreResponse{
+  bool success = 1;
+  optional EError error = 2;
+}

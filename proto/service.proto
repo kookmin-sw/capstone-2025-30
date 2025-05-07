@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option go_package = "capstone-2025-30/proto";
+
+import "google/protobuf/empty.proto";
+import "test.proto";
+import "store.proto";
+import "inquiry.proto";
+import "menu.proto";
+import "order.proto";
+import "message.proto";
+
+service APIService {
+  // test api
+  rpc AddTestStruct(AddTestStructRequest) returns (AddTestStructResponse);
+
+  // store api
+  rpc CreateStore(CreateStoreRequest) returns (CreateStoreResponse);
+  rpc GetStoreList(google.protobuf.Empty) returns (GetStoreListResponse);
+  rpc GetStore(GetStoreRequest) returns (GetStoreResponse);
+  rpc UpdateStore(UpdateStoreRequest) returns (UpdateStoreResponse);
+  rpc DeleteStore(DeleteStoreRequest) returns (DeleteStoreResponse);
+  
+  // inquiry api
+  rpc StreamInquiries(stream InquiryRequest) returns (InquiryResponse);
+  rpc FastInquiryRespIsNo(FastInquiryRespIsNoRequest) returns (FastInquiryRespIsNoResponse);
+
+  // menu api
+  rpc CreateMenu(CreateMenuRequest) returns (CreateMenuResponse);
+  rpc GetCategoryList(GetCategoryListRequest) returns (GetCategoryListResponse);
+  rpc GetMenuList(GetMenuListRequest) returns (GetMenuListResponse);
+  rpc GetMenuDetail(GetMenuDetailRequest) returns (GetMenuDetailResponse);
+
+  // order api
+  rpc CreateOrder(CreateOrderRequest) returns (CreateOrderResponse);
+  rpc GetOrderStatus(GetOrderStatusRequest) returns (GetOrderStatusResponse);
+  rpc GetOrderList(GetOrderListRequest) returns (GetOrderListResponse);
+  rpc UpdateOrderStatus(UpdateOrderStatusRequest) returns (UpdateOrderStatusResponse);
+
+  // message api
+  rpc GetMessages(GetMessagesRequest) returns (GetMessagesResponse);
+  rpc GetChatRoomList(GetChatRoomListRequest) returns (GetChatRoomListResponse);
+}

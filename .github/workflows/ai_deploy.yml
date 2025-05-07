@@ -1,0 +1,58 @@
+name: AI CI/CD Pipeline
+
+on:
+  push:
+    branches: ["develop"]
+    paths:
+      - 'ai/**'
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Update Apt
+        run: |
+          sudo apt-get update
+
+      - name: Install OpenSSL
+        run: sudo apt-get install openssl
+
+      - name: Create AI .env file
+        run: |
+          mkdir -p ai
+          echo "OPENAPI_URL=${{ secrets.OPENAPI_URL }}" > ai/.env
+          echo "OPENAPI_KEY=${{ secrets.OPENAPI_KEY }}" >> ai/.env
+          echo "OPEN_AI_KEY=${{ secrets.OPEN_AI_KEY }}" >> ai/.env
+          echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> ai/.env
+          echo "SPREADSHEET_ID=${{ secrets.SPREADSHEET_ID }}" >> ai/.env
+          echo "SPREADSHEET_JSON_KEY=${{ secrets.SPREADSHEET_JSON_KEY }}" >> ai/.env
+          echo "HF_TOKEN=${{ secrets.HF_TOKEN }}" >> ai/.env
+          echo "AI_EC2_HOST=${{ secrets.AI_EC2_HOST }}" >> ai/.env
+          echo "AI_TLS_CRT=\"${{ secrets.AI_TLS_CRT }}\"" >> ai/.env  # 줄바꿈 보존 주의
+          echo "AI_TLS_KEY=\"${{ secrets.AI_TLS_KEY }}\"" >> ai/.env
+          echo "APP_ENV=production" >> ai/.env
+
+      - name: Upload AI directory to EC2
+        uses: appleboy/scp-action@v0.1.3
+        with:
+          host: ${{ secrets.AI_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AI_EC2_SSH_KEY }}
+          source: "ai"
+          target: "/home/ubuntu"
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.AI_EC2_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AI_EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/ai
+            docker-compose down -v   
+            docker-compose up -d --build 

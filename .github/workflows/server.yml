@@ -1,0 +1,120 @@
+name: Server CI/CD Pipeline
+
+on:
+  push:
+    branches: ["develop"]
+    paths:
+      - 'server/**'
+      - 'proto/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+          cache: true
+
+      - name: Install Protoc
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y protobuf-compiler
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+          go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest
+        working-directory: ./server
+
+      - name: Generate Proto files
+        run: make proto
+        working-directory: ./server
+
+      - name: Install Go dependencies
+        run: go mod download
+        working-directory: ./server
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Create .env file
+        run: |
+          echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
+          echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> .env
+          echo "REST_API_PORT=${{ secrets.REST_API_PORT }}" >> .env
+          echo "WEBSOCKET_PORT=${{ secrets.WEBSOCKET_PORT }}" >> .env
+          echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
+          echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
+          echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> .env
+          echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> .env
+          echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> .env
+          echo "AI_GRPC_HOST=${{ secrets.AI_GRPC_HOST }}" >> .env
+          echo "AI_TLS_CRT_SERVER="${{ secrets.AI_TLS_CRT_SERVER }}"" >> .env 
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./server
+          file: ./server/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
+          build-args: |
+            APP_ENV=${{ secrets.APP_ENV }}
+            GRPC_PORT=${{ secrets.GRPC_PORT }}
+            REST_API_PORT=${{ secrets.REST_API_PORT }}
+            WEBSOCKET_PORT=${{ secrets.WEBSOCKET_PORT }}
+            MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}
+            MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}
+            REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}
+            ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}
+            WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}
+            AI_GRPC_HOST=${{ secrets.AI_GRPC_HOST }}
+            AI_TLS_CRT_SERVER="${{ secrets.AI_TLS_CRT_SERVER }}"
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.AWS_EC2_HOST }}
+          username: ${{ secrets.AWS_EC2_USERNAME }}
+          key: ${{ secrets.AWS_EC2_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/capstone-2025-30/server
+
+            # .env 파일 생성
+            echo "APP_ENV=${{ secrets.APP_ENV }}" > .env
+            echo "GRPC_PORT=${{ secrets.GRPC_PORT }}" >> .env
+            echo "REST_API_PORT=${{ secrets.REST_API_PORT }}" >> .env
+            echo "WEBSOCKET_PORT=${{ secrets.WEBSOCKET_PORT }}" >> .env
+            echo "MONGO_DB_URL=${{ secrets.MONGO_DB_URL }}" >> .env
+            echo "MONGO_DB_NAME=${{ secrets.MONGO_DB_NAME }}" >> .env
+            echo "REST_API_X_API_KEY=${{ secrets.REST_API_X_API_KEY }}" >> .env
+            echo "ALLOWED_AUTH_KEY=${{ secrets.ALLOWED_AUTH_KEY }}" >> .env
+            echo "WEBSOCKET_API_KEY=${{ secrets.WEBSOCKET_API_KEY }}" >> .env
+            echo "AI_GRPC_HOST=${{ secrets.AI_GRPC_HOST }}" >> .env
+            echo "AI_TLS_CRT_SERVER="${{ secrets.AI_TLS_CRT_SERVER }}"" >> .env 
+
+            # Docker 컨테이너 재시작
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
+            docker stop capstone-server || true
+            docker rm capstone-server || true
+            docker run -d \
+              --name capstone-server \
+              --dns=8.8.8.8 \
+              --restart unless-stopped \
+              --network host \
+              --env-file .env \
+              ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
+
+            sudo systemctl restart nginx
+
