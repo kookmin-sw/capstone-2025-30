@@ -10,9 +10,9 @@ HF_TOKEN = os.getenv("HF_TOKEN")
 env = os.getenv('APP_ENV', 'local')
 
 if env == 'production':
-    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v8_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v8_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)

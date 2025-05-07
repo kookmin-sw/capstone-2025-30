@@ -33,12 +33,12 @@ env = os.getenv('APP_ENV', 'local')
 
 if env == "production":
     model = tf.keras.models.load_model(
-        'models/60_v6_masked_angles.keras',
+        'models/60_v8_masked_angles.keras',
         custom_objects={'Attention': Attention}
     )
 else:
     model = tf.keras.models.load_model(
-    '../models/60_v6_masked_angles.keras',
+    '../models/60_v8_masked_angles.keras',
     custom_objects={
         'Attention': Attention,
         # 'loss': focal_loss(gamma=2., alpha=0.25)
@@ -55,9 +55,9 @@ def focal_loss(gamma=2.0, alpha=0.25):
     return loss
 
 if env == 'production':
-    path = 'gesture_dict/60_v6_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v8_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v6_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v8_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
@@ -120,6 +120,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
         # 추출된 시점부터 시퀀스 예측
         for start_frame in filtered_start_frames:
+
             end_frame = start_frame + seq_length
             if end_frame > total_frames:
                 continue
@@ -135,6 +136,9 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
             if "," in predicted_sentence:
                 predicted_sentence = predicted_sentence.split(",")[0]
 
+            if start_frame == 1 and predicted_sentence == "마시다":
+                continue
+
             if confidence < confidence_threshold:
                 continue 
             
@@ -144,6 +148,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
             sentences.append(predicted_sentence)
             confidences.append(confidence)
             print(f"Motion Segment @ Frame {start_frame}: Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
+            
         if not sentences:
             return all_predict_sign_pb2.PredictResult(
                 store_id=store_id,
