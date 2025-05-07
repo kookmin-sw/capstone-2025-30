@@ -26,6 +26,9 @@ $RECYCLE.BIN/
 .DS_Store
 .AppleDouble
 .LSOverride
+Gemfile.lock
+/vendor/
+.bundle
 
 # Icon must ends with two \r.
 Icon
