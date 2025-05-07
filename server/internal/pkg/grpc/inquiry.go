@@ -126,6 +126,10 @@ loop:
 		}))
 	}
 
+	if predictResp.Confidence <= 0.5 {
+		panic(pb.EError_EE_AI_CONVERSION_CONFIDENCE_IS_WRONG)
+	}
+
 	// message 구조체 생성
 	createTime := time.Now()
 	messageType := ""
