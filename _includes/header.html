@@ -1,5 +1,22 @@
-<!-- Navigation -->
-    <nav class="navbar navbar-default navbar-fixed-top">
+<style>
+    .navbar-default {
+        background-color: rgba(0, 0, 0, 0) !important; 
+        border-color: rgba(0, 0, 0, 0) !important;  
+    }
+
+    .navbar-default .navbar-nav > li > a,
+    .navbar-default .navbar-brand {
+        color: #3182F6 !important; 
+    }
+
+    .navbar-default .navbar-nav > li > a:hover,
+    .navbar-default .navbar-brand:hover {
+        color: #1B3C89 !important; 
+    }
+</style>
+    
+<nav class="navbar navbar-default navbar-fixed-top">
+
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header page-scroll">
@@ -9,7 +26,12 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">{{site.title}}</a>
+                <a class="navbar-brand page-scroll" href="#page-top">
+                    <img src="{{ site.baseurl }}/img/logo.png" alt="{{ site.title }}" style="height: 60px; margin-right: 0px;"> 
+                    {{ site.title }}
+                   
+                </a>
+                
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
@@ -19,19 +41,16 @@
                         <a href="#page-top"></a>
                     </li>
                     <li>
+                        <a class="page-scroll" href="#about">Why Now?</a>
+                    </li>
+                    <li>
                         <a class="page-scroll" href="#services">Services</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#portfolio">Portfolio</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#about">About</a>
+                        <a class="page-scroll" href="#portfolio">Attatchments</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#team">Team</a>
-                    </li>
-                    <li>
-                        <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -44,9 +63,12 @@
     <header>
         <div class="container">
             <div class="intro-text">
-                <div class="intro-lead-in">Welcome To Our Studio!</div>
-                <div class="intro-heading">It's Nice To Meet You</div>
-                <a href="#services" class="page-scroll btn btn-xl">Tell Me More</a>
+                <div class="intro-lead-in" style="font-family: 'Nanum Gothic', sans-serif;">
+                    카페에서 만나는 수어 소통, <br> 농인과 청인을 이어주는 주문 서비스
+                </div>
+                
+                <div class="intro-heading">Sign Order</div>
+                <a href="#about" class="page-scroll btn btn-xl">더 알아보기</a>
             </div>
         </div>
     </header>

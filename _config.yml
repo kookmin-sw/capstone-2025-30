@@ -2,7 +2,7 @@ url: "https://kookmin-sw.github.io"
 baseurl: "/capstone-2025-30"
 
 # Site settings
-title: My Capstone Project
+title: SignOrder
 description: "2025 졸업 작품 - 팀 30"
 
 
@@ -10,58 +10,38 @@ description: "2025 졸업 작품 - 팀 30"
 people:
 - name: 김상민
   pic: 1
-  position: Lead Designer
+  position: Team Leader, Backend-Developer
   social:
-    - title: twitter
-      url: #
-    - title: facebook
-      url: #
-    - title: stack-overflow
-      url: #
+    - title: google-plus
+      url: 
 
 - name: 박민선
   pic: 2
-  position: Lead Marketer
+  position: Backend-Developer, UI Design
   social:
-    - title: twitter
-      url: #
-    - title: facebook
-      url: #
-    - title: linkedin
-      url: #
+    - title: google-plus
+      url: 
 
 - name: 구수연
   pic: 3
-  position: Lead Developer
+  position: AI/AI Server Developer
   social:
-    - title: twitter
-      url: #
-    - title: facebook
-      url: #
     - title: google-plus
-      url: #
+      url: mailto:stgood@kookmin.ac.kr
 
 - name: 정호용
   pic: 3
-  position: Lead Developer
+  position: Avater Developer
   social:
-    - title: twitter
-      url: #
-    - title: facebook
-      url: #
     - title: google-plus
-      url: #
+      url: 
 
 - name: 하은영
   pic: 3
-  position: Lead Developer
+  position: Frontend Developer, UI Design
   social:
-    - title: twitter
-      url: #
-    - title: facebook
-      url: #
     - title: google-plus
-      url: #
+      url:
 
 # Social networks usernames (many more available: google-plus, flickr, dribbble, pinterest, instagram, tumblr, linkedin, etc.)
 social:
