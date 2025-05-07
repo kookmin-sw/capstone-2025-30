@@ -66,6 +66,15 @@ to_sign_language_prompt = ChatPromptTemplate.from_messages([
      You must use only the following KSL signs when forming your answer:  
      [{gesture_vocab}]
 
+     When dealing with question forms, distinguish between:
+
+     1. **'무엇1'** (what): Use when replacing a noun with an unknown (e.g., "이것은 무엇입니까?" → ['이것', '무엇1']).
+     2. **'물음표'** (question mark): Use when the sentence ends with a yes/no or choice-based question. (e.g., "현금이세요?" → ['현금', '물음표'], "카드이세요?" → ['카드', '물음표']).
+     3. **'어디'** (where): Use only when location is being questioned. (e.g., "어디에 있어요?" → ['어디', '있다']).
+
+     ⚠️ Especially for **choice-based questions** (e.g., "현금이세요? 카드이세요?"), you must avoid using '무엇1'. Instead, append '물음표' after each item to indicate they are separate questions. For example:
+     "현금이세요? 카드이세요?" → ['현금', '물음표', '카드', '물음표']
+
      For compound words like [강원도], you should break it down into its components based on KSL grammar. For example, '강원도' is made up of two concepts: [산] (mountain) and [흐르다] (flow). Therefore, [강원도] is represented by simultaneously showing [산] and [흐르다] using both hands.
 
      Some compound words may not directly map to the sum of their individual components' meanings. For example, [검정] (black) and [벌레] (bug) when combined form the meaning of [개미] (ant), not [black bug]. Similarly, words like [바지저고리] represent a "country-style person," which cannot be directly deduced from its individual parts. Please be aware of such special compound words and apply the correct KSL transformation.
