@@ -14,6 +14,13 @@ class CustomStyles {
     fontWeight: FontWeight.w700,
   );
 
+  static const TextStyle fontHead20 = TextStyle(
+    fontSize: 20,
+    height: 28 / 20,
+    fontFamily: 'Pretendard',
+    fontWeight: FontWeight.w700,
+  );
+
   static const TextStyle fontHead16 = TextStyle(
     fontSize: 16,
     height: 24 / 16,

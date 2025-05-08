@@ -9,16 +9,20 @@ const HomeStyles = {
     lineHeight: "56px",
     textAlign: "center",
   },
+  containerButton: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   orderButton: {
-    ...CustomStyles.fontHead28,
+    ...CustomStyles.fontHead20,
     width: "100%",
-    height: 230,
+    height: 164,
     backgroundColor: CustomStyles.primaryGray,
     color: CustomStyles.primaryBlack,
     borderRadius: 16,
     border: "none",
     cursor: "pointer",
-    marginBottom: 25,
+    marginTop: 30,
   },
 };
 

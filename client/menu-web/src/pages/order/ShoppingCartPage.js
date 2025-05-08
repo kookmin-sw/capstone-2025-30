@@ -113,7 +113,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
         </div>
       </div>
       {!isLast ? (
-        <div style={{ ...ShoppingCartStyles.line }} />
+        <div style={ShoppingCartStyles.line} />
       ) : (
         <div style={{ height: 70 }} />
       )}
@@ -127,6 +127,11 @@ const ShoppingCartPage = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [menu, setMenu] = useState(cartItems);
   const [isDineIn, setIsDineIn] = useState(null);
+
+  const videos = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+  ];
 
   useEffect(() => {
     setMenu(cartItems);
@@ -190,8 +195,8 @@ const ShoppingCartPage = () => {
     <div>
       <Header centerIcon={null} cartIcon={null} />
 
-      <div style={{ ...ShoppingCartStyles.container }}>
-        <div style={{ ...ShoppingCartStyles.textTotalMoney }}>
+      <div style={ShoppingCartStyles.container}>
+        <div style={ShoppingCartStyles.textTotalMoney}>
           <div style={{ fontSize: 44, lineHeight: "52px" }}>💵</div>
           <div>{totalMoney}원</div>
         </div>
@@ -220,7 +225,7 @@ const ShoppingCartPage = () => {
               ))}
             </>
           ) : (
-            <div style={{ ...ShoppingCartStyles.textEmpty }}>
+            <div style={ShoppingCartStyles.textEmpty}>
               장바구니가 비었습니다.
             </div>
           )}
@@ -237,7 +242,8 @@ const ShoppingCartPage = () => {
 
         {isBottomSheetOpen && (
           <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
-            <SignVideo src="/assets/video/드시고가실건가요.mp4" />
+            {/* 드시고가실건가요 */}
+            <SignVideo srcList={videos} />
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
                 pressYes={() => {

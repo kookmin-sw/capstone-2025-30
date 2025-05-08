@@ -2,12 +2,15 @@ import CustomStyles from "@/styles/CustomStyles";
 
 const MenuStyles = {
   container: {
+    padding: "0 30px",
+  },
+  containerMenu: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))",
-    gap: 30,
-    margin: "0 35px 0 35px",
+    gap: 20,
     justifyItems: "center",
     alignItems: "center",
+    marginTop: 30,
   },
   menuButton: {
     ...CustomStyles.fontSub16,
