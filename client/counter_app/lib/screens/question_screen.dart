@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import '../styles/custom_styles.dart';
 
 import 'package:counter_app/components/header.dart';
-import 'loading_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   final bool isOrder;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:logger/logger.dart';
 
 import '../styles/custom_styles.dart';
 
+import '../services/web_socket_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/sign_video.dart';
 import 'question_screen.dart';
@@ -17,8 +19,17 @@ class AnswerScreen extends StatefulWidget {
 }
 
 class _AnswerScreenState extends State<AnswerScreen> {
+  final Logger logger = Logger();
   bool _isPressedYes = false;
   bool _isPressedNo = false;
+  List<String> videos = [];
+
+  @override
+  void initState() {
+    super.initState();
+    videos = WebSocketService().getSignUrls();
+    logger.i("websocket 수어 영상: $videos");
+  }
 
   @override
   Widget build(BuildContext context) {
