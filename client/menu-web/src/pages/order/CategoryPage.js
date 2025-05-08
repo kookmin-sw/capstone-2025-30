@@ -70,9 +70,6 @@ const CategoryPage = () => {
     { icon: "☕️", text: categories[2], to: `/menu/${categories[2]}` },
     { icon: "🌿", text: categories[1], to: `/menu/${categories[1]}` },
     { icon: "🧋", text: categories[0], to: `/menu/${categories[0]}` },
-    { icon: "🍰", text: "케이크", to: "/menu/케이크" },
-    { icon: "🥯", text: "빵", to: "/menu/빵" },
-    { icon: "🥗", text: "샐러드", to: "/menu/샐러드" },
   ];
 
   const videos = [

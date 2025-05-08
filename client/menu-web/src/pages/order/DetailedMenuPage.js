@@ -7,7 +7,6 @@ import DetailedMenuStyles from "@/pages/order/DetailedMenuStyles";
 import { getDetailMenu } from "../../config/api";
 import { useCart } from "../../context/CartContext";
 import Header from "@/components/Header";
-import coffeeImage from "@/assets/images/image-coffee.png";
 import { ReactComponent as IconCold } from "@/assets/icons/cold.svg";
 import { ReactComponent as IconHot } from "@/assets/icons/hot.svg";
 import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
@@ -45,6 +44,7 @@ const DetailedMenuPage = () => {
     const fetchGetDetailedMenu = async () => {
       try {
         const category = await getDetailMenu(categoryPath, menuPath);
+        console.log(category.data.menu);
         setDetailMenu(category.data.menu);
       } catch (error) {
         console.error(
@@ -77,6 +77,7 @@ const DetailedMenuPage = () => {
       temp: selectedTemp,
       size: selectedSize,
       quantity: 1,
+      image: detailMenu.image,
     });
     navigate(`/menu/${categoryPath}`, {
       state: { cartModal: true },
@@ -93,27 +94,21 @@ const DetailedMenuPage = () => {
       {categoryPath === "빵" && <Header centerIcon="🥯" />}
       {categoryPath === "샐러드" && <Header centerIcon="🥗" />}
 
-      <div style={{ ...DetailedMenuStyles.container }}>
-        <div
-          style={{
-            ...DetailedMenuStyles.containerRow,
-          }}
-        >
+      <div style={DetailedMenuStyles.container}>
+        <div style={DetailedMenuStyles.containerRow}>
           <div
             style={{
               ...DetailedMenuStyles.menuImage,
-              backgroundImage: `url(${coffeeImage})`, // 추후 이미지 링크로 변경
+              backgroundImage: `url(${detailMenu.image})`,
             }}
           ></div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ ...DetailedMenuStyles.textMenu }}>
-              {detailMenu.name}
-            </div>
-            <div style={{ ...DetailedMenuStyles.textMenu }}>{menuPrice}원</div>
+            <div style={DetailedMenuStyles.textMenu}>{detailMenu.name}</div>
+            <div style={DetailedMenuStyles.textMenu}>{menuPrice}원</div>
           </div>
         </div>
 
-        <div style={{ ...DetailedMenuStyles.line }} />
+        <div style={DetailedMenuStyles.line} />
 
         <div
           style={{
@@ -181,10 +176,10 @@ const DetailedMenuPage = () => {
           )}
         </div>
 
-        <div style={{ ...DetailedMenuStyles.line }} />
+        <div style={DetailedMenuStyles.line} />
 
         {detailMenu.options?.[0]?.type === "temperature" && (
-          <div style={{ ...DetailedMenuStyles.containerRow }}>
+          <div style={DetailedMenuStyles.containerRow}>
             <ButtonTemperature
               icon={<IconCold />}
               text="차갑게"
@@ -201,7 +196,7 @@ const DetailedMenuPage = () => {
         )}
 
         {detailMenu.options?.[1]?.type === "size" && (
-          <div style={{ ...DetailedMenuStyles.containerRow }}>
+          <div style={DetailedMenuStyles.containerRow}>
             <ButtonSize
               size="S"
               icon={<IconSize width={32} height={34.91} />}
