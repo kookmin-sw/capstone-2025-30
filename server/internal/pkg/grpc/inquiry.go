@@ -25,7 +25,6 @@ func (s *Server) StreamInquiries(
 		if r := recover(); r != nil {
 			logrus.Error("defer in StreamInquiries : ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			fmt.Println("pbErr : ", pbErr.Enum())
 			_ = stream.SendAndClose(&pb.InquiryResponse{
 				Success: false,
 				Error:   pbErr.Enum(),
