@@ -33,7 +33,7 @@ func (h *RestHandler) CreateOrder(c *gin.Context) {
 	}
 
 	type CreateOrderBody struct {
-		DineIn     bool            `json:"dine_in" binding:"required"`
+		DineIn     *bool           `json:"dine_in" binding:"required"`
 		Items      []*pb.OrderItem `json:"items" binding:"required"`
 		TotalPrice int32           `json:"total_price" binding:"required"`
 	}
@@ -61,7 +61,7 @@ func (h *RestHandler) CreateOrder(c *gin.Context) {
 
 	grpcReq := &pb.CreateOrderRequest{
 		StoreCode:  storeCode,
-		DineIn:     req.DineIn,
+		DineIn:     *req.DineIn,
 		Items:      req.Items,
 		TotalPrice: req.TotalPrice,
 	}
