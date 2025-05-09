@@ -15,7 +15,8 @@ export const CartProvider = ({ children }) => {
           cartItem.name === item.name &&
           cartItem.menu_price === item.menu_price &&
           cartItem.temp === item.temp &&
-          cartItem.size === item.size
+          cartItem.size === item.size &&
+          cartItem.image === item.image
       );
 
       if (index !== -1) {
