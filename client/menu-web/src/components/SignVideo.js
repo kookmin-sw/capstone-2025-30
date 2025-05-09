@@ -32,6 +32,7 @@ const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
         paddingTop: "100%",
         backgroundColor: isEnded && "rgba(0,0,0,0.7)",
         borderRadius: 16,
+        pointerEvents: "none",
       }}
     >
       <video
