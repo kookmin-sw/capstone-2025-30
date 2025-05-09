@@ -7,6 +7,7 @@ import DetailedMenuStyles from "@/pages/order/DetailedMenuStyles";
 import { getDetailMenu } from "../../config/api";
 import { useCart } from "../../context/CartContext";
 import Header from "@/components/Header";
+import coffeeImage from "@/assets/images/image-coffee.png";
 import { ReactComponent as IconCold } from "@/assets/icons/cold.svg";
 import { ReactComponent as IconHot } from "@/assets/icons/hot.svg";
 import { ReactComponent as IconSize } from "@/assets/icons/size.svg";
@@ -26,44 +27,6 @@ const DetailedMenuPage = () => {
   const [selectedSize, setSelectedSize] = useState("적게");
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
-  const [videoList, setVideoList] = useState([]);
-
-  useEffect(() => {
-    const list1 = [
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%B0%A8%EA%B0%91%EB%8B%A4%2C%20%EC%B6%A5%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%8B%9C%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8E%E1%85%A1%E1%84%80%E1%85%A1%E1%86%B8%E1%84%80%E1%85%A6+%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB+%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%A8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%94%B0%EB%9C%BB%ED%95%98%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%8B%9C%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%84%E1%85%A1%E1%84%84%E1%85%B3%E1%86%BA%E1%84%92%E1%85%A1%E1%84%80%E1%85%A6+%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB+%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%A8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4",
-    ];
-
-    const list2 = [
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A1%B0%EA%B8%88%2C%20%EC%9E%91%EB%8B%A4%2C%20%EC%A0%81%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%8B%9C%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A5%E1%86%A8%E1%84%80%E1%85%A6+%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB+%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%A8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B3%B4%ED%86%B5.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%8B%9C%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A9%E1%84%90%E1%85%A9%E1%86%BC+%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB+%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%A8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%8E%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A7%88%EC%8B%9C%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%A1%E1%86%AD%E1%84%8B%E1%85%B5+%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB+%E1%84%8F%E1%85%B3%E1%86%AF%E1%84%85%E1%85%B5%E1%86%A8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4",
-    ];
-
-    if (Array.isArray(detailMenu.sign_language_urls)) {
-      setVideoList([...detailMenu.sign_language_urls, ...list1, ...list2]);
-    }
-  }, [detailMenu]);
 
   const handleReplay = () => {
     setIsEnded(false);
@@ -71,7 +34,7 @@ const DetailedMenuPage = () => {
   };
 
   const handleVideoEnd = () => {
-    if (currentIndex < videoList.length - 1) {
+    if (currentIndex < detailMenu.sign_language_urls?.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsEnded(true);
@@ -114,7 +77,6 @@ const DetailedMenuPage = () => {
       temp: selectedTemp,
       size: selectedSize,
       quantity: 1,
-      image: detailMenu.image,
     });
     navigate(`/menu/${categoryPath}`, {
       state: { cartModal: true },
@@ -131,21 +93,27 @@ const DetailedMenuPage = () => {
       {categoryPath === "빵" && <Header centerIcon="🥯" />}
       {categoryPath === "샐러드" && <Header centerIcon="🥗" />}
 
-      <div style={DetailedMenuStyles.container}>
-        <div style={DetailedMenuStyles.containerRow}>
+      <div style={{ ...DetailedMenuStyles.container }}>
+        <div
+          style={{
+            ...DetailedMenuStyles.containerRow,
+          }}
+        >
           <div
             style={{
               ...DetailedMenuStyles.menuImage,
-              backgroundImage: `url(${detailMenu.image})`,
+              backgroundImage: `url(${coffeeImage})`, // 추후 이미지 링크로 변경
             }}
           ></div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={DetailedMenuStyles.textMenu}>{detailMenu.name}</div>
-            <div style={DetailedMenuStyles.textMenu}>{menuPrice}원</div>
+            <div style={{ ...DetailedMenuStyles.textMenu }}>
+              {detailMenu.name}
+            </div>
+            <div style={{ ...DetailedMenuStyles.textMenu }}>{menuPrice}원</div>
           </div>
         </div>
 
-        <div style={DetailedMenuStyles.line} />
+        <div style={{ ...DetailedMenuStyles.line }} />
 
         <div
           style={{
@@ -159,7 +127,7 @@ const DetailedMenuPage = () => {
           {detailMenu.sign_language_urls && (
             <video
               ref={videoRef}
-              src={videoList[currentIndex]}
+              src={detailMenu.sign_language_urls[currentIndex]}
               style={{
                 position: "absolute",
                 top: 0,
@@ -213,10 +181,10 @@ const DetailedMenuPage = () => {
           )}
         </div>
 
-        <div style={DetailedMenuStyles.line} />
+        <div style={{ ...DetailedMenuStyles.line }} />
 
         {detailMenu.options?.[0]?.type === "temperature" && (
-          <div style={DetailedMenuStyles.containerRow}>
+          <div style={{ ...DetailedMenuStyles.containerRow }}>
             <ButtonTemperature
               icon={<IconCold />}
               text="차갑게"
@@ -233,7 +201,7 @@ const DetailedMenuPage = () => {
         )}
 
         {detailMenu.options?.[1]?.type === "size" && (
-          <div style={DetailedMenuStyles.containerRow}>
+          <div style={{ ...DetailedMenuStyles.containerRow }}>
             <ButtonSize
               size="S"
               icon={<IconSize width={32} height={34.91} />}

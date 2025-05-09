@@ -71,15 +71,9 @@ const OrderProcessPage = () => {
   const [orderInformation, setOrderInformation] = useState([]);
   const [menu, setMenu] = useState([]);
 
-  const videos1 = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A9%94%EB%89%B4.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A4%80%EB%B9%84.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A4%91%EC%95%99%2C%EB%8F%84%EC%A4%91%2C%EC%A4%91%2C%EA%B0%80%EC%9A%B4%EB%8D%B0%2C%EC%A4%91%EC%8B%AC.mp4",
-  ];
-
-  const videos2 = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9E%91%EC%84%B1%2C%EC%A0%9C%EC%9E%91%2C%EC%A0%9C%EC%A1%B0%2C%EB%A7%8C%EB%93%A4%EB%8B%A4%2C%EA%B0%80%EA%B3%B5.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A2%85%EB%A3%8C%2C%EB%81%9D%EB%82%98%EB%8B%A4%2C%EB%A7%88%EC%B9%98%EB%8B%A4.mp4",
+  const videos = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
   ];
 
   useEffect(() => {
@@ -114,7 +108,7 @@ const OrderProcessPage = () => {
 
           <div style={{ margin: "0 0 70px 0" }}>
             {/* 메뉴준비중입니다 */}
-            <SignVideo srcList={videos1} />
+            <SignVideo srcList={videos} />
           </div>
 
           {menu.map((item, idx) => (
@@ -125,7 +119,7 @@ const OrderProcessPage = () => {
         <div style={OrderProcessStyles.container}>
           <div style={OrderProcessStyles.textProcess}>제조 완료</div>
           {/* 제조완료 */}
-          <SignVideo srcList={videos2} />
+          <SignVideo srcList={videos} />
         </div>
       )}
     </>

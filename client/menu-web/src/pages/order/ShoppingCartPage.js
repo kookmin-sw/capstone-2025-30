@@ -126,11 +126,11 @@ const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [menu, setMenu] = useState(cartItems);
+  const [isDineIn, setIsDineIn] = useState(null);
 
   const videos = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%97%AC%EA%B8%B0.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A8%B9%EB%8B%A4.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%AC%BC%EC%9D%8C%ED%91%9C.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
   ];
 
   useEffect(() => {
@@ -160,26 +160,25 @@ const ShoppingCartPage = () => {
     0
   );
 
-  const fetchCreateOrder = async (isDineIn) => {
-    try {
-      const orderData = {
-        dine_in: isDineIn,
-        total_price: totalMoney,
-        items: cartItems.map((item) => ({
-          name: item.name,
-          quantity: item.quantity,
-          options: {
-            choices: {
-              temperature: item.temp,
-              size: item.size,
-            },
-          },
-          item_price: item.menu_price,
-        })),
-      };
+  const formattedCartItems = cartItems.map((item) => ({
+    name: item.name,
+    quantity: item.quantity,
+    options: {
+      choices: {
+        temperature: item.temp,
+        size: item.size,
+      },
+    },
+    item_price: item.menu_price,
+  }));
 
-      console.log(orderData);
-      const category = await createOrder(orderData);
+  const fetchCreateOrder = async () => {
+    try {
+      const category = await createOrder(
+        isDineIn,
+        totalMoney,
+        formattedCartItems
+      );
       clearCart();
       navigate("/order-number", {
         state: { orderNumber: category.data.order_number },
@@ -248,10 +247,12 @@ const ShoppingCartPage = () => {
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
                 pressYes={() => {
-                  fetchCreateOrder(true);
+                  setIsDineIn(true);
+                  fetchCreateOrder();
                 }}
                 pressNo={() => {
-                  fetchCreateOrder(false);
+                  setIsDineIn(false);
+                  fetchCreateOrder();
                 }}
               />
             </div>

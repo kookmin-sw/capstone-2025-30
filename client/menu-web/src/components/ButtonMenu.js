@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import CustomStyles from "@/styles/CustomStyles";
+import coffeeImage from "@/assets/images/image-coffee.png";
 
 const ButtonMenu = ({ menu, isNull = false }) => {
   const [isPressed, setIsPressed] = useState(false);
@@ -79,7 +80,7 @@ const ButtonMenu = ({ menu, isNull = false }) => {
         color: isPressed
           ? CustomStyles.primaryWhite
           : CustomStyles.primaryBlack,
-        backgroundImage: `url(${menu.image})`,
+        backgroundImage: `url(${coffeeImage})`, // 추후 이미지 링크로 변경
       }}
     >
       <div
