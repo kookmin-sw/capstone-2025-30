@@ -27,6 +27,8 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	currentTime := time.Now()
+
 	// store_code를 store_id로 변환
 	storeObjectID, err := mstore.ValidateStoreCodeAndGetObjectID(msg.StoreCode)
 	if err != nil {
@@ -56,7 +58,7 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 			StoreId:   storeObjectID,
 			Title:     msg.Title,
 			Number:    int32(msg.Number),
-			CreatedAt: time.Now(),
+			CreatedAt: currentTime,
 			Message:   msg.Message,
 			IsOwner:   true,
 		}
@@ -119,7 +121,7 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 		StoreId:   storeObjectID,
 		Title:     msg.Title,
 		Number:    int32(msg.Number),
-		CreatedAt: time.Now(),
+		CreatedAt: currentTime,
 		Message:   msg.Message,
 		IsOwner:   true,
 	}
