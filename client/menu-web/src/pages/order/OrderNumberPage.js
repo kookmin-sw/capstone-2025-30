@@ -8,8 +8,10 @@ const OrderNumberPage = () => {
   const { state } = useLocation();
 
   const videos = [
-    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
-    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EA%B3%84%EC%82%B0%EB%8C%80%2C%EC%B9%B4%EC%9A%B4%ED%84%B0.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%ED%9C%B4%EB%8C%80%ED%8F%B0%2C%20%ED%95%B8%EB%93%9C%ED%8F%B0.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B3%B4%EC%97%AC%EC%A3%BC%EB%8B%A4.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%80%EC%A7%81%EC%9D%B4%EB%8B%A4.mp4",
   ];
 
   return (
