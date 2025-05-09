@@ -22,13 +22,8 @@ export const getDetailMenu = (category, menu) => {
   );
 };
 
-export const createOrder = (isDineIn, totalPrice, items) => {
-  const body = {
-    dine_in: isDineIn,
-    total_price: totalPrice,
-    items: items,
-  };
-  return api.post("/rest/order/5fjVwE8z", body);
+export const createOrder = (orderData) => {
+  return api.post("/rest/order/5fjVwE8z", orderData);
 };
 
 export const getOrderNumber = (orderNumber) => {
