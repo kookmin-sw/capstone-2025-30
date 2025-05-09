@@ -35,14 +35,23 @@ func GetCategoryList(storeID primitive.ObjectID) ([]string, error) {
 		return nil, err
 	}
 
-	var categories []string
+	dbCategorySet := make(map[string]bool)
 	for _, cat := range results {
 		if c, ok := cat.(string); ok {
-			categories = append(categories, c)
+			dbCategorySet[c] = true
 		}
 	}
 
-	return categories, nil
+	priorityOrder := []string{"커피", "차", "음료", "케이크", "빵", "샐러드"}
+
+	var sortedCategories []string
+	for _, p := range priorityOrder {
+		if dbCategorySet[p] {
+			sortedCategories = append(sortedCategories, p)
+		}
+	}
+
+	return sortedCategories, nil
 }
 
 func GetMMenuList(storeID primitive.ObjectID, category string) ([]dbstructure.MMenu, error) {
