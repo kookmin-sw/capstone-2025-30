@@ -4,7 +4,7 @@ const useWebSocket = () => {
   const ws = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
-  const WS_URL = `${process.env.EXPO_PUBLIC_WS_URL}?store_code=5fjVwE8z&api_key=${process.env.EXPO_PUBLIC_API_KEY}`;
+  const WS_URL = `${process.env.REACT_APP_WS_URL}?store_code=5fjVwE8z&client_type=manager_web&api-key=${process.env.REACT_APP_WS_API_KEY}`;
 
   useEffect(() => {
     connectWebSocket();
@@ -31,9 +31,13 @@ const useWebSocket = () => {
       setMessages((prev) => [...prev, event.data]);
     };
 
-    ws.current.onclose = () => {
-      console.log("websocket 연결 종료");
-      setIsConnected(false);
+    ws.current.onclose = (event) => {
+      if (ws.current.readyState === WebSocket.OPEN) {
+        console.log("실제 연결 살아있음");
+        return;
+      }
+      // console.log("websocket 종료");
+      // setIsConnected(false);
     };
 
     ws.current.onerror = (error) => {

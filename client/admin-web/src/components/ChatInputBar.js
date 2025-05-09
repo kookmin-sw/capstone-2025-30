@@ -49,7 +49,15 @@ const ChatInputBar = ({ placeholder, onClick }) => {
         value={input}
         onChange={(e) => setInput(e.target.value)}
       />
-      <button style={styles.button} onClick={() => onClick?.(input)}>
+      <button
+        style={styles.button}
+        onClick={() => {
+          if (input.trim()) {
+            onClick?.(input);
+            setInput("");
+          }
+        }}
+      >
         <IconChatSend />
       </button>
     </div>

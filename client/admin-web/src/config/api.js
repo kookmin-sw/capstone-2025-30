@@ -9,7 +9,7 @@ export const api = axios.create({
 });
 
 export const getChatRoomList = (storeCode, status) => {
-  return api.get(`/rest/chat-room-list/${storeCode}?`, {
+  return api.get(`/rest/chat-room-list/${storeCode}`, {
     params: {
       chat_room_status: status,
     },
@@ -22,5 +22,11 @@ export const getChatMessages = (storeCode, type, number) => {
       notification_title: type,
       number: number,
     },
+  });
+};
+
+export const modifyStatus = (storeCode, orderNumber) => {
+  return api.put(`/rest/order/${storeCode}/${orderNumber}/status`, {
+    status: "ORDER_DONE",
   });
 };

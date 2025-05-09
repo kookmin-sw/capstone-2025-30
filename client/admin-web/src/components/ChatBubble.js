@@ -2,11 +2,13 @@ import React from "react";
 import CustomStyles from "@/styles/CustomStyles";
 
 const ChatBubble = ({
-  isDone = false,
   isFirst = false,
   isAdmin = false,
+  createdAt,
   text,
   onClick,
+  showTime = true,
+  isStatusCompleted = false,
 }) => {
   const styles = {
     container: {
@@ -31,13 +33,16 @@ const ChatBubble = ({
     },
     button: {
       ...CustomStyles.fontCaption,
-      fontWeight: isDone ? 500 : 700,
-      color: isDone ? CustomStyles.primaryGray : CustomStyles.primaryBlack,
+      fontWeight: isStatusCompleted ? 500 : 700,
+      color: isStatusCompleted
+        ? CustomStyles.pointGray
+        : CustomStyles.primaryBlack,
       width: "100%",
       height: 32,
       border: "none",
       borderRadius: 16,
       marginTop: 10,
+      padding: "0 20px",
     },
     timeContainer: {
       display: "flex",
@@ -50,19 +55,36 @@ const ChatBubble = ({
     },
   };
 
+  const formatTime = (isoString) => {
+    const date = new Date(isoString);
+
+    let hours = date.getHours();
+    const minute = date.getMinutes();
+    const isPM = hours >= 12;
+
+    const formattedHour = (((hours + 11) % 12) + 1).toString().padStart(2, "0");
+    const formattedMinute = minute.toString().padStart(2, "0");
+
+    return `${isPM ? "오후" : "오전"} ${formattedHour}:${formattedMinute}`;
+  };
+
   return (
     <div style={styles.container}>
       <div style={styles.chatBubble}>
         {text}
         {isFirst && (
           <button style={styles.button} onClick={onClick}>
-            제조완료로 상태 변경
+            {isStatusCompleted
+              ? "제조완료로 상태 변경 완료"
+              : "제조완료로 상태 변경"}
           </button>
         )}
       </div>
-      <div style={styles.timeContainer}>
-        <div style={styles.time}>오후 01:12</div>
-      </div>
+      {showTime && (
+        <div style={styles.timeContainer}>
+          <div style={styles.time}>{formatTime(createdAt)}</div>
+        </div>
+      )}
     </div>
   );
 };

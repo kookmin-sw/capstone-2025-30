@@ -1,7 +1,7 @@
 import React from "react";
 import CustomStyles from "@/styles/CustomStyles";
 
-const AnswerOption = ({ textList = [] }) => {
+const AnswerOption = ({ textList = [], onClick = null }) => {
   const styles = {
     container: {
       ...CustomStyles.fontHead16,
@@ -18,7 +18,11 @@ const AnswerOption = ({ textList = [] }) => {
   return (
     <>
       {textList.map((item, index) => (
-        <button key={index} style={styles.container} onClick={null}>
+        <button
+          key={index}
+          style={styles.container}
+          onClick={() => onClick?.(item)}
+        >
           {item}
         </button>
       ))}

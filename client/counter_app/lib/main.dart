@@ -1,10 +1,16 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+import 'services/web_socket_service.dart';
 import 'package:counter_app/screens/answer_screen.dart';
 import 'package:counter_app/screens/question_screen.dart';
-import 'package:flutter/material.dart';
 import 'styles/custom_styles.dart';
 import 'screens/home_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load();
+  await WebSocketService().connect();
   runApp(const MyApp());
 }
 
