@@ -37,9 +37,18 @@ func (s *Server) CreateOrder(ctx context.Context, req *pb.CreateOrderRequest) (r
 	var items []dbstructure.MOrderItem
 	for _, item := range req.Items {
 
+		exists, err := mmenu.IsMenuExists(storeID, item.Name)
+		if err != nil {
+			logrus.Errorf("[gRPC CreateOrder] Failed to search a menu for %s", item.Name)
+			panic(pb.EError_EE_DB_OPERATION_FAILED)
+		}
+		if !exists {
+			logrus.Errorf("[gRPC CreateOrder] Menu not found for %s", item.Name)
+			panic(pb.EError_EE_MENU_NOT_FOUND)
+		}
 		image, err := mmenu.FindMenuImage(storeID, item.Name)
 		if err != nil {
-			logrus.Warnf("Image not found for %s: %v", item.Name, err)
+			logrus.Errorf("[gRPC CreateOrder] Image not found for %s: %v", item.Name, err)
 			image = ""
 		}
 
