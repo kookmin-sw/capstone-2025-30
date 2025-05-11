@@ -110,7 +110,8 @@ class _SignVideoState extends State<SignVideo> {
 
     final double scale =
         widget.aspectRatio == 9 / 16
-            ? 0.6 / (videoAspect * widget.aspectRatio)
+            ? 0.9 /
+                (videoAspect * widget.aspectRatio) // 아바타 영상에 따라 비율 조정해야 함
             : 1.0;
 
     return AspectRatio(

@@ -10,6 +10,7 @@ import '../styles/custom_styles.dart';
 import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'loading_screen.dart';
+import 'quick_answer_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
   const QuestionScreen({super.key});
@@ -200,9 +201,36 @@ class _QuestionScreenState extends State<QuestionScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset('assets/icons/restroom.svg'),
-                    const SizedBox(width: 52),
-                    SvgPicture.asset('assets/icons/wifi.svg'),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QuickAnswerScreen(),
+                          ),
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/icons/restroom.svg',
+                        width: 64,
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (context) => QuickAnswerScreen(isWifi: true),
+                          ),
+                        );
+                      },
+                      child: SvgPicture.asset(
+                        'assets/icons/wifi.svg',
+                        width: 64,
+                      ),
+                    ),
                   ],
                 ),
               ],

@@ -56,8 +56,25 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget>
   @override
   Widget build(BuildContext context) {
     const videos = [
-      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%A1%E1%84%89%E1%85%A6%E1%84%8B%E1%85%AD%2C%E1%84%8B%E1%85%A1%E1%86%AB%E1%84%82%E1%85%A7%E1%86%BC%E1%84%92%E1%85%B5+%E1%84%80%E1%85%A1%E1%84%89%E1%85%B5%E1%86%B8%E1%84%89%E1%85%B5%E1%84%8B%E1%85%A9.mp4",
-      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%95%88%EB%90%98%EB%8B%A4.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%88%98%EC%96%B4.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%80%EC%A7%81%EC%9D%B4%EB%8B%A4.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%ED%95%9C%EA%B8%80.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B3%80%ED%95%98%EB%8B%A4%2C%20%EB%B3%80%ED%99%98.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%8B%A4%ED%8C%A8.mp4",
+
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/또%2C 그리고%2C 다시.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/수어.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/움직이다.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/보여주다.mp4",
+
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%AC%B8%EC%9D%98.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A4%91%EC%A7%80%2C%EB%81%84%EB%8B%A4%2C%EB%A9%88%EC%B6%94%EB%8B%A4%2C%EA%B7%B8%EB%A7%8C%2C%EB%A7%88%EB%A5%B4%EB%8B%A4%2C%EC%A0%95%EC%A7%80.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9B%90%ED%95%98%EB%8B%A4%2C%EB%B0%94%EB%9D%BC%EB%8B%A4.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%99%BC%EC%AA%BD.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9C%84.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B2%84%ED%8A%BC.mp4",
+      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%88%84%EB%A5%B4%EB%8B%A4.mp4)",
     ];
 
     return GestureDetector(
