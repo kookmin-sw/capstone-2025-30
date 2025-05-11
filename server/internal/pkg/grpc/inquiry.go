@@ -112,11 +112,10 @@ loop:
 
 	// 축적한 데이터 ai 로 전송
 	predictResp, err := utils.AiClient.PredictFromFrames(stream.Context(), &pb.FrameSequenceInput{
-		Frames:  sequence,
-		StoreId: storeObjectID.Hex(),
-		Fps:     30,
-		//VideoLength: totalReceived,
-		VideoLength: 740,
+		Frames:      sequence,
+		StoreId:     storeObjectID.Hex(),
+		Fps:         30,
+		VideoLength: totalReceived,
 	})
 	if err != nil {
 		logrus.Error("error calling AI client: ", err)

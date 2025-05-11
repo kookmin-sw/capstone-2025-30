@@ -76,6 +76,7 @@ func CreateMMessageAndNotification(mMessage *dbstructure.MMessage, mNotification
 			return nil, err
 		}
 
+		mMessage.Number = inquiryNum
 		_, err = mongodb.MessageColl.InsertOne(sc, mMessage)
 		if err != nil {
 			return nil, err
