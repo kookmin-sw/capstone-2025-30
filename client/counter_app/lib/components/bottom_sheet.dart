@@ -98,7 +98,7 @@ class _BottomSheetWidgetState extends State<BottomSheetWidget>
                   ),
                 ),
                 const SizedBox(height: 20),
-                SignVideo(srcList: videos),
+                SignVideo(srcList: videos, isOnce: false),
               ],
             ),
           ),

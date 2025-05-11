@@ -5,6 +5,7 @@ import 'package:logger/logger.dart';
 import '../styles/custom_styles.dart';
 
 import '../services/web_socket_service.dart';
+import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/sign_video.dart';
 import 'question_screen.dart';
@@ -29,6 +30,35 @@ class _AnswerScreenState extends State<AnswerScreen> {
     super.initState();
     videos = WebSocketService().getSignUrls();
     logger.i("websocket 수어 영상: $videos");
+  }
+
+  Future<void> _handleYesTap() async {
+    final grpc = GrpcService();
+
+    try {
+      await grpc.connect();
+
+      if (!mounted) return;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const QuestionScreen()),
+        );
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('gRPC 연결 실패')));
+      });
+    } finally {
+      await grpc.shutdown();
+    }
   }
 
   @override
@@ -57,6 +87,15 @@ class _AnswerScreenState extends State<AnswerScreen> {
                 SignVideo(
                   srcList: videos,
                   aspectRatio: widget.isOrder ? (3 / 4) : (9 / 16),
+                  onCompleted: () {
+                    if (!mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const QuestionScreen(),
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(height: 30),
                 if (widget.isOrder)
@@ -67,12 +106,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
                         onTapDown: (_) => setState(() => _isPressedYes = true),
                         onTapUp: (_) {
                           setState(() => _isPressedYes = false);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const QuestionScreen(),
-                            ),
-                          );
+                          _handleYesTap();
                         },
                         onTapCancel:
                             () => setState(() => _isPressedYes = false),

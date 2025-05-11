@@ -7,13 +7,15 @@ class SignVideo extends StatefulWidget {
   final bool isOnce;
   final VoidCallback? onVideoEnd;
   final double aspectRatio;
+  final VoidCallback? onCompleted;
 
   const SignVideo({
     super.key,
     required this.srcList,
-    this.isOnce = false,
+    this.isOnce = true,
     this.onVideoEnd,
     this.aspectRatio = 1.0,
+    this.onCompleted,
   });
 
   @override
@@ -24,6 +26,7 @@ class _SignVideoState extends State<SignVideo> {
   late VideoPlayerController _controller;
   int _currentIndex = 0;
   bool _isEnded = false;
+  bool _hasCompleted = false;
 
   @override
   void initState() {
@@ -32,22 +35,30 @@ class _SignVideoState extends State<SignVideo> {
   }
 
   void _initializeAndPlay(int index) {
-    _controller =
-        VideoPlayerController.networkUrl(Uri.parse(widget.srcList[index]))
-          ..initialize().then((_) {
-            setState(() {});
-            _controller.play();
-          })
-          ..setLooping(false)
-          ..addListener(() {
-            if (_controller.value.position == _controller.value.duration &&
-                !_controller.value.isPlaying) {
-              _onVideoEnded();
-            }
-          });
+    _controller = VideoPlayerController.networkUrl(
+        Uri.parse(widget.srcList[index]),
+      )
+      ..initialize().then((_) {
+        if (!mounted) return;
+        setState(() {});
+        _controller.play();
+      });
+
+    _controller.setLooping(false);
+
+    _controller.addListener(() {
+      final position = _controller.value.position;
+      final duration = _controller.value.duration;
+
+      if (position >= duration * 0.99 && !_controller.value.isPlaying) {
+        _onVideoEnded();
+      }
+    });
   }
 
   void _onVideoEnded() {
+    if (_isEnded) return; // _onVideoEnded() 중복 호출 방지용
+
     if (_currentIndex < widget.srcList.length - 1) {
       setState(() {
         _currentIndex++;
@@ -58,8 +69,14 @@ class _SignVideoState extends State<SignVideo> {
       setState(() {
         _isEnded = true;
       });
-      if (widget.isOnce && widget.onVideoEnd != null) {
+
+      if (widget.onVideoEnd != null) {
         widget.onVideoEnd!();
+      }
+
+      if (!_hasCompleted && widget.onCompleted != null) {
+        _hasCompleted = true;
+        widget.onCompleted!();
       }
     }
   }
@@ -67,6 +84,7 @@ class _SignVideoState extends State<SignVideo> {
   void _handleReplay() {
     setState(() {
       _isEnded = false;
+      _hasCompleted = false;
       _currentIndex = 0;
       _controller.dispose();
       _initializeAndPlay(_currentIndex);

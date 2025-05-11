@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../styles/custom_styles.dart';
 
+import 'package:counter_app/services/web_socket_service.dart';
+import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/sign_video.dart';
-import 'question_screen.dart';
 import 'answer_screen.dart';
-import 'loading_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +16,52 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 웹소켓에서 추가 문의 메시지 오면 자동으로 화면 이동하도록
+    WebSocketService().onInquiryRequestReceived = () {
+      if (!mounted) return;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const AnswerScreen(isOrder: true),
+        ),
+      );
+    };
+  }
+
+  Future<void> _handleTap() async {
+    final grpc = GrpcService();
+
+    try {
+      await grpc.connect();
+
+      if (!mounted) return;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() => _isPressed = false);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const AnswerScreen()),
+        );
+      });
+    } catch (e) {
+      if (!mounted) return;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('gRPC 연결 실패')));
+      });
+    } finally {
+      await grpc.shutdown();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,20 +85,13 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 30),
             child: Column(
               children: [
-                SignVideo(srcList: videos),
+                SignVideo(srcList: videos, isOnce: false),
                 const SizedBox(height: 30),
                 GestureDetector(
                   onTapDown: (_) => setState(() => _isPressed = true),
                   onTapUp: (_) {
                     setState(() => _isPressed = false);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const QuestionScreen(),
-                        // builder: (context) => const AnswerScreen(isOrder: true),
-                        // builder: (context) => const LoadingScreen(),
-                      ),
-                    );
+                    _handleTap();
                   },
                   onTapCancel: () => setState(() => _isPressed = false),
                   child: Container(
