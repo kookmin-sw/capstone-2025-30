@@ -1,3 +1,4 @@
+import 'package:counter_app/screens/question_screen.dart';
 import 'package:flutter/material.dart';
 import '../styles/custom_styles.dart';
 
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() => _isPressed = false);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const AnswerScreen()),
+          MaterialPageRoute(builder: (context) => const QuestionScreen()),
         );
       });
     } catch (e) {
