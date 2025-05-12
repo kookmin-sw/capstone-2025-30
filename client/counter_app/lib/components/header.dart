@@ -7,6 +7,7 @@ class Header extends StatelessWidget {
   final bool showSendButton;
   final VoidCallback? onSend;
   final String? goTo;
+  final bool hideBackButton;
 
   const Header({
     super.key,
@@ -14,6 +15,7 @@ class Header extends StatelessWidget {
     this.showSendButton = false,
     this.onSend,
     this.goTo,
+    this.hideBackButton = false,
   });
 
   void _goBack(BuildContext context) {
@@ -34,10 +36,12 @@ class Header extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(
-                onPressed: () => _goBack(context),
-                icon: SvgPicture.asset('assets/icons/back.svg'),
-              ),
+              hideBackButton
+                  ? const SizedBox(width: 48)
+                  : IconButton(
+                    onPressed: () => _goBack(context),
+                    icon: SvgPicture.asset('assets/icons/back.svg'),
+                  ),
               showSendButton
                   ? TextButton(
                     onPressed: onSend,

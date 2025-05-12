@@ -6,6 +6,7 @@ import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
 
 import { getChatRoomList, getChatMessages } from "../config/api.js";
+import useWebSocket from "../context/WebSocketConnection";
 import InputBar from "@/components/InputBar";
 import OrderList from "@/components/OrderList";
 
@@ -16,6 +17,13 @@ const OrderListPage = () => {
   const { state } = useLocation();
   const [activeTab, setActiveTab] = useState(0);
   const [chatRoomInfo, setChatRoomInfo] = useState([]);
+  const { isConnected } = useWebSocket();
+
+  useEffect(() => {
+    if (isConnected) {
+      console.log("연결 상태:", isConnected);
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     const fetchGetChatRoomList = async () => {

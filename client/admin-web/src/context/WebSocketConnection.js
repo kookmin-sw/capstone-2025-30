@@ -17,33 +17,33 @@ const useWebSocket = () => {
   }, []);
 
   const connectWebSocket = () => {
-    if (ws.current && ws.current.readyState === WebSocket.OPEN) return;
+    console.log("websocket 연결 시도 URL:", WS_URL);
 
-    ws.current = new WebSocket(WS_URL);
+    try {
+      ws.current = new WebSocket(WS_URL);
 
-    ws.current.onopen = () => {
-      console.log("websocket 연결");
-      setIsConnected(true);
-    };
+      ws.current.onopen = () => {
+        console.log("websocket 연결됨");
+        setIsConnected(true);
+      };
 
-    ws.current.onmessage = (event) => {
-      // console.log(event.data);
-      setMessages((prev) => [...prev, event.data]);
-    };
+      ws.current.onmessage = (event) => {
+        console.log("메시지 수신:", event.data);
+        setMessages((prev) => [...prev, event.data]);
+      };
 
-    ws.current.onclose = (event) => {
-      if (ws.current.readyState === WebSocket.OPEN) {
-        console.log("실제 연결 살아있음");
-        return;
-      }
-      // console.log("websocket 종료");
-      // setIsConnected(false);
-    };
+      ws.current.onerror = (error) => {
+        console.error("websocket 오류:", error);
+        setIsConnected(false);
+      };
 
-    ws.current.onerror = (error) => {
-      console.error("websocket 오류:", error);
-      setIsConnected(false);
-    };
+      ws.current.onclose = (event) => {
+        console.warn("websocket 닫힘:", event);
+        setIsConnected(false);
+      };
+    } catch (err) {
+      console.error("websocket 예외 발생:", err);
+    }
   };
 
   const disconnectWebSocket = () => {

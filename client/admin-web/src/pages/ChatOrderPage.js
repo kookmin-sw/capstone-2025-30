@@ -49,7 +49,6 @@ const ChatOrderPage = () => {
   };
 
   useEffect(() => {
-    console.log(messages);
     if (messages.length > 0) {
       const latest = messages[messages.length - 1];
       try {

@@ -13,6 +13,8 @@ class WebSocketService {
   final List<String> signUrls = [];
   final Logger logger = Logger();
 
+  void Function()? onInquiryRequestReceived;
+
   final String wsUrl =
       '${dotenv.env['WS_URL']}?store_code=5fjVwE8z&client_type=counter_app&api-key=${dotenv.env['WS_API_KEY']}';
 
@@ -61,9 +63,22 @@ class WebSocketService {
       final String type = json['type'];
 
       if (type == 'signMessage') {
-        final List<dynamic> urls = json['data']['sign_urls'];
+        final data = json['data'];
+
+        final String? title = data['title'];
+        if (title != 'inquiryRequest') {
+          onInquiryRequestReceived!();
+          return;
+        }
+
+        final List<dynamic> urls = data['sign_urls'];
         signUrls.clear();
         signUrls.addAll(urls.cast<String>());
+
+        logger.i('signMessage 수신 (inquiryRequest):');
+        for (var url in signUrls) {
+          logger.i(url);
+        }
 
         logger.i('signmessage 수신:');
         for (var url in signUrls) {
