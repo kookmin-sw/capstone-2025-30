@@ -6,7 +6,7 @@ import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
 
 import { getChatRoomList, getChatMessages } from "../config/api.js";
-import useWebSocket from "../context/WebSocketConnection";
+import { useWebSocket } from "../context/WebSocketProvider";
 import InputBar from "@/components/InputBar";
 import OrderList from "@/components/OrderList";
 

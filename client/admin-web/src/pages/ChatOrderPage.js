@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import ChatOrderStyles from "@/pages/ChatOrderStyles";
 
 import { getChatMessages, modifyStatus } from "../config/api.js";
-import useWebSocket from "../context/WebSocketConnection";
+import { useWebSocket } from "../context/WebSocketProvider";
 import ChatHeader from "@/components/ChatHeader";
 import ChatBubble from "@/components/ChatBubble";
 import AnswerOption from "@/components/AnswerOption";
@@ -53,6 +53,10 @@ const ChatOrderPage = () => {
       const latest = messages[messages.length - 1];
       try {
         const parsed = JSON.parse(latest);
+
+        if (parsed.status === "success") {
+          return;
+        }
 
         setChatList((prev) => [
           ...prev,
