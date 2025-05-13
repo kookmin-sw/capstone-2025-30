@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import ChatOrderStyles from "@/pages/ChatOrderStyles";
@@ -11,6 +11,8 @@ import AnswerOption from "@/components/AnswerOption";
 import ChatInputBar from "@/components/ChatInputBar";
 
 const ChatOrderPage = () => {
+  const messagesEndRef = useRef(null);
+
   const { state } = useLocation();
   const { sendMessage, messages } = useWebSocket();
 
@@ -97,6 +99,13 @@ const ChatOrderPage = () => {
     ]);
   };
 
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    scrollToBottom();
+  }, [chatList]);
+
   return (
     <div style={ChatOrderStyles.container}>
       <div style={{ position: "fixed", width: "100%" }}>
@@ -135,6 +144,7 @@ const ChatOrderPage = () => {
             />
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
 
       <div style={ChatOrderStyles.bottomContainer}>
