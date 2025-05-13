@@ -58,14 +58,17 @@ const ChatOrderPage = () => {
           return;
         }
 
-        setChatList((prev) => [
-          ...prev,
-          {
-            message: parsed.message,
-            is_owner: false,
-            created_at: new Date().toISOString(),
-          },
-        ]);
+        if (parsed.data) {
+          setChatList((prev) => [
+            ...prev,
+            {
+              type: parsed.type,
+              message: parsed.data.message,
+              is_owner: false,
+              created_at: parsed.data.created_at,
+            },
+          ]);
+        }
       } catch (err) {
         console.error("메시지 파싱 실패:", err);
       }
@@ -108,10 +111,6 @@ const ChatOrderPage = () => {
 
       <div style={ChatOrderStyles.chatBubble}>
         {chatList.map((item, index, arr) => {
-          const isFirst =
-            !item.is_owner &&
-            (index === 0 || arr[index - 1].is_owner !== item.is_owner);
-
           const currentTime = new Date(item.created_at);
           const currentKey = `${
             item.is_owner
@@ -123,11 +122,10 @@ const ChatOrderPage = () => {
               ).getHours()}:${new Date(nextItem.created_at).getMinutes()}`
             : null;
           const showTime = currentKey !== nextKey;
-
           return (
             <ChatBubble
               key={index}
-              isFirst={isFirst}
+              isFirst={index === 0 && arr[0].type !== "signMessage"}
               isAdmin={item.is_owner}
               text={item.message}
               createdAt={item.created_at}

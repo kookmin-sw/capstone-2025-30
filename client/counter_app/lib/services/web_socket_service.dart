@@ -13,14 +13,14 @@ class WebSocketService {
   final List<String> signUrls = [];
   final Logger logger = Logger();
 
-  void Function()? onInquiryRequestReceived;
+  void Function(int number)? onInquiryRequestReceived;
 
   final String wsUrl =
       '${dotenv.env['WS_URL']}?store_code=5fjVwE8z&client_type=counter_app&api-key=${dotenv.env['WS_API_KEY']}';
 
   Future<void> connect() async {
     if (_ws != null && _ws!.readyState == WebSocket.open) {
-      logger.i('이미 연결됨');
+      logger.i('websocket 이미 연결됨');
       return;
     }
 
@@ -60,35 +60,37 @@ class WebSocketService {
   void _handleMessage(String rawData) {
     try {
       final Map<String, dynamic> json = jsonDecode(rawData);
-      final String type = json['type'];
+      final String? type = json['type'] ?? json['title'];
+      final dynamic data = json['data'] ?? json;
+
+      logger.i('websocket 수신 메시지: $type');
+
+      final int? number = data['num'] ?? data['number'];
 
       if (type == 'signMessage') {
-        final data = json['data'];
+        final urlsRaw = data['sign_urls'];
+        final title = data['title'];
 
-        final String? title = data['title'];
-        if (title != 'inquiryRequest') {
-          onInquiryRequestReceived!();
-          return;
+        if (urlsRaw is List && urlsRaw.isNotEmpty) {
+          signUrls
+            ..clear()
+            ..addAll(urlsRaw.cast<String>());
+          logger.i('수어 영상 URL 로딩 완료:\n${signUrls.join('\n')}');
         }
 
-        final List<dynamic> urls = data['sign_urls'];
-        signUrls.clear();
-        signUrls.addAll(urls.cast<String>());
-
-        logger.i('signMessage 수신 (inquiryRequest):');
-        for (var url in signUrls) {
-          logger.i(url);
+        if ((urlsRaw == null || urlsRaw.isEmpty) &&
+            title == 'order' &&
+            number != null) {
+          onInquiryRequestReceived?.call(number);
         }
-
-        logger.i('signmessage 수신:');
-        for (var url in signUrls) {
-          logger.i(url);
-        }
+      } else if (type == 'orderMessage' && number != null) {
+        logger.i('orderMessage 수신');
+        onInquiryRequestReceived?.call(number);
       } else {
-        logger.w('signMessage가 아님: $type');
+        logger.w('처리되지 않은 메시지 타입: $type');
       }
-    } catch (e) {
-      logger.e('메시지 파싱 실패: $e');
+    } catch (e, st) {
+      logger.e('메시지 파싱 실패: $e\n$st');
     }
   }
 

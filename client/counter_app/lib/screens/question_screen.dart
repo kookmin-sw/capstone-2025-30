@@ -4,6 +4,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imglib;
 import 'dart:typed_data';
+// 테스트용 (path_provider.dart, dart.io)
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 
 import '../styles/custom_styles.dart';
 
@@ -13,7 +16,10 @@ import 'loading_screen.dart';
 import 'quick_answer_screen.dart';
 
 class QuestionScreen extends StatefulWidget {
-  const QuestionScreen({super.key});
+  final bool isOrder;
+  final int number;
+
+  const QuestionScreen({super.key, this.isOrder = false, this.number = 0});
 
   @override
   State<QuestionScreen> createState() => _QuestionScreenState();
@@ -34,9 +40,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
-    if (cameras!.isNotEmpty) {
+
+    final frontCamera = cameras?.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse: () => cameras!.first,
+    );
+
+    if (frontCamera != null) {
       _cameraController = CameraController(
-        cameras![0],
+        frontCamera,
         ResolutionPreset.medium,
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
@@ -45,6 +57,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
       _cameraController!.startImageStream(_processCameraImage);
     }
+  }
+
+  // 테스트용 (saveFrameAsImage 함수)
+  Future<void> saveFrameAsImage(List<int> jpegBytes, int index) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final filePath = '${directory.path}/frame_$index.jpg';
+    final file = File(filePath);
+
+    await file.writeAsBytes(jpegBytes);
+    logger.i('Saved frame to $filePath');
   }
 
   Future<List<int>?> _convertYUV420ToJPEG(CameraImage image) async {
@@ -108,9 +130,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
         format: imglib.Format.uint8,
       );
 
-      return imglib.encodeJpg(rgbImage);
+      final rotatedImage = imglib.copyRotate(
+        rgbImage,
+        angle: 270,
+      ); // 이미지 세로로 저장하기 위함
+
+      return imglib.encodeJpg(rotatedImage);
     } catch (e) {
-      logger.e("YUV420 to JPEG 변환 실패: $e");
+      logger.e('YUV420 to JPEG 변환 실패: $e');
       return null;
     }
   }
@@ -123,6 +150,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
     final bytes = await _convertYUV420ToJPEG(image);
     if (bytes != null) {
       _frameBuffer.add(bytes);
+      // 테스트용 (바로 아래 if문)
+      if (_frameBuffer.length == 1) {
+        await saveFrameAsImage(bytes, 0);
+      }
     }
 
     if (_frameBuffer.length > 100) {
@@ -146,97 +177,120 @@ class _QuestionScreenState extends State<QuestionScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Column(
-        children: [
-          Header(
-            centerIcon: Text(
-              "💬",
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-            ),
-            showSendButton: true,
-            onSend: () async {
-              bool hasError = false;
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Header(
+              centerIcon: Text(
+                '💬',
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
+              showSendButton: true,
+              onSend: () async {
+                bool hasError = false;
 
-              final grpcService = GrpcService();
-              try {
-                await grpcService.sendFrames(
-                  _frameBuffer,
-                  inquiryType: '주문 문의사항',
-                  num: 1,
-                );
-              } catch (e) {
-                logger.e("gRPC 전송 중 오류: $e");
-                hasError = true;
-              }
+                final grpcService = GrpcService();
+                try {
+                  await grpcService.connect();
 
-              if (!mounted) return;
+                  logger.i('전송할 프레임 수: ${_frameBuffer.length}'); // 테스트용 (로그)
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => LoadingScreen(error: hasError),
-                ),
-              );
-            },
-          ),
+                  await grpcService.sendFrames(
+                    _frameBuffer,
+                    inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+                    num: widget.number,
+                  );
+                } catch (e) {
+                  logger.e('gRPC 전송 중 오류: $e');
+                  hasError = true;
+                }
 
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    height: screenWidth * 0.67 * (500 / 290),
-                    color: CustomStyles.primaryGray,
-                    child:
-                        _cameraController != null &&
-                                _cameraController!.value.isInitialized
-                            ? CameraPreview(_cameraController!)
-                            : const Center(child: CircularProgressIndicator()),
+                if (!mounted) return;
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => LoadingScreen(error: hasError),
                   ),
-                ),
-                const SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => QuickAnswerScreen(),
-                          ),
-                        );
-                      },
-                      child: SvgPicture.asset(
-                        'assets/icons/restroom.svg',
-                        width: 64,
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (context) => QuickAnswerScreen(isWifi: true),
-                          ),
-                        );
-                      },
-                      child: SvgPicture.asset(
-                        'assets/icons/wifi.svg',
-                        width: 64,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                );
+              },
             ),
-          ),
-        ],
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Container(
+                      height:
+                          widget.isOrder
+                              ? screenWidth * 0.85 * (500 / 290)
+                              : screenWidth * 0.67 * (500 / 290),
+                      color: CustomStyles.primaryGray,
+                      child:
+                          _cameraController != null &&
+                                  _cameraController!.value.isInitialized
+                              ? CameraPreview(_cameraController!)
+                              : const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  // 테스트용 (바로 아래 패딩 블록)
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Image.file(
+                      File(
+                        '/data/user/0/com.example.counter_app/app_flutter/frame_0.jpg',
+                      ),
+                      height: 200,
+                    ),
+                  ),
+                  if (!widget.isOrder)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QuickAnswerScreen(),
+                              ),
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            'assets/icons/restroom.svg',
+                            width: 64,
+                          ),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (context) =>
+                                        QuickAnswerScreen(isWifi: true),
+                              ),
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            'assets/icons/wifi.svg',
+                            width: 64,
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

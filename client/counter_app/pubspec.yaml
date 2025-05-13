@@ -42,6 +42,7 @@ dependencies:
   grpc: ^4.0.4
   protobuf: ^4.0.0
   image: ^4.1.3
+  path_provider: ^2.1.5 # 테스트용 (카메라 프레임 이미지 저장 관련)
 
 dev_dependencies:
   flutter_test:
