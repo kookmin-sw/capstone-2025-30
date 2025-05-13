@@ -20,6 +20,7 @@ namespace Mediapipe.Unity.Sample.Holistic
     [SerializeField] private NormalizedRectAnnotationController _poseRoiAnnotationController;
     [SerializeField] private PoseToAvatarController _poseToAvatarController;
 
+
     private Experimental.TextureFramePool _textureFramePool;
 
     public HolisticTrackingGraph.ModelComplexity modelComplexity
@@ -109,6 +110,7 @@ namespace Mediapipe.Unity.Sample.Holistic
         graphRunner.OnPoseWorldLandmarksOutput += OnPoseWorldLandmarksOutput;
         graphRunner.OnSegmentationMaskOutput += OnSegmentationMaskOutput;
         graphRunner.OnPoseRoiOutput += OnPoseRoiOutput;
+        
       }
 
       SetupAnnotationController(_poseDetectionAnnotationController, imageSource);
@@ -201,6 +203,7 @@ namespace Mediapipe.Unity.Sample.Holistic
       var value = packet == null ? default : packet.Get(NormalizedLandmarkList.Parser);
       _holisticAnnotationController.DrawPoseLandmarkListLater(value);
       _poseToAvatarController.ApplyPoseToAvatar(value);
+      
 
     }
 

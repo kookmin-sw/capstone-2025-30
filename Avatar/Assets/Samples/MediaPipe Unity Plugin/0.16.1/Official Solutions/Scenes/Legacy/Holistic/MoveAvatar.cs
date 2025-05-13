@@ -12,8 +12,8 @@ public class MoveAvatar : MonoBehaviour
     private List<AvatarData> handsJointData;
     private Dictionary<string, AvatarData> torsoJointData;
     
-    const float LimbsAmount = 0.65f;
-    const float Speed = 5f;
+    const float LimbsAmount = 0.55f;
+    const float Speed = 8f;
 
     public void SetRequiredData(List<AvatarData> limbsJointData, List<AvatarData> handsJointData, Dictionary<string, AvatarData> torsoJointData)
     {
@@ -33,55 +33,71 @@ public class MoveAvatar : MonoBehaviour
     //팔다리 관절 움직이는 함수
     public void MoveLimbs()
     {
+        
         // MoveLimbs() 함수 내에서
-        // foreach (var i in limbsJointData) {
-        //     // 기존 코드
-        //     // Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount));
-        //
-        //     // 정밀도 개선을 위한 미세 조정
-             // Vector3 targetDir = Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount);
-             // Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, targetDir);
-        //
-        //     // 과도한 회전 제한 (선택적)
-        // float angle;
-        // Vector3 axis;
-        // changeRot.ToAngleAxis(out angle, out axis);
-        // if (angle > 120f) {
-        //     angle = 120f;
-        //     changeRot = Quaternion.AngleAxis(angle, axis);
-        // }
-        //
-        // i.parent.rotation = changeRot * i.initialRotation;
-        // }
         foreach (var i in limbsJointData)
         {
-            // Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount));
-            // i.parent.rotation = changeRot * i.initialRotation;
-            Vector3 targetDir = Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount);
-            Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, targetDir);
-            // Quaternion changeRot = Quaternion.Euler(i.initialDir, targetDir);
             
-            // float angle;
-            // Vector3 axis;
-            // changeRot.ToAngleAxis(out angle, out axis);
-            // if (angle > 150f) {
-            //     angle = 150f;
-            //     changeRot = Quaternion.AngleAxis(angle, axis);
-            // }
-        
-            i.parent.rotation = changeRot * i.initialRotation;
+            Vector3 targetDir = Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount);
+            Quaternion fromRotation = Quaternion.LookRotation(i.initialDir);
+            Quaternion toRotation = Quaternion.LookRotation(targetDir);
+            Quaternion deltaRotation = toRotation * Quaternion.Inverse(fromRotation);
+
+            if (i.allowedAxis != Vector3.zero)
+            {
+                // deltaRotation을 오일러 각도로 변환
+                Vector3 euler = deltaRotation.eulerAngles;
+
+                // 허용 축만 남기고 0으로 세팅
+                Vector3 filteredEuler = new Vector3(
+                    i.allowedAxis.x != 0 ? euler.x : 0,
+                    i.allowedAxis.y != 0 ? euler.y : 0,
+                    i.allowedAxis.z != 0 ? euler.z : 0
+                );
+
+                deltaRotation = Quaternion.Euler(filteredEuler);
+            }
+
+            // 4. 초기 회전값과 합성해서 적용 (회전 누적 방지)
+            i.parent.rotation = deltaRotation * i.initialRotation;
+            // 🔍 Debug 로그로 문제 회전 탐지
+            if (Quaternion.Dot(i.parent.rotation, Quaternion.identity) < 0.1f || float.IsNaN(i.parent.rotation.x))
+            {
+                Debug.LogWarning($"[회전 문제] {i.parent.name} 회전값 이상: {i.parent.rotation.eulerAngles}");
+            }
         }
+        
     }
+    
     public void MoveHand()
     {
+        // foreach (var i in handsJointData)
+        // {
+        //     
+        //     Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, 2.1f));
+        //     i.parent.rotation = changeRot * i.initialRotation;
+        // }
+        
         foreach (var i in handsJointData)
         {
-            
-            Quaternion changeRot = Quaternion.FromToRotation(i.initialDir, Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount));
-            
-            i.parent.rotation = changeRot * i.initialRotation;
-            // i.parent.localRotation = Quaternion.identity;
+            // 방법 2: LookRotation을 사용한 보다 안정적인 회전 계산
+            Vector3 targetDir = Vector3.Slerp(i.initialDir, i.CurrentDirection, LimbsAmount);
+        
+            // 초기 방향 기준으로 최종 회전 계산 (더 안정적인 방식)
+            Quaternion fromRotation = Quaternion.LookRotation(i.initialDir);
+            Quaternion toRotation = Quaternion.LookRotation(targetDir);
+            Quaternion targetRotation = toRotation * Quaternion.Inverse(fromRotation) * i.initialRotation;
+        
+            // 직접 적용 (회전 누적 방지)
+            i.parent.rotation = targetRotation;
+        
+            // 디버깅 코드
+            if (Quaternion.Dot(i.parent.rotation, Quaternion.identity) < 0.1f || float.IsNaN(i.parent.rotation.x))
+            {
+                Debug.LogWarning($"[회전 문제] {i.parent.name} 회전값 이상: {i.parent.rotation.eulerAngles}");
+            }
         }
+        
     }
 
     //일정 비율만큼 몸통에 있는 관절 회전시키는 함수
@@ -97,11 +113,12 @@ public class MoveAvatar : MonoBehaviour
     //몸통 움직이는 함수
     public void MoveTorso()
     {
-        RotateTorso(torsoJointData["rightHip"], 0.5f);
-        RotateTorso(torsoJointData["leftHip"], 0.5f);
+        // RotateTorso(torsoJointData["rightHip"], 0.5f);
+        // RotateTorso(torsoJointData["leftHip"], 0.5f);
         RotateTorso(torsoJointData["neckTwist"], 0.5f);
-        RotateTorso(torsoJointData["rightShoulder"], 0.3f);
-        RotateTorso(torsoJointData["leftShoulder"], 0.3f);
+        RotateTorso(torsoJointData["rightShoulder"], 0.5f);
+        RotateTorso(torsoJointData["leftShoulder"], 0.5f);
     }
+
 
 }

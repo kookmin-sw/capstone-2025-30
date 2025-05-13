@@ -63,5 +63,12 @@ MonoBehaviour:
     height: 720
     frameRate: 0
   _availableVideoSources:
-  - {fileID: 32900000, guid: 3a48e8904ad8e4297bc24f4f8c5381f6, type: 3}
+  - {fileID: 32900000, guid: f076b8b4aca13418c902a2f42ac1ad09, type: 3}
   - {fileID: 32900000, guid: 0d8107b8564234e7f9340c82858dfcc4, type: 3}
+  - {fileID: 32900000, guid: 9e49f58874cc6472380c2cb0c14a9c08, type: 3}
+  - {fileID: 32900000, guid: a9410c08323ef49f19218db73518ccdf, type: 3}
+  - {fileID: 32900000, guid: 2cdba8d933156444b9fded166061a04c, type: 3}
+  - {fileID: 32900000, guid: 3a48e8904ad8e4297bc24f4f8c5381f6, type: 3}
+  - {fileID: 32900000, guid: a7912f0072f4b4244ab49434306b093c, type: 3}
+  - {fileID: 32900000, guid: 7879b3283ed0a4820bea0a3845493fcf, type: 3}
+  - {fileID: 32900000, guid: 7cbba58499c0b4ac493b2a48cff353dd, type: 3}

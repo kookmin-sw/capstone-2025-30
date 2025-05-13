@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 2cea17fb1a249944b8f64f0a431b340d
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 304841
+  packageName: Creative Characters FREE - Animated Low Poly 3D Models
+  packageVersion: 2.1
+  assetPath: Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/SlotVariant.cs
+  uploadId: 727966

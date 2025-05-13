@@ -21,19 +21,20 @@ public class StoreJointData : MonoBehaviour
     private Vector3 virtualUpperChest;
     private Vector3 virtualHead;
     private Vector3 virtualMouth;
-
+    private Vector3 virtualLeftShoulder;
+    private Vector3 virtualRightShoulder;
+    
     private Vector3 virtualLeftThumb;
     private Vector3 virtualLeftIndex;
     private Vector3 virtualLeftMiddle;
     private Vector3 virtualLeftRing;
     private Vector3 virtualLeftPinky;
-
+    
     private Vector3 fixedHipsPosition;
+    // StoreJointData.cs에 변수 추가
+    private Quaternion initialHipsRotation;
 
-    private void Start()
-    {
-        fixedHipsPosition = anim.GetBoneTransform(HumanBodyBones.Hips).position;
-    }
+    
 
 
     private void Awake()
@@ -41,18 +42,24 @@ public class StoreJointData : MonoBehaviour
         limbsJointData = new List<AvatarData>();
         handsJointData = new List<AvatarData>();
         torsoJointData = new Dictionary<string, AvatarData>();
-        trackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
-        lhtrackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
-        rhtrackJoint = new Vector3[13]; // 배열 크기 명시적 초기화
+        trackJoint = new Vector3[33]; // 배열 크기 명시적 초기화
+        lhtrackJoint = new Vector3[22]; // 배열 크기 명시적 초기화
+        rhtrackJoint = new Vector3[22]; // 배열 크기 명시적 초기화
         facetrackJoint = new Vector3[468];
     }
     public void InitializeAnimator(Animator animator)
     {
         anim = animator;
+        fixedHipsPosition = anim.GetBoneTransform(HumanBodyBones.Hips).position;
+        // Transform bone = anim.GetBoneTransform(HumanBodyBones.Hips);
+        initialHipsRotation = anim.GetBoneTransform(HumanBodyBones.Hips).rotation;
+        // if (bone != null)
+        //     bone.position = fixedHipsPosition;
     }
     public void ClearAllData()
     {
         limbsJointData.Clear();
+        handsJointData.Clear();
         torsoJointData.Clear();
     }
 
@@ -63,23 +70,48 @@ public class StoreJointData : MonoBehaviour
     
         // 1. 목(virtualNeck) 계산
         virtualNeck = (trackJoint[1] + trackJoint[2]) / 2.0f;
-        virtualNeck.y += 0.05f;
+        // virtualNeck.y += 0.05f;
     
         // 2. 엉덩이(virtualHips) 계산 (기존 코드에 virtualHips 초기화 누락)
         virtualHips = (trackJoint[7] + trackJoint[8]) / 2.0f;
-        virtualHips.y -= 0.05f;
+        // virtualHips.y -= 0.05f;
     
         // 3. 상체(virtualUpperChest) 계산
         virtualUpperChest = (trackJoint[1] + trackJoint[2]) / 2.0f;
-        virtualUpperChest.y -= 0.1f;
+        // virtualUpperChest.y -= 0.1f;
         
         // 4. 입 중앙(virtualMouth) 계산
         virtualMouth = (facetrackJoint[9] + facetrackJoint[8]) / 2.0f;
-        virtualMouth.y += 0.05f;
+        // virtualMouth.y += 0.05f;
         
         // 5. 머리(virtualHead) 계산
         virtualHead = (virtualNeck + virtualMouth) / 2.0f;
-        virtualHead.y += 0.075f;
+        // virtualHead.y += 0.075f;
+        // 모든 trackJoint에 대해 hips 기준 상대좌표로 변환
+        for (int i = 0; i < trackJoint.Length; i++)
+        {
+            trackJoint[i] += fixedHipsPosition;
+        }
+        Transform hipsBone = anim.GetBoneTransform(HumanBodyBones.Hips);
+        hipsBone.position = fixedHipsPosition;
+        hipsBone.rotation = initialHipsRotation;
+        // anim.GetBoneTransform(HumanBodyBones.Hips).position = fixedHipsPosition;
+        
+        // virtualRightShoulder = trackJoint[2];
+        //
+        // virtualLeftShoulder = trackJoint[1];
+        
+        // Unity 상 torso 중심이 되는 spine 위치가 있다고 가정
+        // Vector3 shoulderVector = Vector3.Cross(Vector3.up, trackJoint[2] - trackJoint[1]).normalized;
+        //
+        // // 양쪽으로 일정 거리 띄우기
+        // float shoulderWidth = Vector3.Distance(trackJoint[2], trackJoint[1]);
+        // Vector3 shoulderOffset = shoulderVector * (shoulderWidth * 0.5f);
+        //
+        // Vector3 shoulderCenter = (trackJoint[2] + trackJoint[1]) / 2.0f;
+        // virtualRightShoulder = shoulderCenter + shoulderOffset;
+        // virtualLeftShoulder = shoulderCenter - shoulderOffset;
+        
 
         // 4. 엉덩이 위치 적용 (Null 체크 추가)
         //Transform hipsBone = anim.GetBoneTransform(HumanBodyBones.Hips);
@@ -128,24 +160,43 @@ public class StoreJointData : MonoBehaviour
         torsoJointData.Add(name,
             new AvatarData(anim.GetBoneTransform(parent), anim.GetBoneTransform(child), trackParent, trackChild));
     }
-
+    public void UpdateInitialData()
+    {
+        foreach (var i in limbsJointData)
+        {
+            // i.initialDir = (i.child.position - i.parent.position).normalized;
+            // i.initialRotation = i.parent.rotation;
+            Vector3 dir = i.child.position - i.parent.position;
+            if (dir.magnitude > 0.001f)
+            {
+                i.initialDir = dir.normalized;
+            }
+            else
+            {
+                i.initialDir = Vector3.zero; // 기본값 대입
+            }
+            i.initialRotation = i.parent.rotation;
+        }
+    }
     public void Store()
     {
         // 가상 관절 데이터 만들어서 저장 -> 트래킹하지 않는 관절이 있음
         MakeVirtualData();
 
         //팔다리 관절 데이터 저장
+        // AddLimbsJointData(HumanBodyBones.RightShoulder, HumanBodyBones.RightUpperArm, virtualRightShoulder,trackJoint[2]);
         AddLimbsJointData(HumanBodyBones.RightUpperArm, HumanBodyBones.RightLowerArm, trackJoint[2], trackJoint[4]);
         AddLimbsJointData(HumanBodyBones.RightLowerArm, HumanBodyBones.RightHand, trackJoint[4], trackJoint[6]);
-
+        
+        // AddLimbsJointData(HumanBodyBones.LeftShoulder, HumanBodyBones.LeftUpperArm, virtualLeftShoulder,trackJoint[1]);
         AddLimbsJointData(HumanBodyBones.LeftUpperArm, HumanBodyBones.LeftLowerArm, trackJoint[1], trackJoint[3]);
         AddLimbsJointData(HumanBodyBones.LeftLowerArm, HumanBodyBones.LeftHand, trackJoint[3], trackJoint[5]);
 
-        AddLimbsJointData(HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg, trackJoint[8], trackJoint[10]);
-        AddLimbsJointData(HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot, trackJoint[10], trackJoint[12]);
-
-        AddLimbsJointData(HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg, trackJoint[7], trackJoint[9]);
-        AddLimbsJointData(HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot, trackJoint[9], trackJoint[11]);
+        // AddLimbsJointData(HumanBodyBones.RightUpperLeg, HumanBodyBones.RightLowerLeg, trackJoint[8], trackJoint[10]);
+        // AddLimbsJointData(HumanBodyBones.RightLowerLeg, HumanBodyBones.RightFoot, trackJoint[10], trackJoint[12]);
+        //
+        // AddLimbsJointData(HumanBodyBones.LeftUpperLeg, HumanBodyBones.LeftLowerLeg, trackJoint[7], trackJoint[9]);
+        // AddLimbsJointData(HumanBodyBones.LeftLowerLeg, HumanBodyBones.LeftFoot, trackJoint[9], trackJoint[11]);
         
         // LeftHand
         // AddLimbsJointData(HumanBodyBones.LeftHand, virtualLeftThumb, lhtrackJoint[0], lhtrackJoint[2]);
@@ -170,26 +221,39 @@ public class StoreJointData : MonoBehaviour
         AddHandsJointData(HumanBodyBones.LeftLittleIntermediate, HumanBodyBones.LeftLittleDistal, lhtrackJoint[18], lhtrackJoint[19]);
         
         // RightHand
-        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightThumbProximal, trackJoint[6], rhtrackJoint[1]);
-        AddHandsJointData(HumanBodyBones.RightThumbProximal, HumanBodyBones.RightThumbIntermediate, rhtrackJoint[1], rhtrackJoint[2]);
-        AddHandsJointData(HumanBodyBones.RightThumbIntermediate, HumanBodyBones.RightThumbDistal, rhtrackJoint[2], rhtrackJoint[3]);
+        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightThumbProximal, trackJoint[6], rhtrackJoint[2]);
+        AddHandsJointData(HumanBodyBones.RightThumbProximal, HumanBodyBones.RightThumbIntermediate, rhtrackJoint[2], rhtrackJoint[3]);
+        AddHandsJointData(HumanBodyBones.RightThumbIntermediate, HumanBodyBones.RightThumbDistal, rhtrackJoint[3], rhtrackJoint[4]);
         
-        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightIndexProximal, rhtrackJoint[0], rhtrackJoint[5]);
-        AddHandsJointData(HumanBodyBones.RightIndexProximal, HumanBodyBones.RightIndexIntermediate, rhtrackJoint[5], rhtrackJoint[6]);
-        AddHandsJointData(HumanBodyBones.RightIndexIntermediate, HumanBodyBones.RightIndexDistal, rhtrackJoint[6], rhtrackJoint[7]);
+        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightIndexProximal, rhtrackJoint[0], rhtrackJoint[6]);
+        AddHandsJointData(HumanBodyBones.RightIndexProximal, HumanBodyBones.RightIndexIntermediate, rhtrackJoint[6], rhtrackJoint[7]);
+        AddHandsJointData(HumanBodyBones.RightIndexIntermediate, HumanBodyBones.RightIndexDistal, rhtrackJoint[7], rhtrackJoint[8]);
         
-        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightMiddleProximal, rhtrackJoint[0], rhtrackJoint[9]);
-        AddHandsJointData(HumanBodyBones.RightMiddleProximal, HumanBodyBones.RightMiddleIntermediate, rhtrackJoint[9], rhtrackJoint[10]);
-        AddHandsJointData(HumanBodyBones.RightMiddleIntermediate, HumanBodyBones.RightMiddleDistal, rhtrackJoint[10], rhtrackJoint[11]);
+        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightMiddleProximal, rhtrackJoint[0], rhtrackJoint[10]);
+        AddHandsJointData(HumanBodyBones.RightMiddleProximal, HumanBodyBones.RightMiddleIntermediate, rhtrackJoint[10], rhtrackJoint[11]);
+        AddHandsJointData(HumanBodyBones.RightMiddleIntermediate, HumanBodyBones.RightMiddleDistal, rhtrackJoint[11], rhtrackJoint[12]);
 
-        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightRingProximal, rhtrackJoint[0], rhtrackJoint[13]);
-        AddHandsJointData(HumanBodyBones.RightRingProximal, HumanBodyBones.RightRingIntermediate, rhtrackJoint[13], rhtrackJoint[14]);
-        AddHandsJointData(HumanBodyBones.RightRingIntermediate, HumanBodyBones.RightRingDistal, rhtrackJoint[14], rhtrackJoint[15]);
+        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightRingProximal, rhtrackJoint[0], rhtrackJoint[14]);
+        AddHandsJointData(HumanBodyBones.RightRingProximal, HumanBodyBones.RightRingIntermediate, rhtrackJoint[14], rhtrackJoint[15]);
+        AddHandsJointData(HumanBodyBones.RightRingIntermediate, HumanBodyBones.RightRingDistal, rhtrackJoint[15], rhtrackJoint[16]);
 
-        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightLittleProximal, rhtrackJoint[0], rhtrackJoint[17]);
-        AddHandsJointData(HumanBodyBones.RightLittleProximal, HumanBodyBones.RightLittleIntermediate, rhtrackJoint[17], rhtrackJoint[18]);
-        AddHandsJointData(HumanBodyBones.RightLittleIntermediate, HumanBodyBones.RightLittleDistal, rhtrackJoint[18], rhtrackJoint[19]);
+        AddHandsJointData(HumanBodyBones.RightHand, HumanBodyBones.RightLittleProximal, rhtrackJoint[0], rhtrackJoint[18]);
+        AddHandsJointData(HumanBodyBones.RightLittleProximal, HumanBodyBones.RightLittleIntermediate, rhtrackJoint[18], rhtrackJoint[19]);
+        AddHandsJointData(HumanBodyBones.RightLittleIntermediate, HumanBodyBones.RightLittleDistal, rhtrackJoint[19], rhtrackJoint[20]);
+        
+        // 예: 오른쪽 팔꿈치 (RightLowerArm)
+        limbsJointData[1].allowedAxis = Vector3.forward; // x축만 회전 허용
+        
+        // 예: 왼쪽 팔꿈치 (LeftLowerArm)
+        limbsJointData[3].allowedAxis = Vector3.forward;
 
+        for (int i = 0; i < 30; i++)
+        {
+            handsJointData[i].allowedAxis = Vector3.up;
+        }
+
+
+        
         // Facial
         // AddHandsJointData(HumanBodyBones.LeftEye, HumanBodyBones.Head, facetrackJoint[1], trackJoint[0]);
         // AddHandsJointData(HumanBodyBones.RightEye, HumanBodyBones.Head, facetrackJoint[4], trackJoint[0]);

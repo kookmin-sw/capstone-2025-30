@@ -46,7 +46,16 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FaceType.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FacePicker.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/PlayerCamera.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/CharacterMover.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Readme.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/ThirdPersonCamera.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FaceMesh.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/MovePlayerInput.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Extensions/StringExtensions.cs" />
+    <None Include="Assets/ithappy/Creative_Characters_FREE/Render_Pipeline_Convert/Documentation.txt" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -818,6 +827,9 @@
     <Reference Include="Unity.Animation.Rigging.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Animation.Rigging.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Recorder">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
@@ -857,11 +869,17 @@
     <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Bindings.OpenImageIO.Editor">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Bindings.OpenImageIO.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Collections">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
     </Reference>
     <Reference Include="PPv2URPConverters">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/PPv2URPConverters.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Base">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.Base.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.dll</HintPath>
@@ -925,6 +943,9 @@
     </Reference>
     <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Editor">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

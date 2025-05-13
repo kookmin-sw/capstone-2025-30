@@ -46,7 +46,58 @@
     <Analyzer Include="/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/SlotBase.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/FaceStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/OutwearStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotName.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/MascotsStep.cs" />
     <Compile Include="Assets/TutorialInfo/Scripts/Editor/ReadmeEditor.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/StepBase.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/HairstyleStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/Slot.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/BodyStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotValidation/SlotToggledRule.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/FullBodyVariant.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/StepResult.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/OutfitStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/FaceEditor/FacePickerEditor.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/AssetLoader.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/CharacterCustomizationWindow.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SavedSlot.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/PartsEditor.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotValidation/ISlotValidationRules.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotValidation/FullBodyToggledRule.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/GlovesStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotValidation/SlotValidator.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/CustomizableCharacter.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/ShoesStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/SocksStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/LayerMaskUtility.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/MaterialManagement/MaterialOnDemand.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/HatStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/PreviewCreator.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/FaceAccessoriesStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/AssetsPath.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/CostumesStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/GlassesStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/IRandomizerStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/RandomCharacterGenerator.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/FullBodySlot.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/HatSingleStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/MaterialManagement/MaterialProvider.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/HairstyleSingleStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/SlotVariant.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/SlotGroup.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotType.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/PantsStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/GroupType.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotSorter.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/SlotStepBase.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/MaterialManagement/MaterialPaths.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Character/SlotLibraryLoader.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/Randomizer/Steps/Impl/ShortsStep.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/SlotLibrary.cs" />
+    <Compile Include="Assets/ithappy/Creative_Characters_FREE/Scripts/Editor/FaceEditor/FaceLoader.cs" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -875,6 +926,9 @@
     <Reference Include="Unity.Animation.Rigging.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Animation.Rigging.Editor.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Recorder">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
     </Reference>
@@ -914,11 +968,17 @@
     <Reference Include="Unity.RenderPipelines.GPUDriven.Runtime">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.RenderPipelines.GPUDriven.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.Bindings.OpenImageIO.Editor">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Bindings.OpenImageIO.Editor.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Collections">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
     </Reference>
     <Reference Include="PPv2URPConverters">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/PPv2URPConverters.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Base">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.Base.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rendering.LightTransport.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Rendering.LightTransport.Editor.dll</HintPath>
@@ -982,6 +1042,9 @@
     </Reference>
     <Reference Include="Unity.AI.Navigation.Editor.ConversionSystem">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.AI.Navigation.Editor.ConversionSystem.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Recorder.Editor">
+      <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.Recorder.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>/Users/jeonghoyong/Documents/GitHub/capstone-2025-30/Avatar/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>

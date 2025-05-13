@@ -33,6 +33,7 @@ namespace Mediapipe.Unity
         if (_video == null && _availableSources != null && _availableSources.Length > 0)
         {
           video = _availableSources[0];
+          
         }
         return _video;
       }
@@ -61,6 +62,7 @@ namespace Mediapipe.Unity
         throw new ArgumentException($"Invalid source ID: {sourceId}");
       }
 
+      
       video = _availableSources[sourceId];
       if (_videoPlayer != null)
       {
