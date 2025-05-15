@@ -147,22 +147,24 @@ const ChatOrderPage = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div style={ChatOrderStyles.bottomContainer}>
-        <AnswerOption
-          textList={[
-            "네",
-            "아니오",
-            "잠시만 기다려주세요",
-            "다른 문의사항 있으신가요?",
-            "결제해드릴게요",
-          ]}
-          onClick={(text) => handleSendMessage(text, true)}
-        />
-        <ChatInputBar
-          placeholder="직접 입력하세요."
-          onClick={(text) => handleSendMessage(text)}
-        />
-      </div>
+      {!isStatusCompleted && (
+        <div style={ChatOrderStyles.bottomContainer}>
+          <AnswerOption
+            textList={[
+              "네",
+              "아니오",
+              "잠시만 기다려주세요",
+              "다른 문의사항 있으신가요?",
+              "결제해드릴게요",
+            ]}
+            onClick={(text) => handleSendMessage(text, true)}
+          />
+          <ChatInputBar
+            placeholder="직접 입력하세요."
+            onClick={(text) => handleSendMessage(text)}
+          />
+        </div>
+      )}
     </div>
   );
 };
