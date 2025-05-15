@@ -14,8 +14,6 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 func (s *Server) StreamInquiries(
@@ -27,11 +25,11 @@ func (s *Server) StreamInquiries(
 		if r := recover(); r != nil {
 			logrus.Error("defer in StreamInquiries : ", r)
 			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
-			errRes = status.Errorf(codes.Internal, "internal server error")
 			_ = stream.SendAndClose(&pb.InquiryResponse{
 				Success: false,
 				Error:   pbErr.Enum(),
 			})
+			errRes = nil
 		}
 	}()
 
@@ -119,10 +117,11 @@ loop:
 	})
 	if err != nil {
 		logrus.Error("error calling AI client: ", err)
-		panic(stream.SendAndClose(&pb.InquiryResponse{
-			Success: false,
-			Error:   pb.EError_EE_INQUIRY_STREAM_FAILED.Enum(),
-		}))
+		panic(pb.EError_EE_INQUIRY_STREAM_FAILED)
+	}
+
+	if predictResp.Confidence <= 0.5 {
+		panic(pb.EError_EE_AI_CONVERSION_CONFIDENCE_IS_WRONG)
 	}
 
 	// message 구조체 생성

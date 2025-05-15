@@ -35,7 +35,8 @@ const (
 	EError_EE_STORE_NOT_FOUND        EError = 20001
 	EError_EE_STORE_UPDATE_NO_FIELDS EError = 20002
 	// inquiry
-	EError_EE_INQUIRY_STREAM_FAILED EError = 30000
+	EError_EE_INQUIRY_STREAM_FAILED             EError = 30000
+	EError_EE_AI_CONVERSION_CONFIDENCE_IS_WRONG EError = 30001
 	// order
 	EError_EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED EError = 40000
 	EError_EE_ORDER_NOT_FOUND                                  EError = 40001
@@ -60,6 +61,7 @@ var (
 		20001: "EE_STORE_NOT_FOUND",
 		20002: "EE_STORE_UPDATE_NO_FIELDS",
 		30000: "EE_INQUIRY_STREAM_FAILED",
+		30001: "EE_AI_CONVERSION_CONFIDENCE_IS_WRONG",
 		40000: "EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED",
 		40001: "EE_ORDER_NOT_FOUND",
 		50000: "EE_MENU_ALREADY_EXISTS",
@@ -69,22 +71,23 @@ var (
 		60001: "EE_MESSAGE_CREATE_FAILED",
 	}
 	EError_value = map[string]int32{
-		"EE_UNSPECIFIED":            0,
-		"EE_API_FAILED":             10000,
-		"EE_API_AUTH_FAILED":        10001,
-		"EE_INVALID_ARGUMENT":       10002,
-		"EE_DB_OPERATION_FAILED":    10003,
-		"EE_STORE_ALREADY_EXISTS":   20000,
-		"EE_STORE_NOT_FOUND":        20001,
-		"EE_STORE_UPDATE_NO_FIELDS": 20002,
-		"EE_INQUIRY_STREAM_FAILED":  30000,
+		"EE_UNSPECIFIED":                                      0,
+		"EE_API_FAILED":                                       10000,
+		"EE_API_AUTH_FAILED":                                  10001,
+		"EE_INVALID_ARGUMENT":                                 10002,
+		"EE_DB_OPERATION_FAILED":                              10003,
+		"EE_STORE_ALREADY_EXISTS":                             20000,
+		"EE_STORE_NOT_FOUND":                                  20001,
+		"EE_STORE_UPDATE_NO_FIELDS":                           20002,
+		"EE_INQUIRY_STREAM_FAILED":                            30000,
+		"EE_AI_CONVERSION_CONFIDENCE_IS_WRONG":                30001,
 		"EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED": 40000,
-		"EE_ORDER_NOT_FOUND":         40001,
-		"EE_MENU_ALREADY_EXISTS":     50000,
-		"EE_MENU_NOT_FOUND":          50001,
-		"EE_MENU_CATEGORY_NOT_FOUND": 50002,
-		"EE_NOTIFICATION_NOT_FOUND":  60000,
-		"EE_MESSAGE_CREATE_FAILED":   60001,
+		"EE_ORDER_NOT_FOUND":                                  40001,
+		"EE_MENU_ALREADY_EXISTS":                              50000,
+		"EE_MENU_NOT_FOUND":                                   50001,
+		"EE_MENU_CATEGORY_NOT_FOUND":                          50002,
+		"EE_NOTIFICATION_NOT_FOUND":                           60000,
+		"EE_MESSAGE_CREATE_FAILED":                            60001,
 	}
 )
 
