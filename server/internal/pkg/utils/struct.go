@@ -31,5 +31,3 @@ const (
 	WebSocketClientTypeCounterApp = "counter_app"
 	WebSocketClientTypeManagerWeb = "manager_web"
 )
-
-//
