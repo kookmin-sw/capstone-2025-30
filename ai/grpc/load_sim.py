@@ -33,26 +33,6 @@ def compute_similarity_batch(embeddings1, embeddings2):
     similarity = util.pytorch_cos_sim(embeddings1, embeddings2)
     return similarity
 
-# def get_most_similar_word(word):
-#     candidates = []
-#     input_embedding = get_sentence_embedding([word])
-
-#     actions_embeddings = get_sentence_embedding(actions)
-#     similarities = compute_similarity_batch(input_embedding, actions_embeddings)
-
-#     for i, similarity in enumerate(similarities[0]):
-#         if similarity > 0.6:
-#             candidates.append((actions[i], similarity.item()))
-
-#     candidates.sort(key=lambda x: x[1], reverse=True)
-
-#     if len(candidates) < 1:
-#         return ""
-    
-#     most_similar = candidates[0]
-#     print(f"유사한 단어 : {most_similar[0]}, 유사도 : {most_similar[1]}")
-#     return most_similar[0]
-
 def compute_similarity_batch(embeddings1, embeddings2):
     if embeddings1.size(0) == 1 and embeddings2.size(0) == 1:
         return util.pytorch_cos_sim(embeddings1, embeddings2).unsqueeze(0)

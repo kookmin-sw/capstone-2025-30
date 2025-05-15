@@ -113,7 +113,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
         </div>
       </div>
       {!isLast ? (
-        <div style={{ ...ShoppingCartStyles.line }} />
+        <div style={ShoppingCartStyles.line} />
       ) : (
         <div style={{ height: 70 }} />
       )}
@@ -126,7 +126,12 @@ const ShoppingCartPage = () => {
   const { cartItems, removeFromCart, clearCart } = useCart();
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [menu, setMenu] = useState(cartItems);
-  const [isDineIn, setIsDineIn] = useState(null);
+
+  const videos = [
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%97%AC%EA%B8%B0.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A8%B9%EB%8B%A4.mp4",
+    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%AC%BC%EC%9D%8C%ED%91%9C.mp4",
+  ];
 
   useEffect(() => {
     setMenu(cartItems);
@@ -155,25 +160,26 @@ const ShoppingCartPage = () => {
     0
   );
 
-  const formattedCartItems = cartItems.map((item) => ({
-    name: item.name,
-    quantity: item.quantity,
-    options: {
-      choices: {
-        temperature: item.temp,
-        size: item.size,
-      },
-    },
-    item_price: item.menu_price,
-  }));
-
-  const fetchCreateOrder = async () => {
+  const fetchCreateOrder = async (isDineIn) => {
     try {
-      const category = await createOrder(
-        isDineIn,
-        totalMoney,
-        formattedCartItems
-      );
+      const orderData = {
+        dine_in: isDineIn,
+        total_price: totalMoney,
+        items: cartItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          options: {
+            choices: {
+              temperature: item.temp,
+              size: item.size,
+            },
+          },
+          item_price: item.menu_price,
+        })),
+      };
+
+      console.log(orderData);
+      const category = await createOrder(orderData);
       clearCart();
       navigate("/order-number", {
         state: { orderNumber: category.data.order_number },
@@ -190,8 +196,8 @@ const ShoppingCartPage = () => {
     <div>
       <Header centerIcon={null} cartIcon={null} />
 
-      <div style={{ ...ShoppingCartStyles.container }}>
-        <div style={{ ...ShoppingCartStyles.textTotalMoney }}>
+      <div style={ShoppingCartStyles.container}>
+        <div style={ShoppingCartStyles.textTotalMoney}>
           <div style={{ fontSize: 44, lineHeight: "52px" }}>💵</div>
           <div>{totalMoney}원</div>
         </div>
@@ -220,7 +226,7 @@ const ShoppingCartPage = () => {
               ))}
             </>
           ) : (
-            <div style={{ ...ShoppingCartStyles.textEmpty }}>
+            <div style={ShoppingCartStyles.textEmpty}>
               장바구니가 비었습니다.
             </div>
           )}
@@ -237,16 +243,15 @@ const ShoppingCartPage = () => {
 
         {isBottomSheetOpen && (
           <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
-            <SignVideo src="/assets/video/드시고가실건가요.mp4" />
+            {/* 드시고가실건가요 */}
+            <SignVideo srcList={videos} />
             <div style={{ margin: "24px 0 24px 0" }}>
               <ButtonYesNo
                 pressYes={() => {
-                  setIsDineIn(true);
-                  fetchCreateOrder();
+                  fetchCreateOrder(true);
                 }}
                 pressNo={() => {
-                  setIsDineIn(false);
-                  fetchCreateOrder();
+                  fetchCreateOrder(false);
                 }}
               />
             </div>

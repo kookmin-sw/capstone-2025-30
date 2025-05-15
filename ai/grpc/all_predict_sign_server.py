@@ -33,12 +33,12 @@ env = os.getenv('APP_ENV', 'local')
 
 if env == "production":
     model = tf.keras.models.load_model(
-        'models/60_v8_masked_angles.keras',
+        'models/60_v15_masked_angles.keras',
         custom_objects={'Attention': Attention}
     )
 else:
     model = tf.keras.models.load_model(
-    '../models/60_v8_masked_angles.keras',
+    '../models/60_v15_masked_angles.keras',
     custom_objects={
         'Attention': Attention,
         # 'loss': focal_loss(gamma=2., alpha=0.25)
@@ -55,9 +55,9 @@ def focal_loss(gamma=2.0, alpha=0.25):
     return loss
 
 if env == 'production':
-    path = 'gesture_dict/60_v8_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v15_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v8_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v15_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
@@ -83,16 +83,13 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
                 confidence=0.0
             )
         
-        confidence_threshold = 0.97
+        confidence_threshold = 0.82
         motion_threshold = 0.02
         seq_length = 60
         feature_dim = 78
 
         full_data = np.array(joint_data_list).reshape(-1, feature_dim)
         total_frames = full_data.shape[0]
-
-        sentences = []
-        confidences = []
 
         sentences = []
         confidences = []
@@ -110,7 +107,7 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
         # 중복 제거 (간격 좁은 건 스킵)
         filtered_start_frames = []
-        min_gap = int(fps * 2.5)  # 최소 2.5초 간격
+        min_gap = int(fps * 2.0)  # 최소 2.5초 간격
         last_added = -min_gap
 
         for f in motion_start_frames:
@@ -135,8 +132,10 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
             if "," in predicted_sentence:
                 predicted_sentence = predicted_sentence.split(",")[0]
+                if predicted_sentence == "당부":
+                    predicted_sentence = "요청"
 
-            if start_frame == 1 and predicted_sentence == "마시다":
+            if start_frame == 1 and (predicted_sentence == "마시다" or predicted_sentence == "비밀"):
                 continue
 
             if confidence < confidence_threshold:

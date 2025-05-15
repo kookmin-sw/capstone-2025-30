@@ -5,7 +5,8 @@ import { toast } from "react-toastify";
 import CustomStyles from "@/styles/CustomStyles";
 import OrderListStyles from "@/pages/OrderListStyles";
 
-import { getChatRoomList } from "../config/api.js";
+import { getChatRoomList, getChatMessages } from "../config/api.js";
+import { useWebSocket } from "../context/WebSocketProvider";
 import InputBar from "@/components/InputBar";
 import OrderList from "@/components/OrderList";
 
@@ -16,6 +17,13 @@ const OrderListPage = () => {
   const { state } = useLocation();
   const [activeTab, setActiveTab] = useState(0);
   const [chatRoomInfo, setChatRoomInfo] = useState([]);
+  const { isConnected } = useWebSocket();
+
+  useEffect(() => {
+    if (isConnected) {
+      console.log("연결 상태:", isConnected);
+    }
+  }, [isConnected]);
 
   useEffect(() => {
     const fetchGetChatRoomList = async () => {
@@ -26,8 +34,7 @@ const OrderListPage = () => {
             ? "CHATROOM_STATUS_BEFORE"
             : "CHATROOM_STATUS_COMPLETE"
         );
-        console.log(chatList.data.chat_room_info);
-        // setChatRoomInfo(chatList.data.chat_room_info);
+        setChatRoomInfo(chatList.data.chat_room_info);
       } catch (error) {
         console.error(
           "관리자 채팅 리스트 조회 오류:",
@@ -38,16 +45,32 @@ const OrderListPage = () => {
     fetchGetChatRoomList();
   }, [state?.adminId, activeTab]);
 
-  const handleOrderNumberError = () => {
-    toast.error("존재하지 않는 주문번호입니다.", {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      theme: "light",
-    });
+  const fetchGetOrder = async (number) => {
+    try {
+      await getChatMessages(state?.adminId, "order", number);
+      navigate("/chat-order", {
+        state: {
+          adminId: state?.adminId,
+          type: "order",
+          number: number,
+          isDone: false,
+        },
+      });
+    } catch (error) {
+      toast.error("존재하지 않는 주문번호입니다.", {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "light",
+      });
+      console.error(
+        "관리자 채팅 리스트 조회 오류:",
+        error.response ? error.response.data : error.message
+      );
+    }
   };
 
   return (
@@ -56,7 +79,7 @@ const OrderListPage = () => {
         <InputBar
           placeholder="주문번호를 입력해주세요."
           buttonText="등록"
-          onClick={handleOrderNumberError}
+          onClick={(inputValue) => fetchGetOrder(inputValue)}
         />
       </div>
 
@@ -95,12 +118,10 @@ const OrderListPage = () => {
                 onClick={() =>
                   navigate("/chat-order", {
                     state: {
-                      chatTitle: `${
-                        item.isOrder ? "주문번호 : " : "일반문의 "
-                      }${item.text}`,
                       adminId: state?.adminId,
                       type: item.notification_title,
                       number: item.number,
+                      isDone: false,
                     },
                   })
                 }
@@ -119,12 +140,10 @@ const OrderListPage = () => {
                 onClick={() =>
                   navigate("/chat-order", {
                     state: {
-                      chatTitle: `${
-                        item.isOrder ? "주문번호 : " : "일반문의 "
-                      }${item.text}`,
                       adminId: state?.adminId,
                       type: item.notification_title,
                       number: item.number,
+                      isDone: true,
                     },
                   })
                 }

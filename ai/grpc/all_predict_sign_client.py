@@ -35,19 +35,26 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 - 포크와 휴지의 경우 단어 단일로 예측될 경우 자동으로 "가 있나요"를 붙이게 하드코딩함
 """
 # video_path = '키오스크 주문이 어려운데 도와주세요.mp4'
-# video_path = '긍정.mp4'
 # video_path = '영수증 주세요.mp4'
 # video_path = '따뜻하게 해주세요.mp4'
 # video_path = '화장실 비밀번호 있나요?.mp4'
-# video_path = '휴지 있어요_.mp4'
+video_path = '휴지 있어요_.mp4'
 # video_path = '포크가 있어요_.mp4'
 # video_path = '아메리카노_수어통합본.mp4'
+# video_path = '긍정.mp4'
+
+
+# video_path = '기2.mp4'
+# video_path = '화2.mp4'
+# video_path = "영1.mp4"
+# video_path = "긍1.mp4"
+# video_path = "교1.mp4"
 
 
 """
 약간의 손실 - 의미 유추 가능
 """
-
+# video_path = "차1.mp4"
 
 """
 치명적 손실 - 의미 유추 애매
@@ -57,17 +64,27 @@ v9
 """
 # video_path = '할인카드 사용하고 싶어요.mp4'
 # video_path = '현금결제 원해요.mp4'
+# video_path = '현1.mp4'
+# video_path = "할1.mp4"
 
 """
 한 단어만 맞춤 - 의미 유추 불가능
 """
-# video_path = '아이스로 바꾸고 싶어요.mp4'
+# video_path = "http://sldict.korean.go.kr/multimedia/multimedia_files/convert/20200825/735712/MOV000240883_700X466.mp4"
+# video_path = '아니다.mp4'
 # video_path = '자리가 있을까요_.mp4'
 # video_path = '포인트가 있나요?.mp4'
+# video_path = "덜 달게 해주세요.mp4"
+# video_path = "덜2.mp4"
+# video_path = "포3.mp4"
 
 """
 전혀 안됨 - 의미 유추 불가능
 """
+# video_path = "자1.mp4"
+# video_path = '따1.mp4'
+# video_path = "돈1.mp4"
+# video_path = '환1.mp4'
 
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
@@ -151,7 +168,7 @@ print(f"[결과] Store: {response.store_id}, 문장: {response.predicted_sentenc
 #     "frames": flat_joints,
 # }
 
-# with open("시럽_위치_문의_input.json", "w", encoding="utf-8") as f:
+# with open("드레스_input.json", "w", encoding="utf-8") as f:
 #     json.dump(request_data, f, ensure_ascii=False, indent=2)
 
 # print("✅ JSON 저장 완료: frame_sequence_input.json")

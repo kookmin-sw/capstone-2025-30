@@ -3,14 +3,25 @@ import React, { useRef, useState } from "react";
 import CustomStyles from "@/styles/CustomStyles";
 import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 
-const SignVideo = ({ src }) => {
+const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
   const videoRef = useRef(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
 
   const handleReplay = () => {
     setIsEnded(false);
-    videoRef.current.currentTime = 0;
-    videoRef.current.play();
+    setCurrentIndex(0);
+  };
+
+  const handleEnded = () => {
+    if (currentIndex < srcList.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setIsEnded(true);
+      if (isOnce && typeof onVideoEnd === "function") {
+        onVideoEnd();
+      }
+    }
   };
 
   return (
@@ -21,11 +32,12 @@ const SignVideo = ({ src }) => {
         paddingTop: "100%",
         backgroundColor: isEnded && "rgba(0,0,0,0.7)",
         borderRadius: 16,
+        pointerEvents: "none",
       }}
     >
       <video
         ref={videoRef}
-        src={src}
+        src={srcList[currentIndex]}
         style={{
           position: "absolute",
           top: 0,
@@ -37,9 +49,9 @@ const SignVideo = ({ src }) => {
         }}
         autoPlay
         muted
-        onEnded={() => setIsEnded(true)}
+        onEnded={handleEnded}
       />
-      {isEnded && (
+      {isEnded && !isOnce && (
         <>
           <div
             style={{

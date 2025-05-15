@@ -16,6 +16,14 @@ pluginManagement {
     }
 }
 
+// 👇 여기 추가하세요!
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 plugins {
     id("dev.flutter.flutter-plugin-loader") version "1.0.0"
     id("com.android.application") version "8.7.0" apply false

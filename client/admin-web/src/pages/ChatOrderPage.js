@@ -1,74 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import ChatOrderStyles from "@/pages/ChatOrderStyles";
 
-import { getChatMessages } from "../config/api.js";
+import { getChatMessages, modifyStatus } from "../config/api.js";
+import { useWebSocket } from "../context/WebSocketProvider";
 import ChatHeader from "@/components/ChatHeader";
 import ChatBubble from "@/components/ChatBubble";
 import AnswerOption from "@/components/AnswerOption";
 import ChatInputBar from "@/components/ChatInputBar";
 
 const ChatOrderPage = () => {
-  const { state } = useLocation();
-  const [chatMessageInfo, setChatMessageInfo] = useState([]);
+  const messagesEndRef = useRef(null);
 
-  const chat = [
-    {
-      isFirst: true,
-      isAdmin: false,
-      text: `아메리카노 아이스 S사이즈 1잔\n카페라떼 핫 S 사이즈 샷추가 1번 1잔`,
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: true,
-      text: "다른 문의사항 있으신가요?",
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: false,
-      text: "얼음 많이 주세요.",
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: true,
-      text: "네",
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: true,
-      text: "결제해드릴게요",
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: true,
-      text: "결제해드릴게요",
-      onClick: null,
-    },
-    {
-      isFirst: false,
-      isAdmin: true,
-      text: "결제해드릴게요",
-      onClick: null,
-    },
-  ];
+  const { state } = useLocation();
+  const { sendMessage, messages } = useWebSocket();
+
+  const [chatList, setChatList] = useState([]);
+  const [isStatusCompleted, setIsStatusCompleted] = useState(state?.isDone);
 
   useEffect(() => {
     const fetchGetChatMessages = async () => {
-      console.log(state?.adminId, state?.type, state?.number);
       try {
-        const messageInfo = await getChatMessages(
+        const chatMessages = await getChatMessages(
           state?.adminId,
           state?.type,
           state?.number
         );
-        console.log(messageInfo.data.messages);
-        // setChatMessageInfo(messageInfo.data.messages);
+        setChatList(chatMessages.data.messages);
       } catch (error) {
         console.error(
           "관리자 채팅 조회 오류:",
@@ -79,25 +38,113 @@ const ChatOrderPage = () => {
     fetchGetChatMessages();
   }, [state?.adminId, state?.type, state?.number]);
 
+  const fetchModifyStatus = async () => {
+    try {
+      await modifyStatus(state?.adminId, state?.number);
+      setIsStatusCompleted(true);
+    } catch (error) {
+      console.error(
+        "관리자 상태 변경 오류:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const latest = messages[messages.length - 1];
+      try {
+        const parsed = JSON.parse(latest);
+
+        if (parsed.status === "success") {
+          return;
+        }
+
+        if (parsed.data) {
+          setChatList((prev) => [
+            ...prev,
+            {
+              type: parsed.type,
+              message: parsed.data.message,
+              is_owner: false,
+              created_at: parsed.data.created_at,
+            },
+          ]);
+        }
+      } catch (err) {
+        console.error("메시지 파싱 실패:", err);
+      }
+    }
+  }, [messages]);
+
+  const handleSendMessage = (text, answerOption = false) => {
+    if (!answerOption && (!text || !text.trim())) return;
+
+    const payload = {
+      title: state?.type === "order" ? "orderMessage" : "inquiryMessage",
+      number: state?.number,
+      message: text,
+      store_code: "5fjVwE8z",
+    };
+
+    sendMessage(payload);
+
+    setChatList((prev) => [
+      ...prev,
+      {
+        message: text,
+        is_owner: true,
+        created_at: new Date().toISOString(),
+      },
+    ]);
+  };
+
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    scrollToBottom();
+  }, [chatList]);
+
   return (
     <div style={ChatOrderStyles.container}>
       <div style={{ position: "fixed", width: "100%" }}>
-        <ChatHeader text={state?.chatTitle} />
+        <ChatHeader
+          text={
+            state?.type === "order"
+              ? `주문번호 ${state?.number}`
+              : `일반문의 ${state?.number}`
+          }
+        />
       </div>
+
       <div style={ChatOrderStyles.chatBubble}>
-        {chatMessageInfo.map((item, index) => (
-          <ChatBubble
-            key={index}
-            isFirst={
-              item.message && item.message.length > 0 && item.message[0]
-                ? true
-                : false
-            }
-            isAdmin={item.is_owner}
-            text={item.message}
-            onClick={item.onClick}
-          />
-        ))}
+        {chatList.map((item, index, arr) => {
+          const currentTime = new Date(item.created_at);
+          const currentKey = `${
+            item.is_owner
+          }-${currentTime.getHours()}:${currentTime.getMinutes()}`;
+          const nextItem = arr[index + 1];
+          const nextKey = nextItem
+            ? `${nextItem.is_owner}-${new Date(
+                nextItem.created_at
+              ).getHours()}:${new Date(nextItem.created_at).getMinutes()}`
+            : null;
+          const showTime = currentKey !== nextKey;
+          return (
+            <ChatBubble
+              key={index}
+              isFirst={index === 0 && arr[0].type !== "signMessage"}
+              isAdmin={item.is_owner}
+              text={item.message}
+              createdAt={item.created_at}
+              onClick={fetchModifyStatus}
+              showTime={showTime}
+              isStatusCompleted={isStatusCompleted}
+            />
+          );
+        })}
+        <div ref={messagesEndRef} />
       </div>
 
       <div style={ChatOrderStyles.bottomContainer}>
@@ -109,8 +156,12 @@ const ChatOrderPage = () => {
             "다른 문의사항 있으신가요?",
             "결제해드릴게요",
           ]}
+          onClick={(text) => handleSendMessage(text, true)}
         />
-        <ChatInputBar placeholder="직접 입력하세요." onClick={null} />
+        <ChatInputBar
+          placeholder="직접 입력하세요."
+          onClick={(text) => handleSendMessage(text)}
+        />
       </div>
     </div>
   );
