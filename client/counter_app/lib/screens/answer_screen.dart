@@ -9,11 +9,13 @@ import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/sign_video.dart';
 import 'question_screen.dart';
+import 'home_screen.dart';
 
 class AnswerScreen extends StatefulWidget {
   final bool isOrder;
+  final int number;
 
-  const AnswerScreen({super.key, this.isOrder = false});
+  const AnswerScreen({super.key, this.isOrder = false, this.number = 0});
 
   @override
   State<AnswerScreen> createState() => _AnswerScreenState();
@@ -29,7 +31,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
   void initState() {
     super.initState();
     videos = WebSocketService().getSignUrls();
-    logger.i("websocket 수어 영상: $videos");
+    logger.i('websocket 수어 영상: $videos');
   }
 
   Future<void> _handleYesTap() async {
@@ -44,18 +46,33 @@ class _AnswerScreenState extends State<AnswerScreen> {
         if (!mounted) return;
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (_) => const QuestionScreen()),
+          MaterialPageRoute(
+            builder: (_) => QuestionScreen(isOrder: widget.isOrder),
+          ),
         );
       });
     } catch (e) {
-      if (!mounted) return;
+      logger.e('grpc 호출 실패: $e');
+    } finally {
+      await grpc.shutdown();
+    }
+  }
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('gRPC 연결 실패')));
-      });
+  Future<void> _handleNoTap() async {
+    final grpc = GrpcService();
+
+    try {
+      await grpc.connect();
+
+      await grpc.sendFastInquiryRespIsNo(
+        title: widget.isOrder ? 'order' : 'inquiry',
+        num: widget.number,
+      );
+
+      if (!mounted) return;
+      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+    } catch (e) {
+      logger.e('grpc 호출 실패: $e');
     } finally {
       await grpc.shutdown();
     }
@@ -104,7 +121,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
         children: [
           Header(
             centerIcon: Text(
-              "💬",
+              '💬',
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
           ),
@@ -180,6 +197,7 @@ class _AnswerScreenState extends State<AnswerScreen> {
                         onTapDown: (_) => setState(() => _isPressedNo = true),
                         onTapUp: (_) {
                           setState(() => _isPressedNo = false);
+                          _handleNoTap();
                         },
                         onTapCancel: () => setState(() => _isPressedNo = false),
                         child: Container(

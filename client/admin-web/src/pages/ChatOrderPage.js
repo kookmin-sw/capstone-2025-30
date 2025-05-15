@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 
 import ChatOrderStyles from "@/pages/ChatOrderStyles";
 
 import { getChatMessages, modifyStatus } from "../config/api.js";
-import useWebSocket from "../context/WebSocketConnection";
+import { useWebSocket } from "../context/WebSocketProvider";
 import ChatHeader from "@/components/ChatHeader";
 import ChatBubble from "@/components/ChatBubble";
 import AnswerOption from "@/components/AnswerOption";
 import ChatInputBar from "@/components/ChatInputBar";
 
 const ChatOrderPage = () => {
+  const messagesEndRef = useRef(null);
+
   const { state } = useLocation();
   const { sendMessage, messages } = useWebSocket();
 
@@ -54,14 +56,21 @@ const ChatOrderPage = () => {
       try {
         const parsed = JSON.parse(latest);
 
-        setChatList((prev) => [
-          ...prev,
-          {
-            message: parsed.message,
-            is_owner: false,
-            created_at: new Date().toISOString(),
-          },
-        ]);
+        if (parsed.status === "success") {
+          return;
+        }
+
+        if (parsed.data) {
+          setChatList((prev) => [
+            ...prev,
+            {
+              type: parsed.type,
+              message: parsed.data.message,
+              is_owner: false,
+              created_at: parsed.data.created_at,
+            },
+          ]);
+        }
       } catch (err) {
         console.error("메시지 파싱 실패:", err);
       }
@@ -90,6 +99,13 @@ const ChatOrderPage = () => {
     ]);
   };
 
+  useEffect(() => {
+    const scrollToBottom = () => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+    scrollToBottom();
+  }, [chatList]);
+
   return (
     <div style={ChatOrderStyles.container}>
       <div style={{ position: "fixed", width: "100%" }}>
@@ -104,10 +120,6 @@ const ChatOrderPage = () => {
 
       <div style={ChatOrderStyles.chatBubble}>
         {chatList.map((item, index, arr) => {
-          const isFirst =
-            !item.is_owner &&
-            (index === 0 || arr[index - 1].is_owner !== item.is_owner);
-
           const currentTime = new Date(item.created_at);
           const currentKey = `${
             item.is_owner
@@ -119,11 +131,10 @@ const ChatOrderPage = () => {
               ).getHours()}:${new Date(nextItem.created_at).getMinutes()}`
             : null;
           const showTime = currentKey !== nextKey;
-
           return (
             <ChatBubble
               key={index}
-              isFirst={isFirst}
+              isFirst={index === 0 && arr[0].type !== "signMessage"}
               isAdmin={item.is_owner}
               text={item.message}
               createdAt={item.created_at}
@@ -133,6 +144,7 @@ const ChatOrderPage = () => {
             />
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
 
       <div style={ChatOrderStyles.bottomContainer}>

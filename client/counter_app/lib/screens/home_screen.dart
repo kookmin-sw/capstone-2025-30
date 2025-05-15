@@ -1,12 +1,11 @@
 import 'package:counter_app/screens/question_screen.dart';
 import 'package:flutter/material.dart';
 import '../styles/custom_styles.dart';
+import 'package:logger/logger.dart';
 
-import 'package:counter_app/services/web_socket_service.dart';
 import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/sign_video.dart';
-import 'answer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,21 +16,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   bool _isPressed = false;
+  final Logger logger = Logger();
 
   @override
   void initState() {
     super.initState();
-
-    // 웹소켓에서 추가 문의 메시지 오면 자동으로 화면 이동하도록
-    WebSocketService().onInquiryRequestReceived = () {
-      if (!mounted) return;
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const AnswerScreen(isOrder: true),
-        ),
-      );
-    };
   }
 
   Future<void> _handleTap() async {
@@ -51,14 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       });
     } catch (e) {
-      if (!mounted) return;
-
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (!mounted) return;
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('gRPC 연결 실패')));
-      });
+      logger.e("grpc 호출 실패: $e");
     } finally {
       await grpc.shutdown();
     }
@@ -109,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Header(
             centerIcon: Text(
-              "🏠",
+              '🏠',
               style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
             ),
             hideBackButton: true,
