@@ -435,14 +435,6 @@
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.SourceGenerators.dll"
 -analyzer:"/Applications/Unity/Hub/Editor/6000.0.31f1/Unity.app/Contents/Tools/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/CharacterMover.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/MovePlayerInput.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/PlayerCamera.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/Character_Controller/ThirdPersonCamera.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/Extensions/StringExtensions.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FaceMesh.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FacePicker.cs"
-"Assets/ithappy/Creative_Characters_FREE/Scripts/FaceManagement/FaceType.cs"
 "Assets/TutorialInfo/Scripts/Readme.cs"
 -langversion:9.0
 /deterministic
