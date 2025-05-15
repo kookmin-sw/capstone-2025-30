@@ -49,6 +49,11 @@ const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
         }}
         autoPlay
         muted
+        loop
+        playsInline
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5"
         onEnded={handleEnded}
       />
       {isEnded && !isOnce && (
