@@ -10,6 +10,7 @@ class WebSocketService {
 
   WebSocket? _ws;
   bool isConnected = false;
+  bool isReconnecting = false;
   final List<String> signUrls = [];
   final Logger logger = Logger();
 
@@ -37,15 +38,18 @@ class WebSocketService {
         onDone: () {
           logger.i('websocket 연결 종료');
           isConnected = false;
+          _reconnect();
         },
         onError: (error) {
           logger.e('websocket 오류: $error');
           isConnected = false;
+          _reconnect();
         },
       );
     } catch (e) {
       logger.e('websocket 연결 실패: $e');
       isConnected = false;
+      _reconnect();
     }
   }
 
@@ -55,6 +59,21 @@ class WebSocketService {
       logger.i('websocket 연결 종료');
       isConnected = false;
     }
+  }
+
+  void _reconnect() {
+    if (isReconnecting) return;
+    isReconnecting = true;
+
+    const retryDelay = Duration(seconds: 2);
+    logger.w('websocket 재연결 시도 중...');
+
+    Future.delayed(retryDelay, () async {
+      if (!isConnected) {
+        await connect();
+      }
+      isReconnecting = false;
+    });
   }
 
   void _handleMessage(String rawData) {
