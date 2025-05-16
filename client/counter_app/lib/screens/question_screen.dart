@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -5,8 +6,8 @@ import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imglib;
 import 'dart:typed_data';
 // 테스트용 (path_provider.dart, dart.io)
-import 'package:path_provider/path_provider.dart';
-import 'dart:io';
+// import 'package:path_provider/path_provider.dart';
+// import 'dart:io';
 
 import '../styles/custom_styles.dart';
 
@@ -60,14 +61,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   // 테스트용 (saveFrameAsImage 함수)
-  Future<void> saveFrameAsImage(List<int> jpegBytes, int index) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/frame_$index.jpg';
-    final file = File(filePath);
+  // Future<void> saveFrameAsImage(List<int> jpegBytes, int index) async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   final filePath = '${directory.path}/frame_$index.jpg';
+  //   final file = File(filePath);
 
-    await file.writeAsBytes(jpegBytes);
-    logger.i('Saved frame to $filePath');
-  }
+  //   await file.writeAsBytes(jpegBytes);
+  //   logger.i('Saved frame to $filePath');
+  // }
 
   Future<List<int>?> _convertYUV420ToJPEG(CameraImage image) async {
     try {
@@ -143,6 +144,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   void _processCameraImage(CameraImage image) async {
+    final start = DateTime.now();
+
     // 프레임 너무 자주 처리하지 않게 throttle 걸기
     if (!_canProcessFrame) return;
     _canProcessFrame = false;
@@ -151,17 +154,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (bytes != null) {
       _frameBuffer.add(bytes);
       // 테스트용 (바로 아래 if문)
-      if (_frameBuffer.length == 1) {
-        await saveFrameAsImage(bytes, 0);
-      }
+      // if (_frameBuffer.length == 1) {
+      //   await saveFrameAsImage(bytes, 0);
+      // }
     }
 
+    final elapsed = DateTime.now().difference(start).inMilliseconds;
+
+    final nextDelay = 33 - elapsed;
     if (_frameBuffer.length > 100) {
       _frameBuffer.removeAt(0); // 오래된 프레임 제거해서 너무 쌓이지 않게
     }
 
-    Future.delayed(Duration(milliseconds: 50), () {
-      // 약 20fps
+    Future.delayed(Duration(milliseconds: nextDelay > 0 ? nextDelay : 0), () {
       _canProcessFrame = true;
     });
   }
@@ -191,15 +196,29 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
                 final grpcService = GrpcService();
                 try {
+                  logger.i("gRPC 연결 시도...");
                   await grpcService.connect();
 
-                  logger.i('전송할 프레임 수: ${_frameBuffer.length}'); // 테스트용 (로그)
+                  logger.i("gRPC 연결 성공, 전송 시작");
 
-                  await grpcService.sendFrames(
-                    _frameBuffer,
-                    inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
-                    num: widget.number,
-                  );
+                  // 1분 지나면 타임아웃
+                  final response = await grpcService
+                      .sendFrames(
+                        _frameBuffer,
+                        inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+                        num: widget.number,
+                      )
+                      .timeout(
+                        const Duration(minutes: 1),
+                        onTimeout: () {
+                          throw TimeoutException('grpc 타임아웃');
+                        },
+                      );
+
+                  if (!response) {
+                    hasError = true;
+                    logger.e("ai 응답 오류 (success: false)");
+                  }
                 } catch (e) {
                   logger.e('gRPC 전송 중 오류: $e');
                   hasError = true;
@@ -240,15 +259,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   ),
                   const SizedBox(height: 30),
                   // 테스트용 (바로 아래 패딩 블록)
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Image.file(
-                      File(
-                        '/data/user/0/com.example.counter_app/app_flutter/frame_0.jpg',
-                      ),
-                      height: 200,
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(20),
+                  //   child: Image.file(
+                  //     File(
+                  //       '/data/user/0/com.example.counter_app/app_flutter/frame_0.jpg',
+                  //     ),
+                  //     height: 200,
+                  //   ),
+                  // ),
                   if (!widget.isOrder)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

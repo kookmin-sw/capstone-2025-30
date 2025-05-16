@@ -58,7 +58,8 @@ const BottomSheet = ({ onClose, children }) => {
         style={{
           position: "relative",
           width: "100%",
-          maxHeight: "60%",
+          maxHeight: "80vh",
+          overflowY: "auto",
           backgroundColor: CustomStyles.primaryWhite,
           borderTopLeftRadius: 24,
           borderTopRightRadius: 24,

@@ -114,9 +114,9 @@ jobs:
               --restart unless-stopped \
               --network host \
               --env-file .env \
+              -v /etc/letsencrypt:/etc/letsencrypt:ro \
               ${{ secrets.DOCKERHUB_USERNAME }}/capstone-server:develop
 
-            sudo systemctl restart nginx
 
             # ✅ 인증서 갱신 자동화 (최초 1회만 등록해도 됨)
             (crontab -l 2>/dev/null; echo "0 3 * * * /usr/bin/certbot renew --quiet && systemctl reload nginx") | crontab -
