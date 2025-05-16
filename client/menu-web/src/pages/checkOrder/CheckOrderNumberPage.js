@@ -16,9 +16,15 @@ const CheckOrderNumberPage = () => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   const videos = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A3%BC%EB%AC%B8.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B2%88%ED%98%B8.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9E%85%EB%A0%A5.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A5%E1%86%AB%E1%84%92%E1%85%A9.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B5%E1%86%B8%E1%84%85%E1%85%A7%E1%86%A8.mp4",
+  ];
+
+  const videos2 = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%83%E1%85%A1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%84%86%E1%85%AE%E1%86%AB.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A5%E1%86%AB%E1%84%92%E1%85%A9.mp4",
   ];
 
   const fetchGetOrderNumber = async () => {
@@ -45,7 +51,6 @@ const CheckOrderNumberPage = () => {
       <Header centerIcon="✅" cartIcon={null} />
 
       <div style={CheckOrderNumberStyles.container}>
-        {/* 숫자 키패드가 잘 나오는지 모바일 환경에서 확인 필요 */}
         <input
           type="text"
           inputMode="numeric"
@@ -73,7 +78,7 @@ const CheckOrderNumberPage = () => {
         <BottomSheet onClose={() => setIsBottomSheetOpen(false)}>
           {/* 없는주문번호입니다 */}
           <SignVideo
-            srcList={videos}
+            srcList={videos2}
             isOnce={true}
             onVideoEnd={() => setIsBottomSheetOpen(false)}
           />
