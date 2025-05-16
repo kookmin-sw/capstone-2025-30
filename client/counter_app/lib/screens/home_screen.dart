@@ -2,6 +2,7 @@ import 'package:counter_app/screens/question_screen.dart';
 import 'package:flutter/material.dart';
 import '../styles/custom_styles.dart';
 import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
@@ -21,6 +22,22 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    _requestPermissions();
+  }
+
+  Future<void> _requestPermissions() async {
+    final cameraStatus = await Permission.camera.request();
+    final micStatus = await Permission.microphone.request();
+
+    if (!cameraStatus.isGranted || !micStatus.isGranted) {
+      if (cameraStatus.isPermanentlyDenied || micStatus.isPermanentlyDenied) {
+        openAppSettings();
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('카메라와 마이크 권한이 필요합니다.')));
+      }
+    }
   }
 
   Future<void> _handleTap() async {

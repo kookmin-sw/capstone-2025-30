@@ -13,19 +13,21 @@ class GrpcService {
   ChangeMiddlwareClient? _middlewareClient;
   APIServiceClient? _apiClient;
 
-  final Logger logger = Logger();
+  final Logger logger = Logger(level: Level.verbose);
 
   Future<void> connect() async {
     _middlewareChannel = ClientChannel(
-      '13.125.250.244',
-      port: 8088,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+      'python.signorder.kr', // '13.125.250.244',
+      port: 443, // 8088
+      options: const ChannelOptions(
+        credentials: ChannelCredentials.secure(),
+      ), // insecure()
     );
 
     _apiChannel = ClientChannel(
-      '3.34.190.174',
-      port: 8080,
-      options: const ChannelOptions(credentials: ChannelCredentials.insecure()),
+      'go.signorder.kr', // '3.34.190.174',
+      port: 443, // 8080
+      options: const ChannelOptions(credentials: ChannelCredentials.secure()),
     );
 
     _middlewareClient = ChangeMiddlwareClient(_middlewareChannel!);
@@ -60,8 +62,8 @@ class GrpcService {
         "프레임 서버 응답: ${response.success}, 프레임 에러: ${response.hasError() ? response.error : '없음'}",
       );
       return response.success;
-    } catch (e) {
-      logger.e("프레임 전송 중 오류: $e");
+    } catch (e, st) {
+      logger.e("프레임 전송 중 오류: $e, $st");
       return false;
     }
   }
