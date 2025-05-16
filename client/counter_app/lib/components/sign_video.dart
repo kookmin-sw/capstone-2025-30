@@ -1,3 +1,4 @@
+import 'package:counter_app/styles/custom_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -101,11 +102,11 @@ class _SignVideoState extends State<SignVideo> {
   Widget build(BuildContext context) {
     final isEndedAndLoopable = _isEnded && !widget.isOnce;
 
-    if (!_controller.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
-    }
+    final bool isInitialized = _controller.value.isInitialized;
 
-    final videoSize = _controller.value.size;
+    final Size videoSize =
+        isInitialized ? _controller.value.size : const Size(720, 720);
+
     final double videoAspect = videoSize.width / videoSize.height;
 
     final double scale =
@@ -126,7 +127,10 @@ class _SignVideoState extends State<SignVideo> {
               child: SizedBox(
                 width: videoSize.width,
                 height: videoSize.height,
-                child: VideoPlayer(_controller),
+                child:
+                    isInitialized
+                        ? VideoPlayer(_controller)
+                        : Container(color: CustomStyles.pointGray),
               ),
             ),
           ),
