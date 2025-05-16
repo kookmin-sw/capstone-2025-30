@@ -66,11 +66,20 @@ const CategoryPage = () => {
     fetchGetCategory();
   }, []);
 
-  const category = [
-    { icon: "☕️", text: categories[2], to: `/menu/${categories[2]}` },
-    { icon: "🌿", text: categories[1], to: `/menu/${categories[1]}` },
-    { icon: "🧋", text: categories[0], to: `/menu/${categories[0]}` },
-  ];
+  const categoryIconMap = {
+    커피: "☕️",
+    차: "🌿",
+    음료: "🧋",
+    케이크: "🍰",
+    빵: "🥯",
+    샐러드: "🥗",
+  };
+
+  const mappedCategories = categories.map((item) => ({
+    icon: categoryIconMap[item] || "",
+    text: item,
+    to: `/menu/${item}`,
+  }));
 
   const videos = [
     "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%A6%E1%84%82%E1%85%B2.mp4",
@@ -106,7 +115,7 @@ const CategoryPage = () => {
       <div style={CategoryStyles.container}>
         <SignVideo srcList={videos} />
         <div style={CategoryStyles.containerCategory}>
-          {category.map((item, idx) => (
+          {mappedCategories.map((item, idx) => (
             <CategoryButton key={idx} category={item} />
           ))}
         </div>
