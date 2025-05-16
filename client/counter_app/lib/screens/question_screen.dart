@@ -5,12 +5,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:camera/camera.dart';
 import 'package:image/image.dart' as imglib;
 import 'dart:typed_data';
-// 테스트용 (path_provider.dart, dart.io)
-// import 'package:path_provider/path_provider.dart';
-// import 'dart:io';
 
 import '../styles/custom_styles.dart';
-
 import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'loading_screen.dart';
@@ -26,22 +22,65 @@ class QuestionScreen extends StatefulWidget {
   State<QuestionScreen> createState() => _QuestionScreenState();
 }
 
-class _QuestionScreenState extends State<QuestionScreen> {
+class _QuestionScreenState extends State<QuestionScreen>
+    with WidgetsBindingObserver {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
-  bool _canProcessFrame = true;
   final List<List<int>> _frameBuffer = [];
   final Logger logger = Logger();
+  late GrpcService _grpcService;
+  Timer? _batchSendTimer;
+
+  int _frameCount = 0;
+  late Timer _fpsTimer;
 
   @override
   void initState() {
     super.initState();
+    _grpcService = GrpcService();
+    _grpcService.connect();
     _initializeCamera();
+    _startBatchSendingTimer();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  void _startBatchSendingTimer() {
+    _batchSendTimer = Timer.periodic(Duration(seconds: 1), (_) async {
+      if (_frameBuffer.isEmpty) return;
+
+      final framesToSend = List<List<int>>.from(_frameBuffer);
+      _frameBuffer.clear();
+
+      try {
+        final success = await _grpcService.sendFrames(
+          framesToSend,
+          inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+          num: widget.number,
+        );
+        if (!success) {
+          logger.e('배치 프레임 전송 실패');
+        }
+      } catch (e) {
+        logger.e('배치 전송 중 오류: $e');
+      }
+    });
+  }
+
+  // 테스트용
+  void _startFpsTimer() {
+    _fpsTimer = Timer.periodic(Duration(seconds: 1), (_) {
+      logger.i('1초 동안 처리된 프레임 수: $_frameCount');
+      _frameCount = 0;
+    });
+  }
+
+  // 테스트용
+  void _stopFpsTimer() {
+    _fpsTimer.cancel();
   }
 
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
-
     final frontCamera = cameras?.firstWhere(
       (camera) => camera.lensDirection == CameraLensDirection.front,
       orElse: () => cameras!.first,
@@ -50,25 +89,17 @@ class _QuestionScreenState extends State<QuestionScreen> {
     if (frontCamera != null) {
       _cameraController = CameraController(
         frontCamera,
-        ResolutionPreset.medium,
+        ResolutionPreset.low,
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
       await _cameraController!.initialize();
       setState(() {});
 
+      _startFpsTimer();
+
       _cameraController!.startImageStream(_processCameraImage);
     }
   }
-
-  // 테스트용 (saveFrameAsImage 함수)
-  // Future<void> saveFrameAsImage(List<int> jpegBytes, int index) async {
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final filePath = '${directory.path}/frame_$index.jpg';
-  //   final file = File(filePath);
-
-  //   await file.writeAsBytes(jpegBytes);
-  //   logger.i('Saved frame to $filePath');
-  // }
 
   Future<List<int>?> _convertYUV420ToJPEG(CameraImage image) async {
     try {
@@ -86,16 +117,15 @@ class _QuestionScreenState extends State<QuestionScreen> {
       final uBytes = uPlane.bytes;
       final vBytes = vPlane.bytes;
 
-      final int frameSize = width * height;
-      final List<int> rgbBytes = List<int>.filled(frameSize * 3, 0);
+      final List<int> rgbBytes = List<int>.filled(width * height * 3, 0);
 
       for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
-          final int uvX = x ~/ 2;
-          final int uvY = y ~/ 2;
-          final int uvIndex = uvY * uvRowStride + uvX * uvPixelStride;
-          final int index = y * width + x;
-          final int pixelIndex = index * 3;
+          final uvX = x ~/ 2;
+          final uvY = y ~/ 2;
+          final uvIndex = uvY * uvRowStride + uvX * uvPixelStride;
+          final index = y * width + x;
+          final pixelIndex = index * 3;
 
           if (index >= yBytes.length ||
               uvIndex >= uBytes.length ||
@@ -131,50 +161,51 @@ class _QuestionScreenState extends State<QuestionScreen> {
         format: imglib.Format.uint8,
       );
 
-      final rotatedImage = imglib.copyRotate(
-        rgbImage,
-        angle: 270,
-      ); // 이미지 세로로 저장하기 위함
-
-      return imglib.encodeJpg(rotatedImage);
+      final rotatedImage = imglib.copyRotate(rgbImage, angle: 270);
+      return imglib.encodeJpg(rotatedImage, quality: 50);
     } catch (e) {
       logger.e('YUV420 to JPEG 변환 실패: $e');
       return null;
     }
   }
 
-  void _processCameraImage(CameraImage image) async {
-    final start = DateTime.now();
+  void _processCameraImage(CameraImage image) {
+    _frameCount++; // 테스트용코드
 
-    // 프레임 너무 자주 처리하지 않게 throttle 걸기
-    if (!_canProcessFrame) return;
-    _canProcessFrame = false;
-
-    final bytes = await _convertYUV420ToJPEG(image);
-    if (bytes != null) {
-      _frameBuffer.add(bytes);
-      // 테스트용 (바로 아래 if문)
-      // if (_frameBuffer.length == 1) {
-      //   await saveFrameAsImage(bytes, 0);
-      // }
-    }
-
-    final elapsed = DateTime.now().difference(start).inMilliseconds;
-
-    final nextDelay = 33 - elapsed;
-    if (_frameBuffer.length > 100) {
-      _frameBuffer.removeAt(0); // 오래된 프레임 제거해서 너무 쌓이지 않게
-    }
-
-    Future.delayed(Duration(milliseconds: nextDelay > 0 ? nextDelay : 0), () {
-      _canProcessFrame = true;
+    _convertYUV420ToJPEG(image).then((jpegBytes) {
+      if (jpegBytes != null) {
+        _frameBuffer.add(jpegBytes);
+        if (_frameBuffer.length > 90) {
+          _frameBuffer.removeRange(0, _frameBuffer.length - 90);
+        }
+      }
     });
   }
 
   @override
   void dispose() {
+    _stopFpsTimer(); // 테스트용
+    _batchSendTimer?.cancel();
     _cameraController?.dispose();
+    _grpcService.shutdown();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused) {
+      _cameraController?.stopImageStream();
+      logger.i('앱 비활성화로 카메라 중지');
+    } else if (state == AppLifecycleState.resumed) {
+      if (_cameraController != null &&
+          _cameraController!.value.isInitialized &&
+          !_cameraController!.value.isStreamingImages) {
+        _cameraController!.startImageStream(_processCameraImage);
+        logger.i('앱 재활성화로 카메라 재시작');
+      }
+    }
   }
 
   @override
@@ -192,49 +223,32 @@ class _QuestionScreenState extends State<QuestionScreen> {
               ),
               showSendButton: true,
               onSend: () async {
-                bool hasError = false;
+                await _cameraController?.stopImageStream();
+                _batchSendTimer?.cancel();
 
-                final grpcService = GrpcService();
-                try {
-                  logger.i("gRPC 연결 시도...");
-                  await grpcService.connect();
+                bool success = true;
+                if (_frameBuffer.isNotEmpty) {
+                  success = await _grpcService.sendFrames(
+                    List<List<int>>.from(_frameBuffer),
+                    inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+                    num: widget.number,
+                  );
 
-                  logger.i("gRPC 연결 성공, 전송 시작");
-
-                  // 1분 지나면 타임아웃
-                  final response = await grpcService
-                      .sendFrames(
-                        _frameBuffer,
-                        inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
-                        num: widget.number,
-                      )
-                      .timeout(
-                        const Duration(minutes: 1),
-                        onTimeout: () {
-                          throw TimeoutException('grpc 타임아웃');
-                        },
-                      );
-
-                  if (!response) {
-                    hasError = true;
-                    logger.e("ai 응답 오류 (success: false)");
+                  if (!success) {
+                    logger.e('최종 프레임 전송 실패');
                   }
-                } catch (e) {
-                  logger.e('gRPC 전송 중 오류: $e');
-                  hasError = true;
-                }
 
-                if (!mounted) return;
+                  _frameBuffer.clear();
+                }
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => LoadingScreen(error: hasError),
+                    builder: (_) => LoadingScreen(error: !success),
                   ),
                 );
               },
             ),
-
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
@@ -258,16 +272,6 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // 테스트용 (바로 아래 패딩 블록)
-                  // Padding(
-                  //   padding: const EdgeInsets.all(20),
-                  //   child: Image.file(
-                  //     File(
-                  //       '/data/user/0/com.example.counter_app/app_flutter/frame_0.jpg',
-                  //     ),
-                  //     height: 200,
-                  //   ),
-                  // ),
                   if (!widget.isOrder)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -277,7 +281,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => QuickAnswerScreen(),
+                                builder: (_) => QuickAnswerScreen(),
                               ),
                             );
                           },
@@ -292,9 +296,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder:
-                                    (context) =>
-                                        QuickAnswerScreen(isWifi: true),
+                                builder: (_) => QuickAnswerScreen(isWifi: true),
                               ),
                             );
                           },

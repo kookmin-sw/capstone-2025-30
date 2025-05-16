@@ -21,16 +21,16 @@ class _LoadingScreenState extends State<LoadingScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
 
     const videos = [
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A1%B0%EA%B8%88%2C%20%EC%9E%91%EB%8B%A4%2C%20%EC%A0%81%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%8B%A4%EB%A6%AC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A7%81%EC%9B%90.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%AC%B8%EC%9D%98.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%8C%80%EB%8B%B5.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%88%98%EC%96%B4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%ED%9C%B4%EB%8C%80%ED%8F%B0%2C%20%ED%95%B8%EB%93%9C%ED%8F%B0.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B3%B4%EC%97%AC%EC%A3%BC%EB%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9E%A0%EC%8B%9C.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EA%B8%B0%EB%8B%A4%EB%A6%AC%EB%8B%A4.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7%2C%20%E1%84%8C%E1%85%A1%E1%86%A8%E1%84%83%E1%85%A1%2C%20%E1%84%8C%E1%85%A5%E1%86%A8%E1%84%83%E1%85%A1.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%83%E1%85%A1%E1%84%85%E1%85%B5%E1%84%83%E1%85%A1.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%B5%E1%86%A8%E1%84%8B%E1%85%AF%E1%86%AB.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%B4.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%83%E1%85%A2%E1%84%83%E1%85%A1%E1%86%B8.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%AE%E1%84%8B%E1%85%A5.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%92%E1%85%B2%E1%84%83%E1%85%A2%E1%84%91%E1%85%A9%E1%86%AB%2C%20%E1%84%92%E1%85%A2%E1%86%AB%E1%84%83%E1%85%B3%E1%84%91%E1%85%A9%E1%86%AB.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A9%E1%84%8B%E1%85%A7%E1%84%8C%E1%85%AE%E1%84%83%E1%85%A1.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A1%E1%86%B7%E1%84%89%E1%85%B5.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%83%E1%85%A1%E1%84%85%E1%85%B5%E1%84%83%E1%85%A1.mp4",
     ];
 
     return Stack(
