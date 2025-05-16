@@ -19,16 +19,16 @@ class _QuickAnswerScreenState extends State<QuickAnswerScreen> {
   @override
   Widget build(BuildContext context) {
     const wifiVideos = [
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%90%E1%85%A5%E1%84%82%E1%85%A6%E1%86%BA.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B9%84%EB%B0%80.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%B2%88%ED%98%B8.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/cafepassword+~+%E1%84%8B%E1%85%B5%E1%86%B8%E1%84%82%E1%85%B5%E1%84%83%E1%85%A1.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B5%E1%86%AB%E1%84%90%E1%85%A5%E1%84%82%E1%85%A6%E1%86%BA.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%B5%E1%84%86%E1%85%B5%E1%86%AF.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A5%E1%86%AB%E1%84%92%E1%85%A9.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%83%E1%85%A1.mp4",
     ];
 
     const restroomVideos = [
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%ED%99%94%EC%9E%A5%EC%8B%A4.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%98%A4%EB%A5%B8%EC%AA%BD.mp4",
-      "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9E%88%EB%8B%A4.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%92%E1%85%AA%E1%84%8C%E1%85%A1%E1%86%BC%E1%84%89%E1%85%B5%E1%86%AF.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A9%E1%84%85%E1%85%B3%E1%86%AB%E1%84%8D%E1%85%A9%E1%86%A8.mp4",
+      "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B5%E1%86%BB%E1%84%83%E1%85%A1.mp4",
     ];
 
     return Scaffold(
