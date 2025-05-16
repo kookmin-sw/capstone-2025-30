@@ -83,7 +83,7 @@ loop:
 				storeCode = req.StoreCode
 			})
 
-			logrus.Infof("StreamInquiries received: store_code=%s, type=%s, data=%s", req.StoreCode, req.InquiryType, req.FrameData)
+			//logrus.Infof("StreamInquiries received: store_code=%s, type=%s, data=%s", req.StoreCode, req.InquiryType, req.FrameData)
 
 			frame := req.FrameData
 
