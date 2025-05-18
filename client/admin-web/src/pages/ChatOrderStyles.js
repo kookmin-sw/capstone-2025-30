@@ -6,7 +6,6 @@ const ChatOrderStyles = {
     height: "100vh",
   },
   chatBubble: {
-    padding: "88px 30px 180px 30px",
     backgroundColor: CustomStyles.backgroundBlue,
     flex: 1,
   },
