@@ -2,9 +2,9 @@
 title: 시스템 설계도
 subtitle: System Architecture
 layout: default
-modal-id: 3
-img: system_architecture.jpg
-thumbnail: system_architecture.jpg
+modal-id: 5
+img: new-5.drawio.png
+thumbnail: new-5.drawio.png
 alt: image-alt
 description: 
 

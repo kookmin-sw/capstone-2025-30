@@ -9,7 +9,7 @@ description: "2025 졸업 작품 - 팀 30"
 # Team names, titles and social links
 people:
 - name: 김상민
-  pic: 1
+  pic: 3
   position: Team Leader, Backend-Developer
   social:
     - title: google-plus

@@ -10,7 +10,7 @@
                 {% for member in site.people %}
                 <div class="col-sm-4">
                     <div class="team-member">
-                        <img src="img/team/{{ member.pic }}.jpg" class="img-responsive img-circle" alt="">
+                        <img src="img/team/{{ member.pic }}.jpg" class="img-responsive img-circle team-photo" alt="">
                         <h4>{{ member.name }}</h4>
                         <p class="text-muted">{{ member.position }}</p>
                         <ul class="list-inline social-buttons">
@@ -33,4 +33,16 @@
                 </div>
             </div>
         </div>
+
+        <style>
+        .team-photo {
+            width: 200px;        
+            height: 200px;       
+            object-fit: cover;   
+            border-radius: 50%;   
+            overflow: hidden;
+            margin: 0 auto;     
+        }
+        </style>
+
     </section>

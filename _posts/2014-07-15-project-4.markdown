@@ -1,11 +1,12 @@
 ---
-title: 개발 설계도
-subtitle: Development Architecture
+title: 사업 계획서
+subtitle: Business Plan
 layout: default
 modal-id: 4
-img: develop_architecture.jpg
-thumbnail: develop_architecture.jpg
+img: business_plan.png
+thumbnail: business_plan.png
 alt: image-alt
-description: 
+description: "https://drive.google.com/file/d/1jetP1r_VG7WsAy0ZcKv1CvQkPUQ2O3gr/preview"
 
 ---
+

@@ -2,7 +2,7 @@
 title: 유저 시나리오 2
 subtitle: User Scenario
 layout: default
-modal-id: 2
+modal-id: 8
 img: sc2.png
 thumbnail: sc2.png
 alt: image-alt

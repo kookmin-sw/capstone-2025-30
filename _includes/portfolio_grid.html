@@ -1,5 +1,5 @@
 <!-- Portfolio Grid Section -->
-<section id="portfolio" class="bg-light-gray">
+<section id="portfolio" class="bg-light-white">
     <style>
         .portfolio-item img {
             width: 100%;
@@ -15,16 +15,33 @@
             </div>
         </div>
         <div class="row">
-            {% for post in site.posts %}
+            {% assign sorted_posts = site.posts | sort: 'modal-id' %}
+            {% for post in sorted_posts %}
+
             <div class="col-md-3 col-sm-6 portfolio-item">
-                <a href="#portfolioModal{{ post.modal-id }}" class="portfolio-link" data-toggle="modal">
-                    <div class="portfolio-hover">
-                        <div class="portfolio-hover-content">
-                            <i class="fa fa-plus fa-3x"></i>
+
+                {% if post.subtitle == "Business Plan" or post.subtitle == "Interim Report" or post.subtitle == "Final Report" or post.subtitle == "Final Presentation" %}
+                    <!-- subtitle이 Business Plan이면 description 링크로 이동 -->
+                    <a href="{{ post.description }}" target="_blank" rel="noopener" class="portfolio-link">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-external-link fa-3x"></i>
+                            </div>
                         </div>
-                    </div>
-                    <img src="img/portfolio/{{ post.thumbnail }}" class="img-responsive img-centered" alt="">
-                </a>
+                        <img src="img/portfolio/{{ post.thumbnail }}" class="img-responsive img-centered" alt="">
+                    </a>
+                {% else %}
+                    <!-- 그 외는 모달 띄우기 -->
+                    <a href="#portfolioModal{{ post.modal-id }}" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img src="img/portfolio/{{ post.thumbnail }}" class="img-responsive img-centered" alt="">
+                    </a>
+                {% endif %}
+
                 <div class="portfolio-caption">
                     <h4>{{ post.title }}</h4>
                     <p class="text-muted">{{ post.subtitle }}</p>
