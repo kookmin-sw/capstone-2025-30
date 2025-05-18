@@ -1,4 +1,7 @@
----
+![image](https://github.com/user-attachments/assets/cb441ce8-455f-43d4-8e0f-5398f50f7209)
+# 농인을 위한 수어 기반 주문 소통 서비스 <span>$\bf{\large{\color{#458EFD}SignOrder}}$</span>
+
+
 ## 목차
 1️⃣ [프로젝트 소개](#-프로젝트-소개)
 
@@ -15,7 +18,7 @@
 7️⃣ [소개 자료](#-소개-자료)
 
 
-## 1. 프로잭트 소개
+## 1. 프로젝트 소개
 
 <div style="text-align: center; padding: 20px;">
     <img src="https://github.com/user-attachments/assets/1794e351-6c51-4656-84e6-09b1247bf75b" alt="sign_order_logo" style="width: 300px; height: auto; border-radius: 10px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
@@ -106,7 +109,8 @@
 
 ## 5. 시스템 구조
 
-구조도 사진 넣기 
+![KakaoTalk_Photo_2025-05-18-19-31-09-1](https://github.com/user-attachments/assets/7ddeb640-9728-4dfc-9161-2b17e57a8d32)
+
 
 ## 6. 기술 스택
 
