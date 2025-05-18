@@ -22,7 +22,6 @@ const DetailedMenuPage = () => {
   const [detailMenu, setDetailMenu] = useState([]);
   const [selectedTemp, setSelectedTemp] = useState("차갑게");
   const [selectedSize, setSelectedSize] = useState("적게");
-  const [isEnded, setIsEnded] = useState(false);
   const [videoList, setVideoList] = useState([]);
 
   useEffect(() => {
@@ -131,17 +130,7 @@ const DetailedMenuPage = () => {
 
         <div style={DetailedMenuStyles.line} />
 
-        <div
-          style={{
-            position: "relative",
-            width: "100%",
-            paddingTop: "100%",
-            backgroundColor: isEnded && "rgba(0,0,0,0.7)",
-            borderRadius: 16,
-          }}
-        >
-          {detailMenu.sign_language_urls && <SignVideo srcList={videoList} />}
-        </div>
+        {detailMenu.sign_language_urls && <SignVideo srcList={videoList} />}
 
         <div style={DetailedMenuStyles.line} />
 
