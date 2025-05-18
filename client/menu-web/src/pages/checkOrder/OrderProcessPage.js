@@ -72,14 +72,14 @@ const OrderProcessPage = () => {
   const [menu, setMenu] = useState([]);
 
   const videos1 = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EB%A9%94%EB%89%B4.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A4%80%EB%B9%84.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A4%91%EC%95%99%2C%EB%8F%84%EC%A4%91%2C%EC%A4%91%2C%EA%B0%80%EC%9A%B4%EB%8D%B0%2C%EC%A4%91%EC%8B%AC.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%A6%E1%84%82%E1%85%B2.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%86%AB%E1%84%87%E1%85%B5.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%8B%E1%85%A1%E1%86%BC%2C%20%E1%84%83%E1%85%A9%E1%84%8C%E1%85%AE%E1%86%BC%2C%20%E1%84%8C%E1%85%AE%E1%86%BC%2C%20%E1%84%80%E1%85%A1%E1%84%8B%E1%85%AE%E1%86%AB%E1%84%83%E1%85%A6%2C%20%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%89%E1%85%B5%E1%86%B7.mp4",
   ];
 
   const videos2 = [
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%9E%91%EC%84%B1%2C%EC%A0%9C%EC%9E%91%2C%EC%A0%9C%EC%A1%B0%2C%EB%A7%8C%EB%93%A4%EB%8B%A4%2C%EA%B0%80%EA%B3%B5.mp4",
-    "https://signlanguagerawvideo.s3.ap-northeast-2.amazonaws.com/%EC%A2%85%EB%A3%8C%2C%EB%81%9D%EB%82%98%EB%8B%A4%2C%EB%A7%88%EC%B9%98%EB%8B%A4.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A1%E1%86%A8%E1%84%89%E1%85%A5%E1%86%BC%2C%20%E1%84%8C%E1%85%A6%E1%84%8C%E1%85%A1%E1%86%A8%2C%20%E1%84%8C%E1%85%A6%E1%84%8C%E1%85%A9%2C%20%E1%84%86%E1%85%A1%E1%86%AB%E1%84%83%E1%85%B3%E1%86%AF%E1%84%83%E1%85%A1%2C%20%E1%84%80%E1%85%A1%E1%84%80%E1%85%A9%E1%86%BC.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A9%E1%86%BC%E1%84%85%E1%85%AD%2C%20%E1%84%81%E1%85%B3%E1%87%80%E1%84%82%E1%85%A1%E1%84%83%E1%85%A1%2C%20%E1%84%86%E1%85%A1%E1%84%8E%E1%85%B5%E1%84%83%E1%85%A1.mp4",
   ];
 
   useEffect(() => {
