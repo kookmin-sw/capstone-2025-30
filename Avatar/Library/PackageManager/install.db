@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "packages": {
+    "com.github.homuler.mediapipe": {
+      "tarball": {
+        "hash": "7f48457ae94b5f92d3f657c87ad3f806",
+        "mtime": 1744422793635,
+        "size": 291080501,
+        "localPath": "/Users/jeonghoyong/Downloads/com.github.homuler.mediapipe-0.16.1.tgz"
+      }
+    }
+  }
+}

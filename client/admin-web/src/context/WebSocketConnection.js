@@ -6,12 +6,19 @@ const useWebSocketConnection = () => {
   const [messages, setMessages] = useState([]);
   const WS_URL = `${process.env.REACT_APP_WS_URL}?store_code=5fjVwE8z&client_type=manager_web&api-key=${process.env.REACT_APP_WS_API_KEY}`;
   const hasConnectedOnce = useRef(false);
+  const reconnectDelay = 2000;
+  const reconnectTimer = useRef(null);
+  const isReconnecting = useRef(false);
 
   useEffect(() => {
     console.log("useEffect: websocket 연결 시도");
     connectWebSocket();
 
     return () => {
+      if (reconnectTimer.current) {
+        clearTimeout(reconnectTimer.current);
+      }
+
       // StrictMode 대응: 연결된 적 있고 실제로 열린 상태일 때만 disconnect
       if (
         ws.current &&
@@ -46,6 +53,7 @@ const useWebSocketConnection = () => {
       ws.current.onerror = (error) => {
         console.error("websocket 오류:", error);
         setIsConnected(false);
+        reconnect();
       };
 
       ws.current.onclose = (event) => {
@@ -58,6 +66,7 @@ const useWebSocketConnection = () => {
           event.wasClean
         );
         setIsConnected(false);
+        reconnect();
       };
     } catch (err) {
       console.error("websocket 예외 발생:", err);
@@ -70,6 +79,18 @@ const useWebSocketConnection = () => {
       ws.current.close();
       setIsConnected(false);
     }
+  };
+
+  const reconnect = () => {
+    if (isReconnecting.current) return;
+
+    isReconnecting.current = true;
+    console.warn(`웹소켓 재연결을 ${reconnectDelay / 1000}초 후 시도합니다`);
+
+    reconnectTimer.current = setTimeout(() => {
+      connectWebSocket();
+      isReconnecting.current = false;
+    }, reconnectDelay);
   };
 
   const sendMessage = (message) => {

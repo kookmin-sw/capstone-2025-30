@@ -3,6 +3,7 @@ import CustomStyles from "@/styles/CustomStyles";
 const HomeStyles = {
   container: {
     padding: "0 30px",
+    overflow: "hidden",
   },
   headerIcon: {
     fontSize: 48,
@@ -23,6 +24,7 @@ const HomeStyles = {
     border: "none",
     cursor: "pointer",
     marginTop: 30,
+    marginBottom: 50,
   },
 };
 
