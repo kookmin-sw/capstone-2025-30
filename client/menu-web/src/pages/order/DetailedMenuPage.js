@@ -151,7 +151,6 @@ const DetailedMenuPage = () => {
           style={{
             position: "relative",
             width: "100%",
-            paddingTop: "100%",
             backgroundColor: isEnded && "rgba(0,0,0,0.7)",
             borderRadius: 16,
           }}
