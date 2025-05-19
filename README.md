@@ -46,9 +46,11 @@
 
 ## 3. 소개 영상
 
-영상 넣기 
+https://github.com/user-attachments/assets/a3128bb3-c4f2-4088-b45e-1f0ec0306331
 
-### 4. 팀원 소개
+### 4. 팀원 
+
+소개
 
 <table>
     <tr align="center">
@@ -99,7 +101,7 @@
             AI, AI 서버 개발
         </td>
         <td>
-            Frontend
+            Frontend, UI 디자인
         </td>
         <td>
             아바타 개발
@@ -155,10 +157,10 @@
 | **Spreadsheet API** | ![gspread](https://img.shields.io/badge/gspread-34A853?style=for-the-badge&logo=google-sheets&logoColor=white) |
 
 ## 7. 소개 자료
-### [중간 발표 자료]()
-### [중간 보고서]()
-### [시연 동영상]()
-### [포스터]()
-### [최종 발표 자료]()
+### [중간 발표 자료](https://drive.google.com/file/d/1R-pnw1muGACA_5_bLgEAGD-EcvWx0-XL/view?usp=drive_link )
+### [중간 보고서](https://drive.google.com/file/d/1jetP1r_VG7WsAy0ZcKv1CvQkPUQ2O3gr/view?usp=sharing )
+### [시연 동영상](https://www.youtube.com/watch?v=IHmwz-3R1Yo )
+### [포스터](https://drive.google.com/file/d/1yRZ_J_zru48YQ0s8dxFI0BwPlPZP_eBf/view?usp=drive_link)
+### [최종 발표 자료](https://www.canva.com/design/DAGnsdKrB-I/ikGDPPJzdcqZCBxnMFkpww/view?utm_content=DAGnsdKrB-I&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h453a9e72fb )
 ### [결과 보고서]()
  
