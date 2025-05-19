@@ -1,5 +1,5 @@
 # 농인을 위한 수어 기반 주문 소통 서비스 <span>$\bf{\large{\color{#458EFD}SignOrder}}$</span>
-![image](https://github.com/user-attachments/assets/cb441ce8-455f-43d4-8e0f-5398f50f7209)
+![image](https://github.com/user-attachments/assets/cdc0d617-af3c-479a-99ab-4b30006cdd21)
 
 
 ## 목차
@@ -155,10 +155,9 @@
 | **Spreadsheet API** | ![gspread](https://img.shields.io/badge/gspread-34A853?style=for-the-badge&logo=google-sheets&logoColor=white) |
 
 ## 7. 소개 자료
-### [중간 발표 자료]()
-### [중간 보고서]()
-### [시연 동영상]()
-### [포스터]()
-### [최종 발표 자료]()
-### [결과 보고서]()
- 
+### [중간 발표 자료](https://drive.google.com/file/d/1R-pnw1muGACA_5_bLgEAGD-EcvWx0-XL/view?usp=drive_link)
+### [중간 보고서](https://drive.google.com/file/d/1jetP1r_VG7WsAy0ZcKv1CvQkPUQ2O3gr/view?usp=sharing)
+### [시연 동영상](https://www.youtube.com/watch?v=IHmwz-3R1Yo)
+### [포스터](https://drive.google.com/file/d/16t_PlK_TkFd09JLe3dJyIgxU3XmBpNjf/view?usp=drive_link)
+### [최종 발표 자료](https://drive.google.com/file/d/1ohzAjFnFfPPdGY30yLIPBp3_HJu_tqNk/view?usp=sharing)
+### [결과 보고서](https://drive.google.com/file/d/14fOL9dVCOZJEYAjtLDl2ZG_CtCYYjiRo/view?usp=drive_link)
