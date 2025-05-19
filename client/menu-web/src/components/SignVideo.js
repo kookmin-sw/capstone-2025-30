@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import CustomStyles from "@/styles/CustomStyles";
 import { ReactComponent as IconReload } from "@/assets/icons/reload.svg";
 
-const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
+const SignVideo = ({ srcList = [], onVideoEnd }) => {
   const videoRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isEnded, setIsEnded] = useState(false);
@@ -18,7 +18,7 @@ const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
       setCurrentIndex(currentIndex + 1);
     } else {
       setIsEnded(true);
-      if (isOnce && typeof onVideoEnd === "function") {
+      if (typeof onVideoEnd === "function") {
         onVideoEnd();
       }
     }
@@ -49,14 +49,13 @@ const SignVideo = ({ srcList = [], isOnce = false, onVideoEnd }) => {
         }}
         autoPlay
         muted
-        loop
         playsInline
         webkit-playsinline="true"
         x5-playsinline="true"
         x5-video-player-type="h5"
         onEnded={handleEnded}
       />
-      {isEnded && !isOnce && (
+      {isEnded && (
         <>
           <div
             style={{

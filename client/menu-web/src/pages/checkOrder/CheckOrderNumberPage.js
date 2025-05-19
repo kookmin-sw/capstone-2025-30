@@ -79,7 +79,6 @@ const CheckOrderNumberPage = () => {
           {/* 없는주문번호입니다 */}
           <SignVideo
             srcList={videos2}
-            isOnce={true}
             onVideoEnd={() => setIsBottomSheetOpen(false)}
           />
         </BottomSheet>

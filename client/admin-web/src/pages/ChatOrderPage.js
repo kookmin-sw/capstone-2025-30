@@ -118,7 +118,12 @@ const ChatOrderPage = () => {
         />
       </div>
 
-      <div style={ChatOrderStyles.chatBubble}>
+      <div
+        style={{
+          ...ChatOrderStyles.chatBubble,
+          padding: `88px 30px ${isStatusCompleted ? 0 : 180}px 30px`,
+        }}
+      >
         {chatList.map((item, index, arr) => {
           const currentTime = new Date(item.created_at);
           const currentKey = `${
