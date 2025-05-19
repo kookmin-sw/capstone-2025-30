@@ -6,7 +6,7 @@ modal-id: 2
 img: final.png
 thumbnail: final.png
 alt: image-alt
-description: "https://drive.google.com/file/d/19H3H_73najhOdINZUxIb3CMWBhF4OMtM/view?usp=sharing"
+description: "https://drive.google.com/file/d/1swzAI006eS9UME9-OqUXyRkakAEnZmmy/view?usp=sharing"
 
 ---
 
