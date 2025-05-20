@@ -39,9 +39,9 @@ for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
 if env == 'production':
-    path = 'gesture_dict/60_v8_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v18_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v8_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v18_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
@@ -61,6 +61,19 @@ to_sign_language_prompt = ChatPromptTemplate.from_messages([
      {grammer}
 
      You should answer in Korean Sign Language (KSL). Please transform the sentence based on the given KSL grammar rules, including compound words, compound verbs, and combined actions, following the structure presented in the provided material. After transforming the sentence, please arrange the elements according to the KSL grammar structure, showing the correct order of signs.
+
+     ⚠️ **Guideline for Omitting Formal Expressions** ⚠️  
+    The following formal sentence endings and auxiliary verbs — **'합니다', '입니다', '이다', '하다'** — must be **strictly excluded** from the output.  
+    These expressions are **grammatical markers in Korean** and carry no semantic value in Korean Sign Language (KSL). KSL is meaning-focused, and such formalities are omitted entirely.
+
+    Examples:
+    - "감사합니다" → ['감사']
+    - "학생입니다" → ['학생']
+    - "공부하다" → ['공부']
+
+    ✅ Ensure that these expressions are **never included** in the transformed KSL sentence.  
+    Only include signs that carry actual meaning in KSL.
+
 
      ⚠️ **Allowed Vocabulary Words** ⚠️  
      You must use only the following KSL signs when forming your answer:  
@@ -150,15 +163,38 @@ def get_translate_to_sign_language(text):
 
     return result.signs
 
+
+import re
+
 def get_sign_language_url_list(inqury):
-    sign_language_collection = db["sign_language"]
-    
+    sign_language_collection = db["avatar_sign_language"]
+
+    escaped_inqury = re.escape(inqury)
+
+    potential_matches = list(sign_language_collection.find({
+        "name": {"$regex": f"^{escaped_inqury}", "$options": "i"}
+    }))
+
+    if potential_matches:
+        for match in potential_matches:
+            if match["name"].strip().lower() == inqury.strip().lower():
+                print("🎯 원문 정확 일치:", match["name"])
+                return [match["url"]]
+        
+        print("🔎 부분 일치 사용:", potential_matches[0]["name"])
+        return [potential_matches[0]["url"]]
+
     sign_language_inqury = get_translate_to_sign_language(inqury)
     print(f"✨ 한국 수어 문법 문장 : {sign_language_inqury}")
     words = sign_language_inqury
 
-    sign_data_list = list(sign_language_collection.find({"name": {"$regex": "|".join(words), "$options": "i"}}))
+    recombined_word = "".join(words)
+    recombined_match = sign_language_collection.find_one({"name": {"$regex": f"^{recombined_word}$", "$options": "i"}})
+    if recombined_match:
+        print("🔁 변환된 단어 조합으로 매칭 성공:", recombined_word)
+        return [recombined_match["url"]]
 
+    sign_data_list = list(sign_language_collection.find({"name": {"$regex": "|".join(words), "$options": "i"}}))
     sign_data_map = {item['name']: item for item in sign_data_list} 
 
     url_list = []
@@ -177,7 +213,7 @@ def get_sign_language_url_list(inqury):
 
     return url_list
 
-# urls = get_sign_language_url_list("감사합니다")
+# urls = get_sign_language_url_list("저는 직원입니다")
 # print("\n📦 전체 URL 리스트:")
 # for i, url in enumerate(urls, 1):
 #     print(f"{i}. {url}")
