@@ -38,7 +38,7 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 # video_path = '영수증 주세요.mp4'
 # video_path = '따뜻하게 해주세요.mp4'
 # video_path = '화장실 비밀번호 있나요?.mp4'
-video_path = '휴지 있어요_.mp4'
+# video_path = '휴지 있어요_.mp4'
 # video_path = '포크가 있어요_.mp4'
 # video_path = '아메리카노_수어통합본.mp4'
 # video_path = '긍정.mp4'
@@ -85,6 +85,7 @@ v9
 # video_path = '따1.mp4'
 # video_path = "돈1.mp4"
 # video_path = '환1.mp4'
+video_path = ""
 
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():
@@ -168,7 +169,7 @@ print(f"[결과] Store: {response.store_id}, 문장: {response.predicted_sentenc
 #     "frames": flat_joints,
 # }
 
-# with open("드레스_input.json", "w", encoding="utf-8") as f:
+# with open("차2.json", "w", encoding="utf-8") as f:
 #     json.dump(request_data, f, ensure_ascii=False, indent=2)
 
 # print("✅ JSON 저장 완료: frame_sequence_input.json")

@@ -192,7 +192,9 @@ def register_sign_language_words():
 
     # 전체 행을 삽입하는 경우
     data = sheet.get_all_records()
-    sign_language_collection.insert_many(data)
+
+    print(data)
+    # sign_language_collection.insert_many(data)
 
     # headers = sheet.row_values(1)
 
@@ -439,7 +441,8 @@ def register_avatar_sign_language_words():
     spreadsheet_id = os.getenv("SPREADSHEET_ID")
 
     spreadsheet = gc.open_by_key(spreadsheet_id)
-    sheet = spreadsheet.get_worksheet(1)
+    # sheet = spreadsheet.get_worksheet(1)
+    sheet = spreadsheet.worksheet("아바타시트") 
 
     data = sheet.get_all_records()
     sign_language_collection.insert_many(data)
