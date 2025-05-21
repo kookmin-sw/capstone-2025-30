@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
@@ -7,7 +8,10 @@ class WebSocketService {
   static final WebSocketService _instance = WebSocketService._internal();
   factory WebSocketService() => _instance;
   WebSocketService._internal();
+  final StreamController<List<String>> _signUrlsController =
+      StreamController<List<String>>.broadcast();
 
+  Stream<List<String>> get signUrlsStream => _signUrlsController.stream;
   WebSocket? _ws;
   bool isConnected = false;
   bool isReconnecting = false;
@@ -20,7 +24,7 @@ class WebSocketService {
       '${dotenv.env['WS_URL']}?store_code=5fjVwE8z&client_type=counter_app&api-key=${dotenv.env['WS_API_KEY']}';
 
   Future<void> connect() async {
-    if (_ws != null && _ws!.readyState == WebSocket.open) {
+    if (_ws != null && _ws!.readyState == WebSocket.open && isConnected) {
       logger.i('websocket 이미 연결됨');
       return;
     }
@@ -94,6 +98,8 @@ class WebSocketService {
           signUrls
             ..clear()
             ..addAll(urlsRaw.cast<String>());
+
+          _signUrlsController.add(signUrls);
           logger.i('수어 영상 URL 로딩 완료:\n${signUrls.join('\n')}');
         }
 

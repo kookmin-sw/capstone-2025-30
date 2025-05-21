@@ -1,21 +1,69 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../styles/custom_styles.dart';
+import 'package:counter_app/screens/answer_screen.dart';
+import 'package:counter_app/services/web_socket_service.dart';
+import 'package:counter_app/services/grpc_service.dart';
 import 'package:counter_app/components/header.dart';
 import 'package:counter_app/components/bottom_sheet.dart';
 import 'package:counter_app/components/sign_video.dart';
 
 class LoadingScreen extends StatefulWidget {
   final bool error;
+  final bool isOrder;
+  final GrpcService grpcService;
 
-  const LoadingScreen({super.key, this.error = false});
+  const LoadingScreen({
+    super.key,
+    this.error = false,
+    this.isOrder = false,
+    required this.grpcService,
+  });
 
   @override
   State<LoadingScreen> createState() => _LoadingScreenState();
 }
 
 class _LoadingScreenState extends State<LoadingScreen> {
+  late StreamSubscription<List<String>> _wsSubscription;
+  late StreamSubscription<bool> _grpcErrorSub;
+  bool _showError = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // 웹소켓 영상 링크 수신 시 자동 이동하도록
+    _wsSubscription = WebSocketService().signUrlsStream.listen((urls) {
+      if (urls.isNotEmpty && mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => AnswerScreen(isOrder: widget.isOrder),
+          ),
+        );
+      }
+    });
+
+    // gprc에서 오류 나면 알 수 있도록
+    _grpcErrorSub = widget.grpcService.errorStream.listen((hasError) {
+      if (hasError && mounted) {
+        setState(() {
+          _showError = true;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _wsSubscription.cancel();
+    _grpcErrorSub.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -36,35 +84,37 @@ class _LoadingScreenState extends State<LoadingScreen> {
     return Stack(
       children: [
         Scaffold(
-          body: Column(
-            children: [
-              Header(
-                centerIcon: Text(
-                  "💬",
-                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+          body: SafeArea(
+            child: Column(
+              children: [
+                Header(
+                  centerIcon: Text(
+                    "💬",
+                    style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    SignVideo(srcList: videos, isOnce: false),
-                    const SizedBox(height: 30),
-                    Center(
-                      child: SpinKitFadingCircle(
-                        color: CustomStyles.pointGray,
-                        size: screenWidth * 0.5,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 20),
+                      SignVideo(srcList: videos, isOnce: false),
+                      const SizedBox(height: 30),
+                      Center(
+                        child: SpinKitFadingCircle(
+                          color: CustomStyles.pointGray,
+                          size: screenWidth * 0.5,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
 
-        if (widget.error)
+        if (widget.error || _showError)
           BottomSheetWidget(
             onClose: () {
               Navigator.pop(context);

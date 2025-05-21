@@ -32,29 +32,31 @@ class _QuickAnswerScreenState extends State<QuickAnswerScreen> {
     ];
 
     return Scaffold(
-      body: Column(
-        children: [
-          Header(
-            centerIcon: Text(
-              "💬",
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Header(
+              centerIcon: Text(
+                "💬",
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                SignVideo(
-                  srcList: widget.isWifi ? wifiVideos : restroomVideos,
-                  aspectRatio: (9 / 16),
-                  isOnce: false,
-                ),
-                const SizedBox(height: 30),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  SignVideo(
+                    srcList: widget.isWifi ? wifiVideos : restroomVideos,
+                    aspectRatio: (9 / 16),
+                    isOnce: false,
+                  ),
+                  const SizedBox(height: 30),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
