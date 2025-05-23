@@ -108,7 +108,7 @@ const OrderProcessPage = () => {
     <>
       <Header centerIcon="✅" cartIcon={null} />
 
-      {orderInformation?.dine_in ? (
+      {orderInformation?.status === "ORDER_PENDING" ? (
         <div style={OrderProcessStyles.container}>
           <div style={OrderProcessStyles.textProcess}>메뉴 준비중</div>
 

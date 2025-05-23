@@ -15,7 +15,7 @@ const TABS = ["이전", "완료"];
 const OrderListPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(state?.fromTab ?? 0);
   const [chatRoomInfo, setChatRoomInfo] = useState([]);
   const { isConnected } = useWebSocket();
 
@@ -107,13 +107,13 @@ const OrderListPage = () => {
       </div>
 
       <div style={OrderListStyles.tabContent}>
-        {activeTab === 0 && (
+        {activeTab === 0 || activeTab === 1 ? (
           <>
             {chatRoomInfo.map((item, idx) => (
               <OrderList
                 key={idx}
                 type={item.notification_title}
-                isDone={false}
+                isDone={activeTab === 1}
                 text={item.number}
                 onClick={() =>
                   navigate("/chat-order", {
@@ -121,36 +121,15 @@ const OrderListPage = () => {
                       adminId: state?.adminId,
                       type: item.notification_title,
                       number: item.number,
-                      isDone: false,
+                      isDone: activeTab === 1,
+                      fromTab: activeTab,
                     },
                   })
                 }
               />
             ))}
           </>
-        )}
-        {activeTab === 1 && (
-          <>
-            {chatRoomInfo.map((item, idx) => (
-              <OrderList
-                key={idx}
-                type={item.notification_title}
-                isDone={true}
-                text={item.number}
-                onClick={() =>
-                  navigate("/chat-order", {
-                    state: {
-                      adminId: state?.adminId,
-                      type: item.notification_title,
-                      number: item.number,
-                      isDone: true,
-                    },
-                  })
-                }
-              />
-            ))}
-          </>
-        )}
+        ) : null}
       </div>
     </div>
   );

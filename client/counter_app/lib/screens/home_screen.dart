@@ -104,60 +104,62 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
-      body: Column(
-        children: [
-          Header(
-            centerIcon: Text(
-              '🏠',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Header(
+              centerIcon: Text(
+                '🏠',
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
+              hideBackButton: true,
             ),
-            hideBackButton: true,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                SignVideo(srcList: videos, isOnce: false),
-                const SizedBox(height: 30),
-                GestureDetector(
-                  onTapDown: (_) => setState(() => _isPressed = true),
-                  onTapUp: (_) {
-                    setState(() => _isPressed = false);
-                    _handleTap();
-                  },
-                  onTapCancel: () => setState(() => _isPressed = false),
-                  child: Container(
-                    height: screenWidth * (164 / 300),
-                    decoration: BoxDecoration(
-                      color:
-                          _isPressed
-                              ? CustomStyles.primaryBlue
-                              : CustomStyles.primaryGray,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text('💬', style: TextStyle(fontSize: 60)),
-                        const SizedBox(height: 16),
-                        Text(
-                          '문의하기',
-                          style: CustomStyles.fontHead20.copyWith(
-                            color:
-                                _isPressed
-                                    ? CustomStyles.primaryWhite
-                                    : CustomStyles.primaryBlack,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: [
+                  SignVideo(srcList: videos, isOnce: false),
+                  const SizedBox(height: 30),
+                  GestureDetector(
+                    onTapDown: (_) => setState(() => _isPressed = true),
+                    onTapUp: (_) {
+                      setState(() => _isPressed = false);
+                      _handleTap();
+                    },
+                    onTapCancel: () => setState(() => _isPressed = false),
+                    child: Container(
+                      height: screenWidth * (164 / 300),
+                      decoration: BoxDecoration(
+                        color:
+                            _isPressed
+                                ? CustomStyles.primaryBlue
+                                : CustomStyles.primaryGray,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text('💬', style: TextStyle(fontSize: 60)),
+                          const SizedBox(height: 16),
+                          Text(
+                            '문의하기',
+                            style: CustomStyles.fontHead20.copyWith(
+                              color:
+                                  _isPressed
+                                      ? CustomStyles.primaryWhite
+                                      : CustomStyles.primaryBlack,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

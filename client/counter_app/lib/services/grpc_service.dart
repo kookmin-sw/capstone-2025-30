@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:grpc/grpc.dart';
 import 'package:logger/logger.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,6 +17,12 @@ class GrpcService {
   APIServiceClient? _apiClient;
 
   final Logger logger = Logger(level: Level.verbose);
+
+  StreamController<FrameToMarkingDataRequest>? _frameStreamController;
+  Future<void>? _responseFuture;
+
+  final _errorStreamController = StreamController<bool>.broadcast();
+  Stream<bool> get errorStream => _errorStreamController.stream;
 
   Future<void> connect() async {
     _middlewareChannel = ClientChannel(
@@ -32,39 +41,48 @@ class GrpcService {
 
     _middlewareClient = ChangeMiddlwareClient(_middlewareChannel!);
     _apiClient = APIServiceClient(_apiChannel!);
+
+    _frameStreamController = StreamController<FrameToMarkingDataRequest>();
+
+    _responseFuture = _middlewareClient!
+        .frameToMarkingData(_frameStreamController!.stream)
+        .then((res) {
+          logger.i(
+            "프레임 서버 응답: ${res.success}, 에러: ${res.hasError() ? res.error : '없음'}",
+          );
+          _errorStreamController.add(true);
+        })
+        .catchError((e, st) {
+          logger.e("서버 스트리밍 응답 중 오류: $e\n$st");
+          _errorStreamController.add(true);
+        });
   }
 
   // O 버튼 클릭 시 (정확히는 카메라 화면에서 사용)
-  Future<bool> sendFrames(
-    List<List<int>> frameBuffer, {
+  void sendSingleFrame(
+    List<int> jpegBytes, {
     required String inquiryType,
     required int num,
-  }) async {
-    if (_middlewareClient == null) {
-      throw Exception('grpc 클라이언트가 연결되지 않음');
+  }) {
+    if (_middlewareClient == null ||
+        _frameStreamController == null ||
+        _frameStreamController!.isClosed) {
+      logger.w("스트림이 아직 연결되지 않았거나 닫혔습니다");
+      return;
     }
 
     try {
-      final response = await _middlewareClient!.frameToMarkingData(
-        Stream.fromIterable(
-          frameBuffer.map(
-            (f) =>
-                FrameToMarkingDataRequest()
-                  ..frame.add(f)
-                  ..storeId = '5fjVwE8z'
-                  ..inquiryType = inquiryType
-                  ..num = num,
-          ),
-        ),
-      );
+      final request =
+          FrameToMarkingDataRequest()
+            ..frame.add(Uint8List.fromList(jpegBytes))
+            ..storeId = '5fjVwE8z'
+            ..inquiryType = inquiryType
+            ..num = num;
 
-      logger.i(
-        "프레임 서버 응답: ${response.success}, 프레임 에러: ${response.hasError() ? response.error : '없음'}",
-      );
-      return response.success;
+      _frameStreamController!.add(request);
     } catch (e, st) {
-      logger.e("프레임 전송 중 오류: $e, $st");
-      return false;
+      logger.e("프레임 전송 중 오류: $e\n$st");
+      _errorStreamController.add(true);
     }
   }
 
@@ -101,6 +119,8 @@ class GrpcService {
   }
 
   Future<void> shutdown() async {
+    await _frameStreamController?.close();
+    await _responseFuture;
     await _middlewareChannel?.shutdown();
     await _apiChannel?.shutdown();
     _middlewareClient = null;

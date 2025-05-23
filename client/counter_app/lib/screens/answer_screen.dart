@@ -117,131 +117,135 @@ class _AnswerScreenState extends State<AnswerScreen> {
     ];
 
     return Scaffold(
-      body: Column(
-        children: [
-          Header(
-            centerIcon: Text(
-              '💬',
-              style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Header(
+              centerIcon: Text(
+                '💬',
+                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                SignVideo(
-                  srcList: widget.isOrder ? inquirieVideos : videos,
-                  aspectRatio: widget.isOrder ? (3 / 4) : (9 / 16),
-                  onCompleted: () {
-                    if (!mounted) return;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const QuestionScreen(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 30),
-                if (widget.isOrder)
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      GestureDetector(
-                        onTapDown: (_) => setState(() => _isPressedYes = true),
-                        onTapUp: (_) {
-                          setState(() => _isPressedYes = false);
-                          _handleYesTap();
-                        },
-                        onTapCancel:
-                            () => setState(() => _isPressedYes = false),
-                        child: Container(
-                          width: screenWidth * 0.37,
-                          height: 87,
-                          decoration: BoxDecoration(
-                            color:
-                                _isPressedYes
-                                    ? CustomStyles.primaryBlue
-                                    : CustomStyles.primaryGray,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/yes.svg',
-                                colorFilter: ColorFilter.mode(
-                                  _isPressedYes
-                                      ? CustomStyles.primaryWhite
-                                      : CustomStyles.pointGray,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              Text(
-                                '예',
-                                style: CustomStyles.fontHead16.copyWith(
-                                  color:
-                                      _isPressedYes
-                                          ? CustomStyles.primaryWhite
-                                          : CustomStyles.pointGray,
-                                ),
-                              ),
-                            ],
-                          ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Column(
+                children: [
+                  const SizedBox(height: 20),
+                  SignVideo(
+                    srcList: widget.isOrder ? inquirieVideos : videos,
+                    aspectRatio: widget.isOrder ? (3 / 4) : (9 / 16),
+                    onCompleted: () {
+                      if (!mounted) return;
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const QuestionScreen(),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      GestureDetector(
-                        onTapDown: (_) => setState(() => _isPressedNo = true),
-                        onTapUp: (_) {
-                          setState(() => _isPressedNo = false);
-                          _handleNoTap();
-                        },
-                        onTapCancel: () => setState(() => _isPressedNo = false),
-                        child: Container(
-                          width: screenWidth * 0.37,
-                          height: 87,
-                          decoration: BoxDecoration(
-                            color:
-                                _isPressedNo
-                                    ? CustomStyles.primaryBlue
-                                    : CustomStyles.primaryGray,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                'assets/icons/no.svg',
-                                colorFilter: ColorFilter.mode(
-                                  _isPressedNo
-                                      ? CustomStyles.primaryWhite
-                                      : CustomStyles.pointGray,
-                                  BlendMode.srcIn,
-                                ),
-                              ),
-                              Text(
-                                '아니요',
-                                style: CustomStyles.fontHead16.copyWith(
-                                  color:
-                                      _isPressedNo
-                                          ? CustomStyles.primaryWhite
-                                          : CustomStyles.pointGray,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-              ],
+                  const SizedBox(height: 30),
+                  if (widget.isOrder)
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        GestureDetector(
+                          onTapDown:
+                              (_) => setState(() => _isPressedYes = true),
+                          onTapUp: (_) {
+                            setState(() => _isPressedYes = false);
+                            _handleYesTap();
+                          },
+                          onTapCancel:
+                              () => setState(() => _isPressedYes = false),
+                          child: Container(
+                            width: screenWidth * 0.37,
+                            height: 87,
+                            decoration: BoxDecoration(
+                              color:
+                                  _isPressedYes
+                                      ? CustomStyles.primaryBlue
+                                      : CustomStyles.primaryGray,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/yes.svg',
+                                  colorFilter: ColorFilter.mode(
+                                    _isPressedYes
+                                        ? CustomStyles.primaryWhite
+                                        : CustomStyles.pointGray,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                Text(
+                                  '예',
+                                  style: CustomStyles.fontHead16.copyWith(
+                                    color:
+                                        _isPressedYes
+                                            ? CustomStyles.primaryWhite
+                                            : CustomStyles.pointGray,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTapDown: (_) => setState(() => _isPressedNo = true),
+                          onTapUp: (_) {
+                            setState(() => _isPressedNo = false);
+                            _handleNoTap();
+                          },
+                          onTapCancel:
+                              () => setState(() => _isPressedNo = false),
+                          child: Container(
+                            width: screenWidth * 0.37,
+                            height: 87,
+                            decoration: BoxDecoration(
+                              color:
+                                  _isPressedNo
+                                      ? CustomStyles.primaryBlue
+                                      : CustomStyles.primaryGray,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/icons/no.svg',
+                                  colorFilter: ColorFilter.mode(
+                                    _isPressedNo
+                                        ? CustomStyles.primaryWhite
+                                        : CustomStyles.pointGray,
+                                    BlendMode.srcIn,
+                                  ),
+                                ),
+                                Text(
+                                  '아니요',
+                                  style: CustomStyles.fontHead16.copyWith(
+                                    color:
+                                        _isPressedNo
+                                            ? CustomStyles.primaryWhite
+                                            : CustomStyles.pointGray,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

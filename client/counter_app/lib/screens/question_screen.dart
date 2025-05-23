@@ -26,44 +26,24 @@ class _QuestionScreenState extends State<QuestionScreen>
     with WidgetsBindingObserver {
   CameraController? _cameraController;
   List<CameraDescription>? cameras;
-  final List<List<int>> _frameBuffer = [];
   final Logger logger = Logger();
   late GrpcService _grpcService;
-  Timer? _batchSendTimer;
 
   int _frameCount = 0;
+  bool _grpcError = false;
   late Timer _fpsTimer;
 
   @override
   void initState() {
     super.initState();
-    _grpcService = GrpcService();
-    _grpcService.connect();
-    _initializeCamera();
-    _startBatchSendingTimer();
+    _setupGrpcAndCamera();
     WidgetsBinding.instance.addObserver(this);
   }
 
-  void _startBatchSendingTimer() {
-    _batchSendTimer = Timer.periodic(Duration(seconds: 1), (_) async {
-      if (_frameBuffer.isEmpty) return;
-
-      final framesToSend = List<List<int>>.from(_frameBuffer);
-      _frameBuffer.clear();
-
-      try {
-        final success = await _grpcService.sendFrames(
-          framesToSend,
-          inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
-          num: widget.number,
-        );
-        if (!success) {
-          logger.e('배치 프레임 전송 실패');
-        }
-      } catch (e) {
-        logger.e('배치 전송 중 오류: $e');
-      }
-    });
+  Future<void> _setupGrpcAndCamera() async {
+    _grpcService = GrpcService();
+    await _grpcService.connect();
+    await _initializeCamera();
   }
 
   // 테스트용
@@ -172,12 +152,21 @@ class _QuestionScreenState extends State<QuestionScreen>
   void _processCameraImage(CameraImage image) {
     _frameCount++; // 테스트용코드
 
-    _convertYUV420ToJPEG(image).then((jpegBytes) {
-      if (jpegBytes != null) {
-        _frameBuffer.add(jpegBytes);
-        if (_frameBuffer.length > 90) {
-          _frameBuffer.removeRange(0, _frameBuffer.length - 90);
-        }
+    _convertYUV420ToJPEG(image).then((jpegBytes) async {
+      if (jpegBytes == null || jpegBytes.isEmpty) {
+        logger.w("⚠️ JPEG 변환 결과가 null 또는 empty");
+        return;
+      }
+
+      try {
+        _grpcService.sendSingleFrame(
+          jpegBytes,
+          inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+          num: widget.number,
+        );
+      } catch (e) {
+        logger.e('프레임 전송 중 오류: $e');
+        _grpcError = true;
       }
     });
   }
@@ -185,7 +174,6 @@ class _QuestionScreenState extends State<QuestionScreen>
   @override
   void dispose() {
     _stopFpsTimer(); // 테스트용
-    _batchSendTimer?.cancel();
     _cameraController?.dispose();
     _grpcService.shutdown();
     WidgetsBinding.instance.removeObserver(this);
@@ -213,104 +201,96 @@ class _QuestionScreenState extends State<QuestionScreen>
     final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Header(
-              centerIcon: Text(
-                '💬',
-                style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-              ),
-              showSendButton: true,
-              onSend: () async {
-                await _cameraController?.stopImageStream();
-                _batchSendTimer?.cancel();
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Header(
+                centerIcon: Text(
+                  '💬',
+                  style: TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
+                ),
+                showSendButton: true,
+                onSend: () async {
+                  await _cameraController?.stopImageStream();
 
-                bool success = true;
-                if (_frameBuffer.isNotEmpty) {
-                  success = await _grpcService.sendFrames(
-                    List<List<int>>.from(_frameBuffer),
-                    inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
-                    num: widget.number,
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => LoadingScreen(
+                            error: _grpcError,
+                            isOrder: widget.isOrder,
+                            grpcService: _grpcService,
+                          ),
+                    ),
                   );
-
-                  if (!success) {
-                    logger.e('최종 프레임 전송 실패');
-                  }
-
-                  _frameBuffer.clear();
-                }
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => LoadingScreen(error: !success),
-                  ),
-                );
-              },
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(16),
-                    child: Container(
-                      height:
-                          widget.isOrder
-                              ? screenWidth * 0.85 * (500 / 290)
-                              : screenWidth * 0.67 * (500 / 290),
-                      color: CustomStyles.primaryGray,
-                      child:
-                          _cameraController != null &&
-                                  _cameraController!.value.isInitialized
-                              ? CameraPreview(_cameraController!)
-                              : const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  if (!widget.isOrder)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => QuickAnswerScreen(),
-                              ),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            'assets/icons/restroom.svg',
-                            width: 64,
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => QuickAnswerScreen(isWifi: true),
-                              ),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            'assets/icons/wifi.svg',
-                            width: 64,
-                          ),
-                        ),
-                      ],
-                    ),
-                ],
+                },
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 20),
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
+                      child: Container(
+                        height:
+                            widget.isOrder
+                                ? screenWidth * 0.85 * (500 / 290)
+                                : screenWidth * 0.67 * (500 / 290),
+                        color: CustomStyles.primaryGray,
+                        child:
+                            _cameraController != null &&
+                                    _cameraController!.value.isInitialized
+                                ? CameraPreview(_cameraController!)
+                                : const Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+                    if (!widget.isOrder)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => QuickAnswerScreen(),
+                                ),
+                              );
+                            },
+                            child: SvgPicture.asset(
+                              'assets/icons/restroom.svg',
+                              width: 64,
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => QuickAnswerScreen(isWifi: true),
+                                ),
+                              );
+                            },
+                            child: SvgPicture.asset(
+                              'assets/icons/wifi.svg',
+                              width: 64,
+                            ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
