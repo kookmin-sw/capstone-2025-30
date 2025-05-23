@@ -46,15 +46,20 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 
 # video_path = '기2.mp4'
 # video_path = '화2.mp4'
-# video_path = "영1.mp4"
+# video_path = "화_1초추가_8.mp4"
+# video_path = "영_1초추가.mp4"
 # video_path = "긍1.mp4"
-# video_path = "교1.mp4"
+# video_path = "교_1초추가_2.mp4"
+# video_path = '따_1초추가_6.mp4'
+# video_path = "자_1초추가.mp4"
+vidio_path = ""
 
 
 """
 약간의 손실 - 의미 유추 가능
 """
-# video_path = "차1.mp4"
+# video_path = "차_1초추가_2.mp4"
+# video_path = '기_1초추가.mp4'
 
 """
 치명적 손실 - 의미 유추 애매
@@ -65,27 +70,22 @@ v9
 # video_path = '할인카드 사용하고 싶어요.mp4'
 # video_path = '현금결제 원해요.mp4'
 # video_path = '현1.mp4'
-# video_path = "할1.mp4"
+# video_path = "할_1초추가.mp4"
 
 """
 한 단어만 맞춤 - 의미 유추 불가능
 """
 # video_path = "http://sldict.korean.go.kr/multimedia/multimedia_files/convert/20200825/735712/MOV000240883_700X466.mp4"
-# video_path = '아니다.mp4'
-# video_path = '자리가 있을까요_.mp4'
 # video_path = '포인트가 있나요?.mp4'
 # video_path = "덜 달게 해주세요.mp4"
 # video_path = "덜2.mp4"
-# video_path = "포3.mp4"
+# video_path = "포_1초추가.mp4"
 
 """
 전혀 안됨 - 의미 유추 불가능
 """
-# video_path = "자1.mp4"
-# video_path = '따1.mp4'
 # video_path = "돈1.mp4"
 # video_path = '환1.mp4'
-video_path = ""
 
 cap = cv2.VideoCapture(video_path)
 if not cap.isOpened():

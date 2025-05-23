@@ -83,71 +83,66 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
                 confidence=0.0
             )
         
-        confidence_threshold = 0.82
-        motion_threshold = 0.02
+        confidence_threshold = 0.81
+        stationary_threshold = 0.02  
+        min_stationary_frames = int(fps * 0.8) 
         seq_length = 60
         feature_dim = 78
 
         full_data = np.array(joint_data_list).reshape(-1, feature_dim)
         total_frames = full_data.shape[0]
 
+        motion_segments = []
+        start_frame = 0
+        stationary_count = 0
+
+        for i in range(1, total_frames):
+            diff = np.linalg.norm(full_data[i] - full_data[i - 1])
+            if diff < stationary_threshold:
+                stationary_count += 1
+            else:
+                if stationary_count >= min_stationary_frames:
+                    end_frame = i - stationary_count
+                    if end_frame - start_frame >= seq_length:
+                        motion_segments.append((start_frame, end_frame))
+                    start_frame = i
+                stationary_count = 0
+
+        if total_frames - start_frame >= seq_length:
+            motion_segments.append((start_frame, total_frames))
+
         sentences = []
         confidences = []
 
-        motion_start_frames = []
-        prev_frame = None
-
-        for idx in range(total_frames):
-            current_frame = full_data[idx]
-            if prev_frame is not None:
-                diff = np.linalg.norm(current_frame - prev_frame)
-                if diff > motion_threshold:
-                    motion_start_frames.append(idx)
-            prev_frame = current_frame
-
-        # 중복 제거 (간격 좁은 건 스킵)
-        filtered_start_frames = []
-        min_gap = int(fps * 2.0)  # 최소 2.5초 간격
-        last_added = -min_gap
-
-        for f in motion_start_frames:
-            if f - last_added >= min_gap:
-                filtered_start_frames.append(f)
-                last_added = f
-
-        # 추출된 시점부터 시퀀스 예측
-        for start_frame in filtered_start_frames:
-
-            end_frame = start_frame + seq_length
-            if end_frame > total_frames:
-                continue
-
+        for start_frame, end_frame in motion_segments:
             segment = full_data[start_frame:end_frame]
-            input_data = segment[:seq_length]
 
-            pred = model.predict(np.expand_dims(input_data, axis=0))
-            pred_label = np.argmax(pred[0])
-            predicted_sentence = actions[pred_label]
-            confidence = float(pred[0][pred_label])
+            for i in range(0, len(segment) - seq_length + 1, seq_length):
+                input_data = segment[i:i + seq_length]
 
-            if "," in predicted_sentence:
-                predicted_sentence = predicted_sentence.split(",")[0]
-                if predicted_sentence == "당부":
-                    predicted_sentence = "요청"
+                pred = model.predict(np.expand_dims(input_data, axis=0), verbose=0)
+                pred_label = np.argmax(pred[0])
+                predicted_sentence = actions[pred_label]
+                confidence = float(pred[0][pred_label])
 
-            if start_frame == 1 and (predicted_sentence == "마시다" or predicted_sentence == "비밀"):
-                continue
+                if "," in predicted_sentence:
+                    predicted_sentence = predicted_sentence.split(",")[0]
+                    if predicted_sentence == "당부":
+                        predicted_sentence = "요청"
 
-            if confidence < confidence_threshold:
-                continue 
-            
-            if predicted_sentence == "기계":
-                predicted_sentence = "키오스크"
-                
-            sentences.append(predicted_sentence)
-            confidences.append(confidence)
-            print(f"Motion Segment @ Frame {start_frame}: Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
-            
+                if start_frame == 1 and (predicted_sentence == "마시다" or predicted_sentence == "비밀"):
+                    continue
+
+                if confidence < confidence_threshold:
+                    continue
+
+                if predicted_sentence == "기계":
+                    predicted_sentence = "키오스크"
+
+                sentences.append(predicted_sentence)
+                confidences.append(confidence)
+                print(f"Motion Segment @ Frame {start_frame}: Sentence: {predicted_sentence}, Confidence: {confidence:.4f}")
+
         if not sentences:
             return all_predict_sign_pb2.PredictResult(
                 store_id=store_id,
@@ -157,9 +152,9 @@ class SignAIService(all_predict_sign_pb2_grpc.SignAIServicer):
 
         final_sentence = ' '.join(sentences)
         final_sentence = load_to_korean_rag.get_translate_from_sign_language(final_sentence)
+        avg_confidence = float(np.mean(confidences))
 
         print(final_sentence)
-        avg_confidence = float(np.mean(confidences))
 
         return all_predict_sign_pb2.PredictResult(
             store_id=store_id,
