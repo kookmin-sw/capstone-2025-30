@@ -52,7 +52,7 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 # video_path = "교_1초추가_2.mp4"
 # video_path = '따_1초추가_6.mp4'
 # video_path = "자_1초추가.mp4"
-vidio_path = ""
+video_path = ""
 
 
 """
