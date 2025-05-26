@@ -13,7 +13,7 @@ services:
       - ./certs:/app/certs
       - ./gesture_dict:/app/gesture_dict
       - ./docs:/app/docs
-    command: ["python", "grpc/all_predict_sign_server.py"] 
+    command: ["python", "-u", "grpc/all_predict_sign_server.py"]
 
   nginx:
     image: nginx:latest
