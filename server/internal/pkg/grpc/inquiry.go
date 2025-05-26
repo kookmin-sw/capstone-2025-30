@@ -88,7 +88,7 @@ loop:
 			frame := req.FrameData
 
 			//test info
-			logrus.Infof("marshalled frame data: %v", frame)
+			//logrus.Infof("marshalled frame data: %v", frame)
 
 			sequence = append(sequence, frame...)
 			totalReceived++
