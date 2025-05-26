@@ -39,7 +39,7 @@ func (s *Server) StreamInquiries(
 		storeCode      string
 		storeObjectID  *primitive.ObjectID
 		once           sync.Once
-		timeoutSeconds = 1 * time.Second
+		timeoutSeconds = 20 * time.Second
 		inquiryType    string
 		num            int32
 	)
@@ -121,6 +121,7 @@ loop:
 	}
 
 	if predictResp.Confidence <= 0.5 {
+		fmt.Println("confidence : ", predictResp.Confidence)
 		panic(pb.EError_EE_AI_CONVERSION_CONFIDENCE_IS_WRONG)
 	}
 
