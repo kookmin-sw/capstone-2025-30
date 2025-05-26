@@ -32,18 +32,16 @@ class _QuestionScreenState extends State<QuestionScreen>
   int _frameCount = 0;
   bool _grpcError = false;
   late Timer _fpsTimer;
+  bool _showCountdown = true;
+  int _countdown = 3;
 
   @override
   void initState() {
     super.initState();
-    _setupGrpcAndCamera();
+    _initializeCamera().then((_) {
+      _startCountdownAndGrpc();
+    });
     WidgetsBinding.instance.addObserver(this);
-  }
-
-  Future<void> _setupGrpcAndCamera() async {
-    _grpcService = GrpcService();
-    await _grpcService.connect();
-    await _initializeCamera();
   }
 
   // 테스트용
@@ -59,6 +57,27 @@ class _QuestionScreenState extends State<QuestionScreen>
     _fpsTimer.cancel();
   }
 
+  Future<void> _startCountdownAndGrpc() async {
+    for (int i = 3; i > 0; i--) {
+      if (!mounted) return;
+      setState(() {
+        _countdown = i;
+      });
+      await Future.delayed(Duration(seconds: 1));
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _showCountdown = false;
+    });
+
+    _grpcService = GrpcService();
+    await _grpcService.connect();
+
+    _startFpsTimer();
+    _cameraController!.startImageStream(_processCameraImage);
+  }
+
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
     final frontCamera = cameras?.firstWhere(
@@ -70,14 +89,11 @@ class _QuestionScreenState extends State<QuestionScreen>
       _cameraController = CameraController(
         frontCamera,
         ResolutionPreset.low,
+        enableAudio: false,
         imageFormatGroup: ImageFormatGroup.yuv420,
       );
       await _cameraController!.initialize();
       setState(() {});
-
-      _startFpsTimer();
-
-      _cameraController!.startImageStream(_processCameraImage);
     }
   }
 
@@ -142,7 +158,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       );
 
       final rotatedImage = imglib.copyRotate(rgbImage, angle: 270);
-      return imglib.encodeJpg(rotatedImage, quality: 50);
+      return imglib.encodeJpg(rotatedImage, quality: 15);
     } catch (e) {
       logger.e('YUV420 to JPEG 변환 실패: $e');
       return null;
@@ -243,7 +259,30 @@ class _QuestionScreenState extends State<QuestionScreen>
                         child:
                             _cameraController != null &&
                                     _cameraController!.value.isInitialized
-                                ? CameraPreview(_cameraController!)
+                                ? AspectRatio(
+                                  aspectRatio:
+                                      _cameraController!.value.aspectRatio,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      CameraPreview(_cameraController!),
+                                      if (_showCountdown)
+                                        Container(
+                                          color: Colors.black,
+                                          child: Center(
+                                            child: Text(
+                                              '$_countdown',
+                                              style: const TextStyle(
+                                                fontSize: 80,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                )
                                 : const Center(
                                   child: CircularProgressIndicator(),
                                 ),
