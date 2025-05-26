@@ -18,45 +18,59 @@ const OrderList = ({ menu, isLast }) => {
       <div
         style={{
           display: "flex",
+          flexDirection: "row",
           justifyContent: "space-between",
+          alignItems: "center",
           padding: "0 12px",
         }}
       >
         <ButtonMenu menu={menu} isNull={true} />
-
         <div
           style={{
             display: "flex",
-            alignItems: "center",
+            flexDirection: "column",
+            alignItems: "flex-end",
           }}
         >
-          {menu.options.choices.temperature === "차갑게" ? (
-            <div style={{ color: CustomStyles.pointBlue, margin: "0 4px" }}>
-              <IconCold width={30} height={30} />
-            </div>
-          ) : (
-            <div style={{ color: CustomStyles.pointRed, margin: "0 4px" }}>
-              <IconHot width={25} height={30} />
-            </div>
-          )}
           <div
             style={{
-              position: "relative",
-              color: CustomStyles.pointBlue,
-              margin: "0 4px",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            <div style={{ ...OrderProcessStyles.textSize, margin: "8px 0" }}>
-              {menu.options.choices.size === "적게"
-                ? "S"
-                : menu.options.choices.size === "보통"
-                ? "M"
-                : "L"}
+            {menu.options.choices.temperature === "차갑게" ? (
+              <div style={{ color: CustomStyles.pointBlue, margin: "0 4px" }}>
+                <IconCold width={30} height={30} />
+              </div>
+            ) : (
+              <div style={{ color: CustomStyles.pointRed, margin: "0 4px" }}>
+                <IconHot width={25} height={30} />
+              </div>
+            )}
+            <div
+              style={{
+                position: "relative",
+                color: CustomStyles.pointBlue,
+                margin: "0 4px",
+              }}
+            >
+              <div style={{ ...OrderProcessStyles.textSize, margin: "8px 0" }}>
+                {menu.options.choices.size === "적게"
+                  ? "S"
+                  : menu.options.choices.size === "보통"
+                  ? "M"
+                  : "L"}
+              </div>
+              <IconSize width={30} height={32.73} />
             </div>
-            <IconSize width={30} height={32.73} />
+          </div>
+
+          <div style={{ ...OrderProcessStyles.textPrice, margin: "4px 0" }}>
+            {menu.item_price * menu.quantity}원
           </div>
         </div>
       </div>
+
       {!isLast ? (
         <div style={OrderProcessStyles.line} />
       ) : (

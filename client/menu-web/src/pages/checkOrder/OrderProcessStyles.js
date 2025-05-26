@@ -25,6 +25,10 @@ const OrderProcessStyles = {
     marginBottom: 10,
     color: CustomStyles.pointGray,
   },
+  textPrice: {
+    ...CustomStyles.fontHead24,
+    color: CustomStyles.primaryBlack,
+  },
 };
 
 export default OrderProcessStyles;
