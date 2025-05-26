@@ -33,12 +33,12 @@ env = os.getenv('APP_ENV', 'local')
 
 if env == "production":
     model = tf.keras.models.load_model(
-        'models/60_v21_masked_angles.keras',
+        'models/60_v22_masked_angles.keras',
         custom_objects={'Attention': Attention}
     )
 else:
     model = tf.keras.models.load_model(
-    '../models/60_v21_masked_angles.keras',
+    '../models/60_v22_masked_angles.keras',
     custom_objects={
         'Attention': Attention,
         # 'loss': focal_loss(gamma=2., alpha=0.25)
@@ -55,9 +55,9 @@ def focal_loss(gamma=2.0, alpha=0.25):
     return loss
 
 if env == 'production':
-    path = 'gesture_dict/60_v21_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v22_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v21_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v22_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)

@@ -29,9 +29,9 @@ for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
 if env == 'production':
-    path = 'gesture_dict/60_v21_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v22_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v21_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v22_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
