@@ -115,6 +115,7 @@ const ChatOrderPage = () => {
               ? `주문번호 ${state?.number}`
               : `일반문의 ${state?.number}`
           }
+          fromTab={state?.isDone ? 1 : 0}
         />
       </div>
 

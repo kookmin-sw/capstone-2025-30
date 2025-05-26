@@ -10,6 +10,8 @@ const ChatOrderStyles = {
     flex: 1,
   },
   bottomContainer: {
+    width: "100%",
+    boxSizing: "border-box",
     position: "fixed",
     bottom: 0,
     padding: "15px 20px",
