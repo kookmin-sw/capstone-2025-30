@@ -29,9 +29,9 @@ for i in range(7, 16):
     grammer += (" " + data[i].page_content)
 
 if env == 'production':
-    path = 'gesture_dict/60_v15_pad_gesture_dict.json'
+    path = 'gesture_dict/60_v21_pad_gesture_dict.json'
 else:
-    path = '../gesture_dict/60_v15_pad_gesture_dict.json'
+    path = '../gesture_dict/60_v21_pad_gesture_dict.json'
 
 with open(path, 'r', encoding='utf-8') as f:
     gesture_dict = json.load(f)
@@ -115,7 +115,7 @@ def get_retriever():
 
 def get_translate_from_sign_language(text):
 
-    retriever = get_retriever()
+    # retriever = get_retriever()
 
     solo_words = ["포크", "휴지"]
     cleaned_text = text.strip()
@@ -124,12 +124,13 @@ def get_translate_from_sign_language(text):
         if cleaned_text.startswith(word):
             return f"{word}가 있나요?"
 
-    model = ChatOpenAI(temperature=0.6, model="gpt-4o", api_key=api_key)
-    rag_chain_debug = {
-        "context": retriever,                  
-        "question": DebugPassThrough()       
-    }  | DebugPassThrough() | ContextToText()|   to_korean_prompt | model
+    # model = ChatOpenAI(temperature=0.6, model="gpt-4o", api_key=api_key)
+    # rag_chain_debug = {
+    #     "context": retriever,                  
+    #     "question": DebugPassThrough()       
+    # }  | DebugPassThrough() | ContextToText()|   to_korean_prompt | model
 
-    response = rag_chain_debug.invoke(text)
+    # response = rag_chain_debug.invoke(text)
 
-    return response.content
+    # return response.content
+    return text
