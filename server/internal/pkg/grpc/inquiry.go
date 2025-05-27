@@ -120,8 +120,8 @@ loop:
 		panic(pb.EError_EE_INQUIRY_STREAM_FAILED)
 	}
 
+	logrus.Infof("confidence : ", predictResp.Confidence)
 	if predictResp.Confidence <= 0.5 {
-		fmt.Println("confidence : ", predictResp.Confidence)
 		panic(pb.EError_EE_AI_CONVERSION_CONFIDENCE_IS_WRONG)
 	}
 
