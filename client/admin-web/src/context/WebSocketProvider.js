@@ -3,8 +3,8 @@ import useWebSocketConnection from "../context/WebSocketConnection";
 
 const WebSocketContext = createContext(null);
 
-export const WebSocketProvider = ({ children }) => {
-  const webSocketData = useWebSocketConnection();
+export const WebSocketProvider = ({ children, navigate }) => {
+  const webSocketData = useWebSocketConnection(navigate);
 
   return (
     <WebSocketContext.Provider value={webSocketData}>
