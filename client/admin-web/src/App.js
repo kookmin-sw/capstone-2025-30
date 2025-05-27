@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -9,9 +9,11 @@ import OrderListPage from "@/pages/OrderListPage";
 import ChatOrderPage from "@/pages/ChatOrderPage";
 
 function App() {
+  const navigate = useNavigate();
+
   return (
     <>
-      <WebSocketProvider>
+      <WebSocketProvider navigate={navigate}>
         <ToastContainer />
         <BrowserRouter>
           <Routes>

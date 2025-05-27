@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-const useWebSocketConnection = () => {
+const useWebSocketConnection = (navigate) => {
   const ws = useRef(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -46,8 +46,25 @@ const useWebSocketConnection = () => {
       };
 
       ws.current.onmessage = (event) => {
-        console.log("메시지 수신:", event.data);
-        setMessages((prev) => [...prev, event.data]);
+        try {
+          const parsed = JSON.parse(event.data);
+          console.log("메시지 수신:", parsed);
+
+          if (parsed.type === "orderMessage") {
+            navigate("/chat-order", {
+              state: {
+                adminId: "5fjVwE8z",
+                type: "inquiry",
+                number: 0,
+                isDone: false,
+              },
+            });
+          }
+          console.log("메시지 수신:", event.data);
+          setMessages((prev) => [...prev, event.data]);
+        } catch (e) {
+          console.error("메시지 파싱 실패:", e);
+        }
       };
 
       ws.current.onerror = (error) => {
