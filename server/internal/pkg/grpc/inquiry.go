@@ -151,7 +151,7 @@ loop:
 		NotificationTitle: inquiryType,
 		CreatedAt:         createTime,
 		UpdatedAt:         createTime,
-		Accepted:          false,
+		Accepted:          true,
 		Finished:          false,
 		Deleted:           false,
 	}
