@@ -43,7 +43,9 @@ class GrpcService {
     _apiClient = APIServiceClient(_apiChannel!);
 
     _frameStreamController = StreamController<FrameToMarkingDataRequest>();
+  }
 
+  Future<void> startGrpcStream() async {
     _responseFuture = _middlewareClient!
         .frameToMarkingData(_frameStreamController!.stream)
         .then((res) {
