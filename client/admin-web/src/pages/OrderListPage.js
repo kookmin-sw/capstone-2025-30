@@ -15,7 +15,7 @@ const TABS = ["이전", "완료"];
 const OrderListPage = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
-  const [activeTab, setActiveTab] = useState(state?.fromTab ?? 0);
+  const [activeTab, setActiveTab] = useState(0);
   const [chatRoomInfo, setChatRoomInfo] = useState([]);
   const { isConnected } = useWebSocket();
 
@@ -24,6 +24,12 @@ const OrderListPage = () => {
       console.log("연결 상태:", isConnected);
     }
   }, [isConnected]);
+
+  useEffect(() => {
+    if (state?.fromTab !== undefined) {
+      setActiveTab(state.fromTab);
+    }
+  }, [state?.fromTab]);
 
   useEffect(() => {
     const fetchGetChatRoomList = async () => {

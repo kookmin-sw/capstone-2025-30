@@ -4,11 +4,13 @@ import { useNavigate } from "react-router-dom";
 import CustomStyles from "@/styles/CustomStyles";
 import { ReactComponent as IconBack } from "@/assets/icons/back.svg";
 
-const ChatHeader = ({ text }) => {
+const ChatHeader = ({ text, fromTab }) => {
   const navigate = useNavigate();
 
   const goBack = () => {
-    navigate(-1);
+    navigate("/order-list", {
+      state: { adminId: "5fjVwE8z", fromTab: fromTab },
+    });
   };
 
   const styles = {

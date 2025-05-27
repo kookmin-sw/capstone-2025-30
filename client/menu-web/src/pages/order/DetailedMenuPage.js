@@ -99,10 +99,7 @@ const DetailedMenuPage = () => {
       quantity: 1,
       image: detailMenu.image,
     });
-    navigate(`/menu/${categoryPath}`, {
-      state: { cartModal: true },
-      replace: true, // 뒤로가기 불가하도록 히스토리 스택 대체하기
-    });
+    navigate(-1);
   };
 
   return (

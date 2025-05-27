@@ -1,4 +1,3 @@
-import 'package:counter_app/styles/custom_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -130,7 +129,7 @@ class _SignVideoState extends State<SignVideo> {
                 child:
                     isInitialized
                         ? VideoPlayer(_controller)
-                        : Container(color: CustomStyles.pointGray),
+                        : Container(color: Color(0xFFEAEAEC)),
               ),
             ),
           ),
