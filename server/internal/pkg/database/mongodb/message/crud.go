@@ -63,13 +63,14 @@ func GetMMessage(storeID *primitive.ObjectID, num int32, notificationTitle strin
 	return messages, nil
 }
 
-func CreateMMessageAndNotification(mMessage *dbstructure.MMessage, mNotification *dbstructure.MNotificationMessage, store_code string) error {
+func CreateMMessageAndNotification(mMessage *dbstructure.MMessage, mNotification *dbstructure.MNotificationMessage, store_code string) (*int32, error) {
 	session, err := mongodb.Client.StartSession()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer session.EndSession(context.Background())
 
+	var inquiryNumber int32
 	callback := func(sc mongo.SessionContext) (interface{}, error) {
 		inquiryNum, err := morder.GetNextCounterNumber(utils.NotificationTitleInquiry, store_code)
 		if err != nil {
@@ -77,6 +78,7 @@ func CreateMMessageAndNotification(mMessage *dbstructure.MMessage, mNotification
 		}
 
 		mMessage.Number = inquiryNum
+		inquiryNumber = inquiryNum
 		_, err = mongodb.MessageColl.InsertOne(sc, mMessage)
 		if err != nil {
 			return nil, err
@@ -88,5 +90,5 @@ func CreateMMessageAndNotification(mMessage *dbstructure.MMessage, mNotification
 	}
 
 	_, err = session.WithTransaction(context.Background(), callback)
-	return err
+	return &inquiryNumber, err
 }

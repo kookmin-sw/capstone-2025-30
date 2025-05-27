@@ -41,6 +41,7 @@ func (s *Server) StreamInquiries(
 		once           sync.Once
 		timeoutSeconds = 20 * time.Second
 		inquiryType    string
+		inquiryNum     *int32
 		num            int32
 	)
 
@@ -164,7 +165,7 @@ loop:
 		}
 	}
 	if inquiryType == utils.StreamDataTypeInquiry {
-		err = mmessage.CreateMMessageAndNotification(&mMessage, &mNotification, storeCode)
+		inquiryNum, err = mmessage.CreateMMessageAndNotification(&mMessage, &mNotification, storeCode)
 		if err != nil {
 			panic(fmt.Errorf("failed to create message & notification: %v", err))
 		}
@@ -178,7 +179,7 @@ loop:
 		message := websocketHandler.WebSocketMessage{
 			Type: messageType,
 			Data: websocketHandler.MessageData{
-				Num:       num,
+				Num:       *inquiryNum,
 				Message:   predictResp.PredictedSentence,
 				CreatedAt: createTime,
 			},
