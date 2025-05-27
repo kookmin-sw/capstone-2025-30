@@ -50,12 +50,12 @@ const useWebSocketConnection = (navigate) => {
           const parsed = JSON.parse(event.data);
           console.log("메시지 수신:", parsed);
 
-          if (parsed.type === "orderMessage") {
+          if (parsed.type === "inquiryMessage" && parsed.data?.num != null) {
             navigate("/chat-order", {
               state: {
                 adminId: "5fjVwE8z",
                 type: "inquiry",
-                number: 0,
+                number: parsed.data.num,
                 isDone: false,
               },
             });
