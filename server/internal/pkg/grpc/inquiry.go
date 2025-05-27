@@ -156,6 +156,7 @@ loop:
 		Deleted:           false,
 	}
 
+	logrus.Infof("received inquiry_type: %s", inquiryType)
 	if inquiryType == utils.StreamDataTypeOrder {
 		err = mmessage.CreateMMessage(&mMessage)
 		if err != nil {
