@@ -34,6 +34,8 @@ class _QuestionScreenState extends State<QuestionScreen>
   late Timer _fpsTimer;
   bool _showCountdown = true;
   int _countdown = 3;
+  int _receivedFrameCount = 0;
+  bool _grpcStarted = false;
 
   @override
   void initState() {
@@ -172,6 +174,13 @@ class _QuestionScreenState extends State<QuestionScreen>
       if (jpegBytes == null || jpegBytes.isEmpty) {
         logger.w("⚠️ JPEG 변환 결과가 null 또는 empty");
         return;
+      }
+
+      _receivedFrameCount++;
+
+      if (!_grpcStarted && _receivedFrameCount >= 1) {
+        _grpcStarted = true;
+        await _grpcService.startGrpcStream();
       }
 
       try {
