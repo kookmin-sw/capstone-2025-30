@@ -186,7 +186,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       try {
         _grpcService.sendSingleFrame(
           jpegBytes,
-          inquiryType: widget.isOrder ? '주문 문의사항' : '일반 문의사항',
+          inquiryType: widget.isOrder ? 'order' : 'inquiry',
           num: widget.number,
         );
       } catch (e) {
