@@ -154,9 +154,10 @@ type ViewMenuDetail struct {
 	Category         string                 `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
 	Name             string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	MenuPrice        int32                  `protobuf:"varint,3,opt,name=menu_price,json=menuPrice,proto3" json:"menu_price,omitempty"`
-	Image            string                 `protobuf:"bytes,4,opt,name=image,proto3" json:"image,omitempty"`
-	SignLanguageUrls []string               `protobuf:"bytes,5,rep,name=sign_language_urls,json=signLanguageUrls,proto3" json:"sign_language_urls,omitempty"`
-	Options          []*Option              `protobuf:"bytes,6,rep,name=options,proto3" json:"options,omitempty"`
+	Description      string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Image            string                 `protobuf:"bytes,5,opt,name=image,proto3" json:"image,omitempty"`
+	SignLanguageUrls []string               `protobuf:"bytes,6,rep,name=sign_language_urls,json=signLanguageUrls,proto3" json:"sign_language_urls,omitempty"`
+	Options          []*Option              `protobuf:"bytes,7,rep,name=options,proto3" json:"options,omitempty"`
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -210,6 +211,13 @@ func (x *ViewMenuDetail) GetMenuPrice() int32 {
 		return x.MenuPrice
 	}
 	return 0
+}
+
+func (x *ViewMenuDetail) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
 }
 
 func (x *ViewMenuDetail) GetImage() string {
@@ -752,15 +760,16 @@ const file_menu_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
 	"menu_price\x18\x03 \x01(\x05R\tmenuPrice\x12\x14\n" +
-	"\x05image\x18\x04 \x01(\tR\x05image\"\xc6\x01\n" +
+	"\x05image\x18\x04 \x01(\tR\x05image\"\xe8\x01\n" +
 	"\x0eViewMenuDetail\x12\x1a\n" +
 	"\bcategory\x18\x01 \x01(\tR\bcategory\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1d\n" +
 	"\n" +
-	"menu_price\x18\x03 \x01(\x05R\tmenuPrice\x12\x14\n" +
-	"\x05image\x18\x04 \x01(\tR\x05image\x12,\n" +
-	"\x12sign_language_urls\x18\x05 \x03(\tR\x10signLanguageUrls\x12!\n" +
-	"\aoptions\x18\x06 \x03(\v2\a.OptionR\aoptions\"\xc6\x02\n" +
+	"menu_price\x18\x03 \x01(\x05R\tmenuPrice\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x14\n" +
+	"\x05image\x18\x05 \x01(\tR\x05image\x12,\n" +
+	"\x12sign_language_urls\x18\x06 \x03(\tR\x10signLanguageUrls\x12!\n" +
+	"\aoptions\x18\a \x03(\v2\a.OptionR\aoptions\"\xc6\x02\n" +
 	"\x11CreateMenuRequest\x12\x1d\n" +
 	"\n" +
 	"store_code\x18\x01 \x01(\tR\tstoreCode\x12\x1a\n" +

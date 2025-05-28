@@ -122,7 +122,7 @@ var File_error_proto protoreflect.FileDescriptor
 
 const file_error_proto_rawDesc = "" +
 	"\n" +
-	"\verror.proto*\xe9\x03\n" +
+	"\verror.proto*\x95\x04\n" +
 	"\x06EError\x12\x12\n" +
 	"\x0eEE_UNSPECIFIED\x10\x00\x12\x12\n" +
 	"\rEE_API_FAILED\x10\x90N\x12\x17\n" +
@@ -132,7 +132,8 @@ const file_error_proto_rawDesc = "" +
 	"\x17EE_STORE_ALREADY_EXISTS\x10\xa0\x9c\x01\x12\x18\n" +
 	"\x12EE_STORE_NOT_FOUND\x10\xa1\x9c\x01\x12\x1f\n" +
 	"\x19EE_STORE_UPDATE_NO_FIELDS\x10\xa2\x9c\x01\x12\x1e\n" +
-	"\x18EE_INQUIRY_STREAM_FAILED\x10\xb0\xea\x01\x129\n" +
+	"\x18EE_INQUIRY_STREAM_FAILED\x10\xb0\xea\x01\x12*\n" +
+	"$EE_AI_CONVERSION_CONFIDENCE_IS_WRONG\x10\xb1\xea\x01\x129\n" +
 	"3EE_ORDER_AND_NOTIFICATION_AND_MESSAGE_DB_ADD_FAILED\x10\xc0\xb8\x02\x12\x18\n" +
 	"\x12EE_ORDER_NOT_FOUND\x10\xc1\xb8\x02\x12\x1c\n" +
 	"\x16EE_MENU_ALREADY_EXISTS\x10І\x03\x12\x17\n" +

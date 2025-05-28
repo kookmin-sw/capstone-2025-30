@@ -1,7 +1,6 @@
 package grpcHandler
 
 import (
-	"context"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	pb "server/gen"
@@ -11,7 +10,7 @@ import (
 	"server/internal/pkg/utils"
 )
 
-func (s *Server) CreateMenu(ctx context.Context, req *pb.CreateMenuRequest) (res *pb.CreateMenuResponse, errRes error) {
+func (s *Server) CreateMenu(req *pb.CreateMenuRequest) (res *pb.CreateMenuResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
 			logrus.Error("[gRPC CreateMenu] panic: ", r)
@@ -62,7 +61,7 @@ func (s *Server) CreateMenu(ctx context.Context, req *pb.CreateMenuRequest) (res
 	}, nil
 }
 
-func (s *Server) GetCategoryList(ctx context.Context, req *pb.GetCategoryListRequest) (res *pb.GetCategoryListResponse, errRes error) {
+func (s *Server) GetCategoryList(req *pb.GetCategoryListRequest) (res *pb.GetCategoryListResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
 			logrus.Error("[gRPC GetCategoryList] panic: ", r)
@@ -91,7 +90,7 @@ func (s *Server) GetCategoryList(ctx context.Context, req *pb.GetCategoryListReq
 	}, nil
 }
 
-func (s *Server) GetMenuList(ctx context.Context, req *pb.GetMenuListRequest) (res *pb.GetMenuListResponse, errRes error) {
+func (s *Server) GetMenuList(req *pb.GetMenuListRequest) (res *pb.GetMenuListResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
 			logrus.Error("[gRPC GetMenuList] panic: ", r)
@@ -138,7 +137,7 @@ func (s *Server) GetMenuList(ctx context.Context, req *pb.GetMenuListRequest) (r
 	}, nil
 }
 
-func (s *Server) GetMenuDetail(ctx context.Context, req *pb.GetMenuDetailRequest) (res *pb.GetMenuDetailResponse, errRes error) {
+func (s *Server) GetMenuDetail(req *pb.GetMenuDetailRequest) (res *pb.GetMenuDetailResponse, errRes error) {
 	defer func() {
 		if r := recover(); r != nil {
 			logrus.Error("[gRPC GetMenuDetail] panic: ", r)
@@ -197,6 +196,7 @@ func (s *Server) GetMenuDetail(ctx context.Context, req *pb.GetMenuDetailRequest
 			Category:         mMenu.Category,
 			Name:             mMenu.Name,
 			MenuPrice:        mMenu.MenuPrice,
+			Description:      mMenu.Description,
 			Image:            mMenu.Image,
 			SignLanguageUrls: mMenu.SignLanguageURLs,
 			Options:          options,
