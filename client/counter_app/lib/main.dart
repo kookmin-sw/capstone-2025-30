@@ -13,6 +13,17 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load();
   await WebSocketService().connect();
+
+  WebSocketService().onSignUrlsReceived = () {
+    final nav = navigatorKey.currentState!;
+    final isAlreadyOnAnswer =
+        nav.canPop() && nav.context.widget is AnswerScreen;
+
+    if (!isAlreadyOnAnswer) {
+      nav.push(MaterialPageRoute(builder: (_) => const AnswerScreen()));
+    }
+  };
+
   WebSocketService().onInquiryRequestReceived = (int number) {
     navigatorKey.currentState?.push(
       MaterialPageRoute(
