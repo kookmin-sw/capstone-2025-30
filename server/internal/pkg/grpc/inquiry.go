@@ -39,7 +39,7 @@ func (s *Server) StreamInquiries(
 		storeCode      string
 		storeObjectID  *primitive.ObjectID
 		once           sync.Once
-		timeoutSeconds = 20 * time.Second
+		timeoutSeconds = 5 * time.Second
 		inquiryType    string
 		inquiryNum     *int32
 		num            int32
