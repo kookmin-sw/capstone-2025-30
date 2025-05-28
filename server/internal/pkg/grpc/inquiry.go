@@ -166,6 +166,7 @@ loop:
 	}
 	if inquiryType == utils.StreamDataTypeInquiry {
 		inquiryNum, err = mmessage.CreateMMessageAndNotification(&mMessage, &mNotification, storeCode)
+		num = *inquiryNum
 		if err != nil {
 			panic(fmt.Errorf("failed to create message & notification: %v", err))
 		}
@@ -179,7 +180,7 @@ loop:
 		message := websocketHandler.WebSocketMessage{
 			Type: messageType,
 			Data: websocketHandler.MessageData{
-				Num:       *inquiryNum,
+				Num:       num,
 				Message:   predictResp.PredictedSentence,
 				CreatedAt: createTime,
 			},
