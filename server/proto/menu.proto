@@ -21,9 +21,10 @@ message ViewMenuDetail{
   string category = 1;
   string name = 2;
   int32 menu_price = 3;
-  string image = 4;
-  repeated string sign_language_urls = 5;
-  repeated Option options = 6;
+  string description = 4;
+  string image = 5;
+  repeated string sign_language_urls = 6;
+  repeated Option options = 7;
 }
 
 message CreateMenuRequest {
