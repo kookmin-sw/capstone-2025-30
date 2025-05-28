@@ -107,7 +107,7 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 	}
 
 	if strings.Contains(msg.Message, "네") ||
-		strings.Contains(msg.Message, "아니요") ||
+		strings.Contains(msg.Message, "아니오") ||
 		strings.Contains(msg.Message, "잠시만 기다려주세요") ||
 		strings.Contains(msg.Message, "결제해드릴게요") {
 
