@@ -6,6 +6,7 @@ import (
 	"time"
 
 	pb "server/gen"
+	mfastinquiry "server/internal/pkg/database/mongodb/fastinquiry"
 	mmessage "server/internal/pkg/database/mongodb/message"
 	mstore "server/internal/pkg/database/mongodb/store"
 	dbstructure "server/internal/pkg/database/structure"
@@ -77,6 +78,66 @@ func ReceiveKoreanMessage(msg *WebSocketReceiveMessage) error {
 		message := WebSocketMessage{
 			Type: "signMessage",
 			Data: notificationMessage,
+		}
+
+		// 웹소켓으로 메시지 전송
+		go func() {
+			maxRetries := 3
+			backoff := time.Second
+
+			for attempt := 1; attempt <= maxRetries; attempt++ {
+				if err := SendMessageToClient(msg.StoreCode, message, utils.WebSocketClientTypeCounterApp); err != nil {
+					logrus.Warnf("Websocket send attempt %d failed: %v", attempt, err)
+
+					if attempt == maxRetries {
+						logrus.Errorf("Failed to send websocket notification after %d attempts: %v", maxRetries, err)
+						return
+					}
+
+					time.Sleep(backoff)
+					backoff *= 2
+				} else {
+					return
+				}
+			}
+		}()
+
+		logrus.Infof("Message saved and sign URLs sent successfully: %s (Order #%d)", msg.Title, msg.Number)
+		return nil
+	}
+
+	if strings.Contains(msg.Message, "네") ||
+		strings.Contains(msg.Message, "아니요") ||
+		strings.Contains(msg.Message, "잠시만 기다려주세요") ||
+		strings.Contains(msg.Message, "결제해드릴게요") {
+
+		mMessage := dbstructure.MMessage{
+			ID:        primitive.NewObjectID(),
+			StoreId:   storeObjectID,
+			Title:     msg.Title,
+			Number:    int32(msg.Number),
+			CreatedAt: currentTime,
+			Message:   msg.Message,
+			IsOwner:   true,
+		}
+
+		err = mmessage.CreateMMessage(&mMessage)
+		if err != nil {
+			logrus.Errorf("Failed to save message: %v", err)
+			return err
+		}
+
+		fastInquiryData, err := mfastinquiry.GetFastInquiry(msg.Message)
+		if err != nil {
+			logrus.Errorf("Failed to get fast inquiry: %v", err)
+			return err
+		}
+
+		message := WebSocketMessage{
+			Type: "signMessage",
+			Data: SignUrlData{
+				SignUrls: fastInquiryData.URLs,
+			},
 		}
 
 		// 웹소켓으로 메시지 전송
