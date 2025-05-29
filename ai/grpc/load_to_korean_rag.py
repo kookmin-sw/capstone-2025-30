@@ -115,22 +115,21 @@ def get_retriever():
 
 def get_translate_from_sign_language(text):
 
-    # retriever = get_retriever()
-
     solo_words = ["포크", "휴지"]
     cleaned_text = text.strip()
 
     for word in solo_words:
         if cleaned_text.startswith(word):
             return f"{word}가 있나요?"
+    
+    retriever = get_retriever()
+    model = ChatOpenAI(temperature=0.6, model="gpt-4o", api_key=api_key)
+    rag_chain_debug = {
+        "context": retriever,                  
+        "question": DebugPassThrough()       
+    }  | DebugPassThrough() | ContextToText()|   to_korean_prompt | model
 
-    # model = ChatOpenAI(temperature=0.6, model="gpt-4o", api_key=api_key)
-    # rag_chain_debug = {
-    #     "context": retriever,                  
-    #     "question": DebugPassThrough()       
-    # }  | DebugPassThrough() | ContextToText()|   to_korean_prompt | model
+    response = rag_chain_debug.invoke(text)
 
-    # response = rag_chain_debug.invoke(text)
-
-    # return response.content
+    return response.content
     return text
