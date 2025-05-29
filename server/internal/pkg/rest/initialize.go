@@ -63,6 +63,9 @@ func Initialize() {
 	r.GET("/rest/messages/:store_code", restHandler.GetMessages)
 	r.GET("/rest/chat-room-list/:store_code", restHandler.GetMessageList)
 
+	// inquiry api
+	r.PUT("/rest/inquiry/:store_code/:inquiry_number/status", restHandler.UpdateInquiryStatus)
+
 	port := os.Getenv("REST_API_PORT")
 	_ = r.Run(":" + port)
 	logrus.Infof("Rest API server is running on port %s", port)
