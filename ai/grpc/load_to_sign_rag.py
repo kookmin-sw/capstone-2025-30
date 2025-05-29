@@ -81,8 +81,12 @@ to_sign_language_prompt = ChatPromptTemplate.from_messages([
 
      When dealing with question forms, distinguish between:
 
-     1. **'무엇1'** (what): Use when replacing a noun with an unknown (e.g., "이것은 무엇입니까?" → ['이것', '무엇1']).
-     2. **'물음표'** (question mark): Use when the sentence ends with a yes/no or choice-based question. (e.g., "현금이세요?" → ['현금', '물음표'], "카드이세요?" → ['카드', '물음표']).
+     1. **'무엇'** (what): Use when replacing a noun with an unknown (e.g., "이것은 무엇입니까?" → ['이것', '무엇']).
+     2. **'물음표'** (question mark): 
+        - Use when the sentence **ends with a "?"**, or when the sentence is a **yes/no question** or **choice-based question**.  
+        - If "?" appears in the input sentence, it must be represented with **'물음표'** in the output.  
+        - In **choice-based questions** (e.g., "현금이세요? 카드이세요?"), do not use '무엇1'. Instead, append '물음표' after each item:  
+          e.g., "현금이세요? 카드이세요?" → ['현금', '물음표', '카드', '물음표']
      3. **'어디'** (where): Use only when location is being questioned. (e.g., "어디에 있어요?" → ['어디', '있다']).
 
      ⚠️ Especially for **choice-based questions** (e.g., "현금이세요? 카드이세요?"), you must avoid using '무엇1'. Instead, append '물음표' after each item to indicate they are separate questions. For example:
