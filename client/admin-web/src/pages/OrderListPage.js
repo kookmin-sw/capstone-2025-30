@@ -53,7 +53,20 @@ const OrderListPage = () => {
 
   const fetchGetOrder = async (number) => {
     try {
-      await getChatMessages(state?.adminId, "order", number);
+      const parsedNumber = parseInt(number, 10);
+      if (isNaN(parsedNumber)) {
+        toast.error("숫자만 입력해주세요.", {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          theme: "light",
+        });
+        return;
+      }
+      await getChatMessages(state?.adminId, "order", parsedNumber);
       navigate("/chat-order", {
         state: {
           adminId: state?.adminId,
