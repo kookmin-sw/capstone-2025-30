@@ -24,15 +24,20 @@ const DetailedMenuStyles = {
     borderRadius: 16,
   },
   textMenu: {
-    ...CustomStyles.fontHead20,
+    ...CustomStyles.fontHead18,
+    color: CustomStyles.primaryBlack,
     margin: "0 0 0 16px",
-    // textAlign: "right",
   },
   line: {
     width: "100%",
     height: 1.5,
     backgroundColor: CustomStyles.primaryGray,
     margin: "24px 0",
+  },
+  textDescription: {
+    ...CustomStyles.fontCaption,
+    color: CustomStyles.pointGray,
+    margin: "10px 0 0 16px",
   },
 };
 

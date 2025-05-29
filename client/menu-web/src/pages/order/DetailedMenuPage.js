@@ -66,7 +66,6 @@ const DetailedMenuPage = () => {
       try {
         const category = await getDetailMenu(categoryPath, menuPath);
         setDetailMenu(category.data.menu);
-        console.log(category.data.menu);
       } catch (error) {
         console.error(
           "메뉴 상세 조회 오류:",
@@ -124,6 +123,9 @@ const DetailedMenuPage = () => {
             <div style={DetailedMenuStyles.textMenu}>{detailMenu.name}</div>
             <div style={DetailedMenuStyles.textMenu}>
               {menuPrice.toLocaleString()}원
+            </div>
+            <div style={DetailedMenuStyles.textDescription}>
+              {detailMenu.description}
             </div>
           </div>
         </div>
