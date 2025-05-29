@@ -18,6 +18,39 @@ client = MongoClient(mongo_db_url)
 db = client["dev"]
 json_key_file = os.getenv("SPREADSHEET_JSON_KEY")
 
+
+def register_fast_inquiry():
+
+    menu_collection = db["fast_inquiry"]
+
+    menu_collection.insert_one({
+        "name": "네",
+        "inquiry_no": 1,
+        "urls" : ["https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B3%E1%86%BC%E1%84%8C%E1%85%A5%E1%86%BC.mp4"]
+    })
+
+    menu_collection.insert_one({
+        "name": "아니요",
+        "inquiry_no": 2,
+        "urls" : ["https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%A1%E1%84%82%E1%85%B5%E1%84%83%E1%85%A1%2C%20%E1%84%8B%E1%85%A1%E1%86%AD%E1%84%83%E1%85%A1.mp4"]
+    })
+
+    menu_collection.insert_one({
+        "name": "잠시만 기다려주세요",
+        "inquiry_no": 3,
+        "urls" : ["https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%A9%E1%84%80%E1%85%B3%E1%86%B7%2C%20%E1%84%8C%E1%85%A1%E1%86%A8%E1%84%83%E1%85%A1%2C%20%E1%84%8C%E1%85%A5%E1%86%A8%E1%84%83%E1%85%A1.mp4", "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%B5%E1%84%83%E1%85%A1%E1%84%85%E1%85%B5%E1%84%83%E1%85%A1.mp4"]
+    })
+
+    menu_collection.insert_one({
+        "name": "결제해드릴게요",
+        "inquiry_no": 4,
+        "urls": ["https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%80%E1%85%A7%E1%86%AF%E1%84%8C%E1%85%A6.mp4", "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%83%E1%85%B3%E1%84%85%E1%85%B5%E1%84%83%E1%85%A1.mp4"]
+    })
+
+
+
+register_fast_inquiry()
+
 def register_menu():
 
     menu_collection = db["menu"]
