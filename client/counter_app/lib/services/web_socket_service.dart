@@ -18,6 +18,7 @@ class WebSocketService {
   final List<String> signUrls = [];
   final Logger logger = Logger();
 
+  void Function()? onSignUrlsReceived;
   void Function(int number)? onInquiryRequestReceived;
 
   final String wsUrl =
@@ -88,12 +89,9 @@ class WebSocketService {
 
       logger.i('websocket 수신 메시지: $type');
 
-      final int? number = data['num'] ?? data['number'];
-
       if (type == 'signMessage') {
         final urlsRaw = data['sign_urls'];
         final title = data['title'];
-
         if (urlsRaw is List && urlsRaw.isNotEmpty) {
           signUrls
             ..clear()
@@ -101,18 +99,13 @@ class WebSocketService {
 
           _signUrlsController.add(signUrls);
           logger.i('수어 영상 URL 로딩 완료:\n${signUrls.join('\n')}');
-        }
 
-        if ((urlsRaw == null || urlsRaw.isEmpty) &&
-            title == 'order' &&
-            number != null) {
-          onInquiryRequestReceived?.call(number);
+          onSignUrlsReceived?.call();
         }
-      } else if (type == 'orderMessage' && number != null) {
-        logger.i('orderMessage 수신');
-        onInquiryRequestReceived?.call(number);
-      } else {
-        logger.w('처리되지 않은 메시지 타입: $type');
+        if ((urlsRaw == null || urlsRaw.isEmpty) && title == 'order' ||
+            title == 'inquiry' && data['num'] != null) {
+          onInquiryRequestReceived?.call(data['num']);
+        }
       }
     } catch (e, st) {
       logger.e('메시지 파싱 실패: $e\n$st');

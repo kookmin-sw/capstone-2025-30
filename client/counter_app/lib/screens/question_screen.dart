@@ -260,10 +260,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                     ClipRRect(
                       borderRadius: BorderRadius.circular(16),
                       child: Container(
-                        height:
-                            widget.isOrder
-                                ? screenWidth * 0.85 * (500 / 290)
-                                : screenWidth * 0.67 * (500 / 290),
+                        height: screenWidth * 0.67 * (500 / 290),
                         color: CustomStyles.primaryGray,
                         child:
                             _cameraController != null &&

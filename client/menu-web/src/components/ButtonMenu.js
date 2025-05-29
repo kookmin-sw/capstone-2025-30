@@ -95,7 +95,10 @@ const ButtonMenu = ({ menu, isNull = false }) => {
       >
         <div style={{ ...styles.textMenu, fontWeight: 700 }}>{menu.name}</div>
         <div style={{ ...styles.textMenu }}>
-          {menu.menu_price ? menu.menu_price : menu.item_price}원
+          {menu.menu_price
+            ? menu.menu_price.toLocaleString()
+            : menu.item_price.toLocaleString()}
+          원
         </div>
       </div>
     </button>

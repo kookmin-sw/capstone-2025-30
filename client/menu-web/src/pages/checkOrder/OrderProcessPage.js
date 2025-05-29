@@ -66,7 +66,7 @@ const OrderList = ({ menu, isLast }) => {
           </div>
 
           <div style={{ ...OrderProcessStyles.textPrice, margin: "4px 0" }}>
-            {menu.item_price * menu.quantity}원
+            {(menu.item_price * menu.quantity).toLocaleString()}원
           </div>
         </div>
       </div>

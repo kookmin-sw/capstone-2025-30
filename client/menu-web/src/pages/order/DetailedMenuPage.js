@@ -66,6 +66,7 @@ const DetailedMenuPage = () => {
       try {
         const category = await getDetailMenu(categoryPath, menuPath);
         setDetailMenu(category.data.menu);
+        console.log(category.data.menu);
       } catch (error) {
         console.error(
           "메뉴 상세 조회 오류:",
@@ -87,7 +88,7 @@ const DetailedMenuPage = () => {
     }
   };
 
-  const menuPrice = detailMenu.menu_price + sizeOptionPrice();
+  const menuPrice = detailMenu.menu_price + (sizeOptionPrice() || null);
 
   const handleAddCart = () => {
     addToCart({
@@ -121,7 +122,9 @@ const DetailedMenuPage = () => {
           ></div>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <div style={DetailedMenuStyles.textMenu}>{detailMenu.name}</div>
-            <div style={DetailedMenuStyles.textMenu}>{menuPrice}원</div>
+            <div style={DetailedMenuStyles.textMenu}>
+              {menuPrice.toLocaleString()}원
+            </div>
           </div>
         </div>
 

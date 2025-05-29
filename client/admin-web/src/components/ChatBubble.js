@@ -2,6 +2,7 @@ import React from "react";
 import CustomStyles from "@/styles/CustomStyles";
 
 const ChatBubble = ({
+  isOrder = false,
   isFirst = false,
   isAdmin = false,
   createdAt,
@@ -74,9 +75,13 @@ const ChatBubble = ({
         {text}
         {isFirst && (
           <button style={styles.button} onClick={onClick}>
-            {isStatusCompleted
-              ? "제조완료로 상태 변경 완료"
-              : "제조완료로 상태 변경"}
+            {isOrder
+              ? isStatusCompleted
+                ? "제조완료로 상태 변경 완료"
+                : "제조완료로 상태 변경"
+              : isStatusCompleted
+              ? "문의 종료로 상태 변경 완료"
+              : "문의 종료로 상태 변경"}
           </button>
         )}
       </div>

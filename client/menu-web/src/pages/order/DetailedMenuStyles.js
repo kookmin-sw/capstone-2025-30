@@ -24,9 +24,9 @@ const DetailedMenuStyles = {
     borderRadius: 16,
   },
   textMenu: {
-    ...CustomStyles.fontHead28,
+    ...CustomStyles.fontHead20,
     margin: "0 0 0 16px",
-    textAlign: "right",
+    // textAlign: "right",
   },
   line: {
     width: "100%",

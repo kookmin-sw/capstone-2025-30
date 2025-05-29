@@ -87,7 +87,7 @@ const CartList = ({ menu, isLast, onIncrease, onDecrease, onDelete }) => {
             </div>
 
             <div style={{ ...ShoppingCartStyles.textPrice, margin: "4px 0" }}>
-              {menu.menu_price * menu.quantity}원
+              {(menu.menu_price * menu.quantity).toLocaleString()}원
             </div>
 
             <div
@@ -199,7 +199,7 @@ const ShoppingCartPage = () => {
       <div style={ShoppingCartStyles.container}>
         <div style={ShoppingCartStyles.textTotalMoney}>
           <div style={{ fontSize: 44, lineHeight: "52px" }}>💵</div>
-          <div>{totalMoney}원</div>
+          <div>{totalMoney.toLocaleString()}원</div>
         </div>
 
         <div style={{ ...ShoppingCartStyles.line, height: 5 }} />

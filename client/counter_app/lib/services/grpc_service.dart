@@ -49,13 +49,19 @@ class GrpcService {
     _responseFuture = _middlewareClient!
         .frameToMarkingData(_frameStreamController!.stream)
         .then((res) {
-          logger.i(
-            "프레임 서버 응답: ${res.success}, 에러: ${res.hasError() ? res.error : '없음'}",
-          );
-          _errorStreamController.add(true);
+          logger.i("프레임 서버 응답: ${res.success}");
+
+          if (!res.success) {
+            logger.w("서버 스트리밍 응답 중 오류: ${res.error}");
+            _errorStreamController.add(true);
+          }
         })
         .catchError((e, st) {
           logger.e("서버 스트리밍 응답 중 오류: $e\n$st");
+          if (e.toString().contains('413')) {
+            logger.w("413 오류 무시");
+            return;
+          }
           _errorStreamController.add(true);
         });
   }
@@ -84,7 +90,6 @@ class GrpcService {
       _frameStreamController!.add(request);
     } catch (e, st) {
       logger.e("프레임 전송 중 오류: $e\n$st");
-      _errorStreamController.add(true);
     }
   }
 

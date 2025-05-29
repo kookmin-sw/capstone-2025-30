@@ -27,10 +27,28 @@ class _AnswerScreenState extends State<AnswerScreen> {
   bool _isPressedNo = false;
   List<String> videos = [];
 
+  final List<String> postVideos = [
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8F%E1%85%A1%E1%84%86%E1%85%A6%E1%84%85%E1%85%A1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8F%E1%85%A7%E1%84%83%E1%85%A1%2C%20%E1%84%8F%E1%85%A7%E1%84%8C%E1%85%B5%E1%84%83%E1%85%A1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%92%E1%85%A1%E1%84%83%E1%85%A1%2C%20%E1%84%87%E1%85%A1%E1%84%85%E1%85%A1%E1%84%83%E1%85%A1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%B4.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%89%E1%85%AE%E1%84%8B%E1%85%A5.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A9%E1%84%8B%E1%85%A7%E1%84%8C%E1%85%AE%E1%84%83%E1%85%A1.mp4",
+
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%86%E1%85%AE%E1%86%AB%E1%84%8B%E1%85%B4.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8C%E1%85%AE%E1%86%BC%E1%84%8C%E1%85%B5%2C%20%E1%84%81%E1%85%B3%E1%84%83%E1%85%A1%2C%20%E1%84%86%E1%85%A5%E1%86%B7%E1%84%8E%E1%85%AE%E1%84%83%E1%85%A1%2C%20%E1%84%80%E1%85%B3%E1%84%86%E1%85%A1%E1%86%AB%2C%20%E1%84%86%E1%85%A1%E1%84%85%E1%85%B3%E1%84%83%E1%85%A1%2C%20%E1%84%8C%E1%85%A5%E1%86%BC%E1%84%8C%E1%85%B5.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%AF%E1%86%AB%E1%84%92%E1%85%A1%E1%84%83%E1%85%A1%2C%20%E1%84%87%E1%85%A1%E1%84%85%E1%85%A1%E1%84%83%E1%85%A1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%AC%E1%86%AB%E1%84%8D%E1%85%A9%E1%86%A8.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%8B%E1%85%B1.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%87%E1%85%A5%E1%84%90%E1%85%B3%E1%86%AB.mp4",
+    "https://signorderavatarvideo.s3.ap-northeast-2.amazonaws.com/%E1%84%82%E1%85%AE%E1%84%85%E1%85%B3%E1%84%83%E1%85%A1.mp4",
+  ];
+
   @override
   void initState() {
     super.initState();
-    videos = WebSocketService().getSignUrls();
+    final incomingVideos = WebSocketService().getSignUrls();
+    videos = [...incomingVideos, ...postVideos];
     logger.i('websocket 수어 영상: $videos');
   }
 
@@ -47,7 +65,11 @@ class _AnswerScreenState extends State<AnswerScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => QuestionScreen(isOrder: widget.isOrder),
+            builder:
+                (_) => QuestionScreen(
+                  isOrder: widget.isOrder,
+                  number: widget.number,
+                ),
           ),
         );
       });
@@ -139,7 +161,11 @@ class _AnswerScreenState extends State<AnswerScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const QuestionScreen(),
+                          builder:
+                              (context) => QuestionScreen(
+                                isOrder: widget.isOrder,
+                                number: widget.number,
+                              ),
                         ),
                       );
                     },

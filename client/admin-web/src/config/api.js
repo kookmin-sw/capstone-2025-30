@@ -30,3 +30,9 @@ export const modifyStatus = (storeCode, orderNumber) => {
     status: "ORDER_DONE",
   });
 };
+
+export const modifyInquiryStatus = (storeCode, orderNumber) => {
+  return api.put(`/rest/inquiry/${storeCode}/${orderNumber}/status`, {
+    status: "INQUIRY_DONE",
+  });
+};

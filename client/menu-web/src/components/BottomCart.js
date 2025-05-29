@@ -72,7 +72,7 @@ const BottomCart = () => {
 
   return (
     <div style={styles.container}>
-      <div style={styles.textTotalMoney}>{totalMoney}원</div>
+      <div style={styles.textTotalMoney}>{totalMoney.toLocaleString()}원</div>
       <button style={styles.button} onClick={() => navigate("/shopping-cart")}>
         <div style={{ marginRight: 8, marginTop: 5 }}>
           <IconCart width={18} />
