@@ -10,6 +10,7 @@ from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+import unicodedata
 
 load_dotenv()
 api_key = os.getenv("OPEN_AI_KEY")
@@ -65,6 +66,18 @@ to_korean_prompt = ChatPromptTemplate.from_messages([
     5. **Output Only the Final Translation**:
        - Provide only the final Korean translation. Do not include additional explanations or intermediate steps.
 
+    6. **Apply Fixed Responses for Specific Keywords**:
+
+        If the input contains any of the following keywords, return the corresponding fixed sentence exactly as shown:
+
+        If the input contains "포인트" → "포인트 적립할게요"
+
+        If the input contains "비닐" → "비닐봉지 있어요?"
+
+        If the input contains "할인" → "할인 번호 있어요"
+
+        If the input contains "영수증" → "영수증 주세요"
+
     Example Input:
     - Input: [어머니] 시선응시 [나] 휴지 [청소] [해라] 고개숙이기 상체숙이기
     - Output: 어머니께서 나에게 청소를 하라고 하셨다.
@@ -114,22 +127,38 @@ def get_retriever():
     return retriever
 
 def get_translate_from_sign_language(text):
-
     solo_words = ["포크", "휴지"]
+    
+    # 한글 조합형 정규화 처리
+    text = unicodedata.normalize("NFC", text)
     cleaned_text = text.strip()
 
     for word in solo_words:
-        if cleaned_text.startswith(word):
+        if word in cleaned_text:
             return f"{word}가 있나요?"
+
+    print(f"[디버그] 원문 : {text}")
+
+    if "포인트" in cleaned_text:
+        return "포인트 적립할게요"
     
+    if "비닐" in cleaned_text:
+        return "비닐봉지 있어요?"
+    
+    if "할인" in cleaned_text:
+        return "할인 번호 있어요"
+
+    if "영수증" in cleaned_text:
+        return "영수증 주세요"
+
+    # fallback to RAG
     retriever = get_retriever()
     model = ChatOpenAI(temperature=0.6, model="gpt-4o", api_key=api_key)
     rag_chain_debug = {
-        "context": retriever,                  
-        "question": DebugPassThrough()       
-    }  | DebugPassThrough() | ContextToText()|   to_korean_prompt | model
+        "context": retriever,
+        "question": DebugPassThrough()
+    } | DebugPassThrough() | ContextToText() | to_korean_prompt | model
 
     response = rag_chain_debug.invoke(text)
 
     return response.content
-    return text
