@@ -3,7 +3,11 @@ import { useLocation } from "react-router-dom";
 
 import ChatOrderStyles from "@/pages/ChatOrderStyles";
 
-import { getChatMessages, modifyStatus } from "../config/api.js";
+import {
+  getChatMessages,
+  modifyStatus,
+  modifyInquiryStatus,
+} from "../config/api.js";
 import { useWebSocket } from "../context/WebSocketProvider";
 import ChatHeader from "@/components/ChatHeader";
 import ChatBubble from "@/components/ChatBubble";
@@ -44,7 +48,19 @@ const ChatOrderPage = () => {
       setIsStatusCompleted(true);
     } catch (error) {
       console.error(
-        "관리자 상태 변경 오류:",
+        "관리자 주문 상태 변경 오류:",
+        error.response ? error.response.data : error.message
+      );
+    }
+  };
+
+  const fetchModifyInquiryStatus = async () => {
+    try {
+      await modifyInquiryStatus(state?.adminId, state?.number);
+      setIsStatusCompleted(true);
+    } catch (error) {
+      console.error(
+        "관리자 문의 상태 변경 오류:",
         error.response ? error.response.data : error.message
       );
     }
@@ -140,11 +156,16 @@ const ChatOrderPage = () => {
           return (
             <ChatBubble
               key={index}
+              isOrder={state?.type === "order" ? true : false}
               isFirst={index === 0 && arr[0].type !== "signMessage"}
               isAdmin={item.is_owner}
               text={item.message}
               createdAt={item.created_at}
-              onClick={fetchModifyStatus}
+              onClick={
+                state?.type === "order"
+                  ? fetchModifyStatus
+                  : fetchModifyInquiryStatus
+              }
               showTime={showTime}
               isStatusCompleted={isStatusCompleted}
             />
