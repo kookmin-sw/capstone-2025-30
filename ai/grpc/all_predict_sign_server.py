@@ -41,7 +41,6 @@ else:
     '../models/60_v22_masked_angles.keras',
     custom_objects={
         'Attention': Attention,
-        # 'loss': focal_loss(gamma=2., alpha=0.25)
     }
     )
 
