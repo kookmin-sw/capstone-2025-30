@@ -65,7 +65,11 @@ class _AnswerScreenState extends State<AnswerScreen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => QuestionScreen(isOrder: widget.isOrder),
+            builder:
+                (_) => QuestionScreen(
+                  isOrder: widget.isOrder,
+                  number: widget.number,
+                ),
           ),
         );
       });
@@ -157,7 +161,11 @@ class _AnswerScreenState extends State<AnswerScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const QuestionScreen(),
+                          builder:
+                              (context) => QuestionScreen(
+                                isOrder: widget.isOrder,
+                                number: widget.number,
+                              ),
                         ),
                       );
                     },
