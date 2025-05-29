@@ -52,7 +52,7 @@ stub = all_predict_sign_pb2_grpc.SignAIStub(channel)
 # video_path = "교_1초추가_2.mp4"
 # video_path = '따_1초추가_6.mp4'
 # video_path = "자_1초추가.mp4"
-video_path = ""
+# video_path = ""
 
 
 """
@@ -70,7 +70,7 @@ v9
 # video_path = '할인카드 사용하고 싶어요.mp4'
 # video_path = '현금결제 원해요.mp4'
 # video_path = '현1.mp4'
-# video_path = "할_1초추가.mp4"
+video_path = "할_1초추가.mp4"
 
 """
 한 단어만 맞춤 - 의미 유추 불가능
