@@ -6,6 +6,7 @@ import boto3
 import gspread
 import os
 import urllib
+import requests
 from dotenv import load_dotenv
 load_dotenv(dotenv_path='.env')
 from oauth2client.service_account import ServiceAccountCredentials
@@ -71,6 +72,24 @@ def getData(s3,bucket_name) :
         #     f.write(f'{key.replace(".mp4","")}={object_url}\n')
     return [file_name, file_url]
 
+def accessSheet(data_sheet):
+    urls = data_sheet.col_values(2)[1:]
+
+    # 검사 실행
+    for url in urls:
+        if check_url_validity(url):
+            print(f"✅ {url} → 유효함")
+        else:
+            print(f"❌ {url} → 유효하지 않음 또는 만료됨")
+
+def check_url_validity(url):
+    try:
+        # HEAD 요청으로 빠르게 상태만 확인
+        response = requests.head(url, allow_redirects=True, timeout=5)
+        return response.status_code == 200
+    except requests.RequestException as e:
+        print(f"[오류] {url} → {e}")
+        return False
 
 def main():
     bucket_name = os.getenv("AWS_BUCKET_NAME")
@@ -78,6 +97,7 @@ def main():
     if (AWS_setting()):
         res = getData(AWS_setting(),bucket_name)
         if (data_sheet) :
+            accessSheet(data_sheet)
             # 수어 뜻 업데이트
             data_sheet.update(res[0],f'A2:A{len(res[0])+1}')
 
