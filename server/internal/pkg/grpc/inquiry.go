@@ -295,3 +295,42 @@ func (s *Server) FastInquiryRespIsNo(
 	// 응답 반환
 	return &pb.FastInquiryRespIsNoResponse{Success: true, Error: nil}, nil
 }
+
+func (s *Server) UpdateInquiryStatus(ctx context.Context, req *pb.UpdateInquiryStatusRequest) (res *pb.UpdateInquiryStatusResponse, errRes error) {
+	defer func() {
+		if r := recover(); r != nil {
+			logrus.Error("[gRPC UpdateInquiryStatus] panic: ", r)
+			pbErr := utils.RecoverToEError(r, pb.EError_EE_API_FAILED)
+			errRes = nil
+			res = &pb.UpdateInquiryStatusResponse{Success: false, Error: pbErr.Enum()}
+		}
+	}()
+
+	storeID, err := mstore.ValidateStoreCodeAndGetObjectID(req.StoreCode)
+	if err != nil {
+		logrus.Errorf("[gRPC UpdateInquiryStatus] Store Id is not founded by store code(%s): %v", req.StoreCode, err)
+		panic(pb.EError_EE_STORE_NOT_FOUND)
+	}
+
+	mNotification, err := mmessage.GetNotificationMessage(&storeID, "inquiry", int(req.InquiryNumber))
+	if err != nil {
+		logrus.Errorf("[gRPC UpdateInquiryStatus] Failed to get notification")
+		panic(err)
+	}
+	if mNotification == nil {
+		logrus.Errorf("[gRPC UpdateInquiryStatus] Notification is not founded")
+		panic(pb.EError_EE_NOTIFICATION_NOT_FOUND)
+	}
+
+	err = mmessage.UpdateMNotificationFinished(&storeID, "inquiry", req.InquiryNumber, true)
+	if err != nil {
+		logrus.Errorf("[gRPC UpdateInquiryStatus] UpdateMNotificationFinished error")
+		panic(err)
+	}
+
+	return &pb.UpdateInquiryStatusResponse{
+		Success: true,
+		Error:   nil,
+		Status:  req.Status,
+	}, nil
+}

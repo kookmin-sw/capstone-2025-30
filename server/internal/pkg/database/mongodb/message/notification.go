@@ -107,3 +107,35 @@ func UpdateMNotificationAccepted(storeID *primitive.ObjectID, notificationTitle 
 	_, err = session.WithTransaction(context.Background(), callback)
 	return err
 }
+func UpdateMNotificationFinished(storeID *primitive.ObjectID, notificationTitle string, number int32, finished bool) error {
+	session, err := mongodb.Client.StartSession()
+	if err != nil {
+		return err
+	}
+	defer session.EndSession(context.Background())
+
+	callback := func(sc mongo.SessionContext) (interface{}, error) {
+		update_at := time.Now()
+		notificationFilter := bson.M{
+			"store_code": storeID,
+			"title":      notificationTitle,
+			"number":     number,
+		}
+		notificationUpdate := bson.M{
+			"$set": bson.M{
+				"finished":   finished,
+				"updated_at": update_at,
+			},
+		}
+
+		_, err = mongodb.NotificationColl.UpdateOne(sc, notificationFilter, notificationUpdate)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, nil
+	}
+
+	_, err = session.WithTransaction(context.Background(), callback)
+	return err
+}

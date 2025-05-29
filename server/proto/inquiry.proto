@@ -4,6 +4,12 @@ option go_package = "capstone-2025-30/proto";
 
 import "error.proto";
 
+enum InquiryStatus{
+  INQUIRY_UNSPECIFIED = 0;// 디폴트
+  INQUIRY_PROCESSING = 1; // 제조 중
+  INQUIRY_DONE = 2;       // 제조 완료
+}
+
 message InquiryRequest{
   string store_code = 1; // 가게 code
   repeated float frame_data = 2; // 영상 한 프레임 좌표 데이터
@@ -25,4 +31,16 @@ message FastInquiryRespIsNoRequest{
 message FastInquiryRespIsNoResponse{
   bool success = 1; // 성공 여부
   optional EError error = 2; // 에러 코드
+}
+
+message UpdateInquiryStatusRequest {
+  string store_code = 1;
+  int32 inquiry_number = 2;
+  InquiryStatus status = 3;
+}
+
+message UpdateInquiryStatusResponse {
+  bool success = 1;
+  optional EError error = 2;
+  InquiryStatus status = 3;
 }
