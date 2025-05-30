@@ -16,13 +16,27 @@ void main() async {
 
   WebSocketService().onSignUrlsReceived = () {
     final nav = navigatorKey.currentState!;
-    final isAlreadyOnAnswer =
-        nav.canPop() && nav.context.widget is AnswerScreen;
-
-    if (!isAlreadyOnAnswer) {
-      nav.push(MaterialPageRoute(builder: (_) => const AnswerScreen()));
-    }
+    nav.pushReplacement(
+      MaterialPageRoute(builder: (_) => const AnswerScreen()),
+    );
   };
+  // WebSocketService().onSignUrlsReceived = () {
+  //   final nav = navigatorKey.currentState!;
+  //   final ctx = nav.context;
+
+  //   // 현재 화면이 AnswerScreen이고 isOrder == false인지 확인
+  //   final isAnswerScreen = ctx.widget is AnswerScreen;
+  //   final currentScreen = ctx.widget;
+
+  //   final isOrderScreen =
+  //       currentScreen is AnswerScreen && currentScreen.isOrder;
+
+  //   if (!isAnswerScreen || isOrderScreen) {
+  //     nav.push(
+  //       MaterialPageRoute(builder: (_) => const AnswerScreen(isOrder: false)),
+  //     );
+  //   }
+  // };
 
   WebSocketService().onInquiryRequestReceived = (int number) {
     navigatorKey.currentState?.push(
