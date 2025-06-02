@@ -1,4 +1,4 @@
-# 농인을 위한 수어 기반 주문 소통 서비스 <span>$\bf{\large{\color{#458EFD}SignOrder}}$</span>
+# 농인을 위한 수어 기반 주문 소통 서비스 <span style="color:#458EFD; font-weight:bold; font-size:1.5em;">SignOrder</span>
 ![image](https://github.com/user-attachments/assets/cdc0d617-af3c-479a-99ab-4b30006cdd21)
 
 
