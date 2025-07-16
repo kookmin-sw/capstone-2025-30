@@ -46,3 +46,5 @@ type MessageData struct {
 type SignUrlData struct {
 	SignUrls []string `json:"sign_urls"`
 }
+
+// 배포용 로그
